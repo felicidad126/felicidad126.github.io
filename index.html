@@ -30,6 +30,12 @@ body.locked .inv-canvas{padding-bottom:96px;background:var(--cover-bg)}
 .photo span{font:500 calc(11*var(--s))/1 "f-inter";letter-spacing:calc(2*var(--s));color:#ffffffcc;padding-bottom:calc(16*var(--s));text-transform:uppercase}
 .photo::before{content:"";position:absolute;left:50%;top:38%;width:32%;aspect-ratio:1;border-radius:50%;transform:translate(-50%,-50%);background:#ffffff26}
 .photo::after{content:"";position:absolute;left:50%;top:78%;width:70%;aspect-ratio:1.4;border-radius:50% 50% 0 0;transform:translate(-50%,-50%);background:#ffffff1f}
+.photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.photo.has-img::before,.photo.has-img::after{display:none}
+.photo.has-img span{position:relative;z-index:1;width:100%;text-align:center;padding:calc(34*var(--s)) 0 calc(14*var(--s));background:linear-gradient(transparent,#1f261f99);color:#fff}
+.credits{max-width:520px;margin:0 auto;padding:18px 72px 84px;text-align:center;font:12px/1.6 "f-inter",system-ui,sans-serif;color:#5f6f55}
+.credits a{color:inherit}
+body.locked .credits{display:none}
 svg.sprig{width:100%;height:100%;display:block}
 /* widget */
 .w{font-size:calc(var(--fs)*var(--s))}
@@ -115,6 +121,22 @@ const PH = {
   akad_date: fmtDate(EVENT.events.akad),
   resepsi_date: fmtDate(EVENT.events.resepsi),
 };
+/** Foto contoh hasil AI (folder foto/) untuk aset demo; aset lain tetap placeholder gradasi. */
+const DEMO_PHOTOS = {
+  "asset-demo-couple-cover": { src: "foto/cover.jpg" },
+  "asset-demo-bride": { src: "foto/mempelai-wanita.jpg", pos: "50% 20%" },
+  "asset-demo-groom": { src: "foto/mempelai-pria.jpg", pos: "50% 25%" },
+  "asset-demo-gallery-01": { src: "foto/galeri-1.jpg", pos: "50% 70%" },
+  "asset-demo-gallery-02": { src: "foto/galeri-2.jpg", pos: "50% 40%" },
+  "asset-demo-gallery-03": { src: "foto/galeri-3.jpg", pos: "50% 65%" },
+  "asset-demo-gallery-04": { src: "foto/galeri-4.jpg", pos: "50% 45%" },
+  "asset-demo-gallery-05": { src: "foto/galeri-5.jpg", pos: "50% 55%" },
+  "asset-demo-gallery-06": { src: "foto/galeri-6.jpg", pos: "50% 65%" },
+};
+function photoImg(demo, _width, eager) {
+  return `<img src="${demo.src}" alt="" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async"${demo.pos ? ` style="object-position:${demo.pos}"` : ""}>`;
+}
+
 const fill = (t) => t.replace(/\{\{(\w+)\}\}/g, (_, k) => PH[k] ?? "");
 
 function textStyle(st) {
@@ -159,7 +181,11 @@ function widget(e) {
       return `<div class="w addr" style="${base}"><div class="time">Pukul ${fmtTime(ev.startsAt, ev.timezone)}${end} ${TZ_ABBR[ev.timezone] ?? ""}</div><div class="venue">${esc(ev.venue)}</div><div>${esc(ev.address)}</div>${e.showMapButton ? `<a class="pill" href="#" onclick="return false">Lihat Lokasi</a>` : ""}</div>`;
     }
     case "widget-galleries":
-      return `<div class="grid">${e.items.map((it, i) => `<div class="photo"><span>${esc(it.caption ?? `Foto ${i + 1}`)}</span></div>`).join("")}</div>`;
+      return `<div class="grid">${e.items.map((it, i) => {
+        const demo = DEMO_PHOTOS[it.src.assetId];
+        if (!demo) return `<div class="photo"><span>${esc(it.caption ?? `Foto ${i + 1}`)}</span></div>`;
+        return `<div class="photo has-img">${photoImg(demo, i === 5 ? 900 : 520)}${it.caption ? `<span>${esc(it.caption)}</span>` : ""}</div>`;
+      }).join("")}</div>`;
     case "widget-rsvp": {
       const form = DOC.forms[e.formId];
       const field = (f) => {
@@ -209,7 +235,12 @@ function renderElement(e) {
     case "photo":
       node.classList.add("photo");
       if (e.type === "frame" && e.mask.assetId === "asset-mask-arch") css += `border-radius:${archRadius(e.width)};`;
-      node.innerHTML = `<span>${e.src.assetId.replace("asset-demo-", "").replace(/-/g, " ")}</span>`;
+      if (DEMO_PHOTOS[e.src.assetId]) {
+        node.classList.add("has-img");
+        node.innerHTML = photoImg(DEMO_PHOTOS[e.src.assetId], e.width * 2.4, e.sectionId === DOC.cover?.sectionId);
+      } else {
+        node.innerHTML = `<span>${e.src.assetId.replace("asset-demo-", "").replace(/-/g, " ")}</span>`;
+      }
       break;
     case "rect":
       css += `background:${e.fill};border-radius:${s(e.radius)};${e.border ? `border:${s(e.border.width)} solid ${e.border.color};` : ""}`;
@@ -268,6 +299,12 @@ for (const id of DOC.sectionOrderIds) {
   for (const eid of sec.elementOrderIds) node.appendChild(renderElement(DOC.elements[eid]));
   canvas.appendChild(node);
 }
+
+// Keterangan foto contoh
+const credits = document.createElement("footer");
+credits.className = "credits";
+credits.textContent = "Foto contoh dibuat dengan AI (Gemini). Bukan foto mempelai sebenarnya.";
+document.body.appendChild(credits);
 
 // Cover gate
 const cover = DOC.cover;
