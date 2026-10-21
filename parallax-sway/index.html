@@ -290,9 +290,9 @@ footer a{color:var(--gold)}
   .stage .ph.on{opacity:1}
   .stage .ph img{top:-8%;height:116%;animation:kb 24s ease-in-out infinite alternate}
   @keyframes kb{to{scale:1.08}}
-  .stage-shade{position:absolute;inset:0;background:linear-gradient(90deg,#151a3500 50%,#151a35aa),linear-gradient(180deg,#151a3566,#151a3500 35%,#151a3500 60%,#151a35e6)}
-  .stage-txt{position:absolute;left:56px;bottom:56px;right:56px}
-  .stage-txt .names{font:400 clamp(64px,6vw,96px)/1 var(--script);margin:10px 0 6px}
+  .stage-shade{position:absolute;inset:0;background:linear-gradient(90deg,#151a3500 50%,#151a35aa),linear-gradient(180deg,#151a3566,#151a3500 35%,#151a3500 62%,#151a35cc 82%,#151a35f2)}
+  .stage-txt{position:absolute;left:56px;bottom:48px;right:56px}
+  .stage-txt .names{font:400 clamp(56px,5vw,84px)/1 var(--script);margin:8px 0 4px;white-space:nowrap}
   .stage-txt .names i{font-style:normal;color:var(--gold);font-size:.66em}
   .stage-txt .date{font:500 20px/1.4 var(--serif);letter-spacing:.2em}
   .gate-photo{inset:-5% calc(var(--col) - 140px) -5% -4%}
@@ -759,6 +759,26 @@ $$(".rv").forEach((n) => rvIO.observe(n));
 // Desktop: foto panggung berganti mengikuti bagian yang sedang dibaca.
 const stageImgs = $$(".stage .ph");
 let stageOn = 0, stageSrc = "../foto/cover.jpg";
+// Letak wajah (fraksi tinggi foto). Di layar lebar foto potret dipotong vertikal; posisinya dihitung
+// supaya wajah jatuh di ±40% tinggi layar, tidak terdorong ke bawah tertimpa nama.
+const FACE_Y = { cover: 0.6, "mempelai-wanita": 0.38, "galeri-1": 0.64, "galeri-2": 0.42, "galeri-3": 0.46, "galeri-4": 0.55, "galeri-5": 0.5, "galeri-6": 0.5 };
+function focusStage(img) {
+  const fy = FACE_Y[(img.getAttribute("src") || "").split("/").pop().replace(".jpg", "")];
+  img.style.objectPosition = "";
+  if (fy == null || !img.naturalWidth) return;
+  const box = img.getBoundingClientRect(), vh = innerHeight;
+  const ih = img.naturalHeight * Math.max(box.width / img.naturalWidth, box.height / img.naturalHeight);
+  if (ih <= box.height + 1) return;
+  const boxTop = box.top - img.parentElement.getBoundingClientRect().top;
+  const p = (fy * ih + boxTop - 0.4 * vh) / (ih - box.height);
+  img.style.objectPosition = `50% ${(Math.max(0, Math.min(1, p)) * 100).toFixed(1)}%`;
+}
+stageImgs.forEach((ph) => {
+  const img = ph.querySelector("img");
+  if (img.complete) focusStage(img);
+  img.addEventListener("load", () => focusStage(img));
+});
+addEventListener("resize", () => stageImgs.forEach((ph) => focusStage(ph.querySelector("img"))));
 const stageIO = new IntersectionObserver((es) => {
   for (const e of es) {
     if (!e.isIntersecting || innerWidth < 900) continue;
@@ -768,7 +788,7 @@ const stageIO = new IntersectionObserver((es) => {
     const next = stageImgs[1 - stageOn];
     const img = next.querySelector("img");
     const swap = () => { stageImgs[stageOn].classList.remove("on"); next.classList.add("on"); stageOn = 1 - stageOn; };
-    img.onload = swap;
+    img.onload = () => { focusStage(img); swap(); };
     img.src = src;
     if (img.complete && img.naturalWidth) swap();
   }
