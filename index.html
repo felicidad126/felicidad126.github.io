@@ -15,6 +15,7 @@ html,body{margin:0}
 body{background:var(--bg);background-image:radial-gradient(#cfd5c4 1px,transparent 1px);background-size:6px 6px;font-family:"f-inter",system-ui,sans-serif;min-height:100vh}
 /* Sebelum "Buka Undangan" hanya sampul yang tampil, tapi sampul tetap bisa di-scroll di layar pendek. */
 body.locked .inv-section:not(:first-child){display:none}
+body.locked .inv-canvas{padding-bottom:96px;background:var(--cover-bg)}
 .inv-panel{container-type:inline-size;max-width:520px;margin:0 auto;box-shadow:0 0 60px #3e4a3d33}
 .inv-canvas{--s:calc(100cqw / var(--base-width))}
 .inv-section{position:relative;overflow:hidden;height:calc(var(--h) * var(--s))}
@@ -64,7 +65,7 @@ svg.sprig{width:100%;height:100%;display:block}
 .giftaddr b{color:#34352f;display:block;margin-bottom:calc(4*var(--s))}
 .btn{display:flex;align-items:center;justify-content:center;border-radius:999px;border:0;cursor:pointer}
 /* Tombol menempel di bawah viewport selama halaman terkunci, supaya selalu terjangkau di layar pendek. */
-.open-btn{position:fixed;left:50%;transform:translateX(-50%);bottom:max(28px,env(safe-area-inset-bottom));font-size:clamp(13px,calc(14*var(--s)),16px)!important;padding:calc(14*var(--s)) calc(30*var(--s));border-radius:999px;border:0;cursor:pointer;display:inline-flex;gap:calc(8*var(--s));align-items:center;box-shadow:0 calc(8*var(--s)) calc(24*var(--s)) #3e4a3d40;z-index:5}
+.open-btn{position:fixed;left:50%;transform:translateX(-50%);top:min(calc(100svh - 84px - env(safe-area-inset-bottom)),calc(822*var(--s)));font-size:clamp(13px,calc(14*var(--s)),16px)!important;padding:calc(14*var(--s)) calc(30*var(--s));border-radius:999px;border:0;cursor:pointer;display:inline-flex;gap:calc(8*var(--s));align-items:center;box-shadow:0 calc(8*var(--s)) calc(24*var(--s)) #3e4a3d40;z-index:5}
 .open-btn.gone{opacity:0;pointer-events:none;transition:opacity .5s}
 /* animasi: state tersembunyi hanya di bawah html.js-anim */
 .js-anim [data-anim]{transition-property:opacity,translate,scale;transition-timing-function:cubic-bezier(.2,.7,.2,1)}
@@ -264,6 +265,7 @@ for (const id of DOC.sectionOrderIds) {
 // Cover gate
 const cover = DOC.cover;
 const coverNode = document.getElementById(`s-${cover.sectionId}`);
+canvas.style.setProperty("--cover-bg", DOC.sections[cover.sectionId].backgroundColor);
 const open = document.createElement("button");
 open.className = "open-btn";
 open.style.cssText = textStyle(cover.buttonStyle) + `background:${cover.buttonFill};font-weight:600;`;
