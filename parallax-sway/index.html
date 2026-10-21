@@ -200,10 +200,6 @@ section{position:relative;overflow:hidden}
 .polaroid .ph{aspect-ratio:1;width:100%}
 .polaroid .ph img{top:0;height:100%}
 .polaroid .cap{position:absolute;left:0;right:0;bottom:6px;text-align:center;font:400 clamp(15px,4.2vw,19px)/1 var(--script);color:var(--night-2)}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}
-.grid .ph{border-radius:12px;aspect-ratio:1}
-.grid .ph.tall{grid-row:span 2;aspect-ratio:auto;border-radius:999px 999px 12px 12px}
-.grid .ph.wide{grid-column:span 2;aspect-ratio:16/9}
 .hint{margin-top:18px;font:italic 400 16px/1.5 var(--serif);color:var(--muted)}
 
 /* form */
@@ -459,7 +455,6 @@ footer a{color:var(--gold)}
       <div class="kicker rv">Our Moments</div>
       <h2 class="title rv" style="--d:.1s">Galeri <em>Bahagia</em></h2>
       <div id="lines"></div>
-      <div class="grid" id="grid"></div>
       <p class="hint rv">Ketuk foto untuk memperbesar.</p>
     </section>
 
@@ -647,8 +642,6 @@ $("#lines").innerHTML = LINES.map((row, r) => `<div class="line-row rv" style="-
         <div class="card-p"><div class="ph"><img src="${p.src}" alt="${esc(p.cap)}" style="object-position:${p.pos}" loading="lazy"></div><div class="cap">${esc(p.cap)}</div></div>
       </div></div>`;
   }).join("")}</div>`).join("");
-$("#grid").innerHTML = [["mempelai-wanita", "tall", "50% 22%", "Laras"], ["galeri-5", "", "50% 35%", "Hari H"], ["galeri-4", "", "50% 50%", "Cincin"], ["galeri-6", "wide", "50% 60%", "Pulang bersama"]]
-  .map(([f, cls, pos, cap], i) => `<div class="ph zoom rv ${cls}" style="--d:${i * 0.08}s" data-cap="${cap}"><img src="../foto/${f}.jpg" alt="${cap}" style="object-position:${pos}" data-speed="${cls ? 0.08 : 0.05}" loading="lazy"></div>`).join("");
 
 /* ---------- acara ---------- */
 const mapsUrl = (ev) => `https://www.google.com/maps/search/?api=1&query=${ev.lat},${ev.lng}`;
