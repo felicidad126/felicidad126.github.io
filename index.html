@@ -289,9 +289,10 @@ open.onclick = () => {
 coverNode.appendChild(open);
 
 /*
- * Musik latar. Aset `doc.music` belum ada, jadi preview memainkan instrumental piano
- * yang disintesis Web Audio: progresi F–C–Dm–B♭, arpeggio + melodi lonceng, reverb.
- * Komposisi sendiri, tanpa file audio. Hanya mulai setelah gesture "Buka Undangan".
+ * Musik latar. Aset `doc.music` belum ada, jadi preview memakai instrumental piano buatan sendiri:
+ * progresi F–C–Dm–B♭, arpeggio + melodi lonceng, reverb. Nada dirender sekali lewat
+ * OfflineAudioContext menjadi WAV, lalu diputar lewat <audio loop>. Web Audio langsung
+ * dibisukan iPhone saat tombol senyap aktif, elemen <audio> tidak.
  */
 const Music = (() => {
   const BEAT = 60 / 68 / 2; // seperdelapan pada 68 bpm
@@ -301,92 +302,131 @@ const Music = (() => {
     [[77, 76, 74, 72], [76, null, 72, null], [74, 72, 69, 72], [70, null, 69, null]],
   ];
   const ARP = [0, 1, 2, 3, 2, 1, 2, 3];
-  let ctx, master, dry, wet, timer, nextTime = 0, step = 0;
+  const LOOP_STEPS = 64; // 2 variasi × 4 birama × 8 seperdelapan
+  const LOOP_SEC = LOOP_STEPS * BEAT;
+  const RATE = 22050;
   const hz = (m) => 440 * 2 ** ((m - 69) / 12);
 
-  function impulse() {
-    const len = ctx.sampleRate * 2.8;
-    const buf = ctx.createBuffer(2, len, ctx.sampleRate);
-    for (let c = 0; c < 2; c++) {
-      const d = buf.getChannelData(c);
-      for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len) ** 3;
+  const audio = new Audio();
+  audio.loop = true;
+  audio.preload = "auto";
+  audio.setAttribute("playsinline", "");
+  let url = null, wanted = false, unlocked = false, rendered = null;
+
+  // WAV hening 0,1 detik untuk "membuka kunci" elemen audio di dalam gesture klik.
+  const SILENT = wavUrl([new Float32Array(2205)], RATE);
+
+  function wavUrl(channels, rate) {
+    const n = channels[0].length, ch = channels.length;
+    const view = new DataView(new ArrayBuffer(44 + n * ch * 2));
+    const str = (o, s) => [...s].forEach((c, i) => view.setUint8(o + i, c.charCodeAt(0)));
+    str(0, "RIFF"); view.setUint32(4, 36 + n * ch * 2, true); str(8, "WAVEfmt ");
+    view.setUint32(16, 16, true); view.setUint16(20, 1, true); view.setUint16(22, ch, true);
+    view.setUint32(24, rate, true); view.setUint32(28, rate * ch * 2, true);
+    view.setUint16(32, ch * 2, true); view.setUint16(34, 16, true);
+    str(36, "data"); view.setUint32(40, n * ch * 2, true);
+    let o = 44;
+    for (let i = 0; i < n; i++) for (let c = 0; c < ch; c++) {
+      const v = Math.max(-1, Math.min(1, channels[c][i]));
+      view.setInt16(o, v < 0 ? v * 0x8000 : v * 0x7fff, true);
+      o += 2;
     }
-    return buf;
+    return URL.createObjectURL(new Blob([view], { type: "audio/wav" }));
   }
 
-  function setup() {
-    ctx = new (window.AudioContext || window.webkitAudioContext)();
-    master = ctx.createGain();
-    master.gain.value = 0;
+  // Render dua putaran lalu ambil putaran kedua: ekor reverb putaran pertama ikut di awal,
+  // sehingga sambungan loop mulus.
+  async function render() {
+    const Offline = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+    const ctx = new Offline(2, Math.ceil(RATE * LOOP_SEC * 2), RATE);
     const tone = ctx.createBiquadFilter();
     tone.type = "lowpass";
     tone.frequency.value = 3200;
-    dry = ctx.createGain();
-    wet = ctx.createGain();
+    const dry = ctx.createGain();
+    const wet = ctx.createGain();
     wet.gain.value = 0.38;
     const verb = ctx.createConvolver();
-    verb.buffer = impulse();
+    const ir = ctx.createBuffer(2, RATE * 2.8, RATE);
+    for (let c = 0; c < 2; c++) {
+      const d = ir.getChannelData(c);
+      for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length) ** 3;
+    }
+    verb.buffer = ir;
+    const out = ctx.createGain();
+    out.gain.value = 0.55;
     dry.connect(tone);
     wet.connect(verb).connect(tone);
-    tone.connect(master).connect(ctx.destination);
-  }
+    tone.connect(out).connect(ctx.destination);
 
-  // Nada piano/lonceng: fundamental sine + harmonik, envelope peluruhan eksponensial.
-  function note(midi, t, gain, decay, bright) {
-    const g = ctx.createGain();
-    g.gain.setValueAtTime(0.0001, t);
-    g.gain.exponentialRampToValueAtTime(gain, t + 0.012);
-    g.gain.exponentialRampToValueAtTime(0.0001, t + decay);
-    g.connect(dry);
-    g.connect(wet);
-    [[1, 1, "sine"], [2, 0.35 * bright, "triangle"], [3, 0.12 * bright, "sine"]].forEach(([mul, amp, type]) => {
-      const o = ctx.createOscillator();
-      const og = ctx.createGain();
-      o.type = type;
-      o.frequency.value = hz(midi) * mul;
-      og.gain.value = amp;
-      o.connect(og).connect(g);
-      o.start(t);
-      o.stop(t + decay + 0.05);
-    });
-  }
-
-  function schedule() {
-    while (nextTime < ctx.currentTime + 0.25) {
+    // Nada piano/lonceng: fundamental sine + harmonik, envelope peluruhan eksponensial.
+    const note = (midi, t, gain, decay, bright) => {
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(gain, t + 0.012);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + decay);
+      g.connect(dry);
+      g.connect(wet);
+      [[1, 1, "sine"], [2, 0.35 * bright, "triangle"], [3, 0.12 * bright, "sine"]].forEach(([mul, amp, type]) => {
+        const o = ctx.createOscillator();
+        const og = ctx.createGain();
+        o.type = type;
+        o.frequency.value = hz(midi) * mul;
+        og.gain.value = amp;
+        o.connect(og).connect(g);
+        o.start(t);
+        o.stop(t + decay + 0.05);
+      });
+    };
+    for (let step = 0; step < LOOP_STEPS * 2; step++) {
+      const t = step * BEAT;
       const bar = Math.floor(step / 8) % 4;
       const pos = step % 8;
-      const variant = Math.floor(step / 32) % 2;
       const chord = CHORDS[bar];
-      if (pos === 0) note(chord[0] - 12, nextTime, 0.16, 3.2, 0.6);
-      note(chord[ARP[pos]], nextTime, 0.07, 1.6, 0.8);
-      if (pos % 2 === 0) {
-        const m = MELODY[variant][bar][pos / 2];
-        if (m) note(m, nextTime + 0.01, 0.13, 2.2, 0.5);
-      }
-      nextTime += BEAT;
-      step++;
+      if (pos === 0) note(chord[0] - 12, t, 0.16, 3.2, 0.6);
+      note(chord[ARP[pos]], t, 0.07, 1.6, 0.8);
+      const m = pos % 2 === 0 && MELODY[Math.floor(step / 32) % 2][bar][pos / 2];
+      if (m) note(m, t + 0.01, 0.13, 2.2, 0.5);
     }
+    const buf = await new Promise((resolve, reject) => {
+      ctx.oncomplete = (e) => resolve(e.renderedBuffer);
+      const p = ctx.startRendering();
+      if (p && p.catch) p.catch(reject);
+    });
+    const start = Math.round(RATE * LOOP_SEC);
+    const len = Math.round(RATE * LOOP_SEC);
+    const chans = [0, 1].map((c) => buf.getChannelData(c).slice(start, start + len));
+    let sum = 0, peak = 0;
+    for (const x of chans[0]) { sum += x * x; peak = Math.max(peak, Math.abs(x)); }
+    rendered = { seconds: LOOP_SEC, rms: Math.sqrt(sum / len), peak };
+    return wavUrl(chans, RATE);
   }
 
+  const ready = render().then((u) => {
+    url = u;
+    if (unlocked) {
+      audio.src = url;
+      if (wanted) audio.play().catch(() => {});
+    }
+  });
+
   return {
-    get playing() { return !!timer; },
+    ready,
+    get playing() { return wanted; },
+    get audio() { return audio; },
+    get rendered() { return rendered; },
+    // Wajib dipanggil langsung dari handler klik supaya iOS mengizinkan pemutaran.
     play() {
-      if (!ctx) setup();
-      ctx.resume();
-      nextTime = Math.max(nextTime, ctx.currentTime + 0.1);
-      master.gain.cancelScheduledValues(ctx.currentTime);
-      master.gain.setTargetAtTime(0.55, ctx.currentTime, 0.6);
-      if (!timer) timer = setInterval(schedule, 60);
-      schedule();
+      wanted = true;
+      if (!unlocked) {
+        unlocked = true;
+        audio.src = url || SILENT;
+      }
+      audio.play().catch(() => {});
     },
     pause() {
-      if (!ctx) return;
-      master.gain.setTargetAtTime(0, ctx.currentTime, 0.25);
-      clearInterval(timer);
-      timer = null;
+      wanted = false;
+      audio.pause();
     },
-    get ctx() { return ctx; },
-    get master() { return master; },
   };
 })();
 
@@ -406,7 +446,7 @@ musicBtn.onclick = () => toggleMusic();
 // Jeda saat tab disembunyikan, lanjut lagi saat kembali.
 document.addEventListener("visibilitychange", () => {
   if (!wantMusic) return;
-  document.hidden ? Music.pause() : Music.play();
+  document.hidden ? Music.audio.pause() : Music.audio.play().catch(() => {});
 });
 window.__music = Music;
 
