@@ -26,7 +26,7 @@
   --gold:#e0c068;--gold-ink:#1a1405;--peri:#a9b1cc;--mist:#eef0f7;
   --paper:#f4f1ea;--paper-2:#e8e2d4;--ink:#1a2440;--ink-soft:#4b5373;--tape:#8c9ac7cc;
   --script:"f-allura","Snell Roundhand",cursive;--serif:"f-cormorant-garamond",Georgia,serif;--sans:"f-nunito-sans",system-ui,sans-serif;
-  --m:28px;--col:480px;--ease:cubic-bezier(.2,.7,.2,1);
+  --m:28px;--col:480px;--ease:cubic-bezier(.16,1,.3,1);--soft:cubic-bezier(.33,1,.68,1);
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -68,7 +68,8 @@ h1,h2,h3,p,figure,blockquote{margin:0}
 .threads{position:absolute;left:0;top:0;width:100%;pointer-events:none;z-index:0;overflow:visible}
 .threads path{fill:none;stroke:var(--gold);stroke-width:1.6;stroke-linecap:round}
 .threads .ring{fill:none;stroke:var(--gold);stroke-width:1.8}
-.threads .dot{fill:var(--gold);stroke:none}
+.threads .dot{fill:var(--gold);stroke:none;transition:opacity .8s var(--soft),scale .8s var(--ease);transform-box:fill-box;transform-origin:center}
+.threads .src{stroke:none}
 main>section>*{position:relative;z-index:1}
 
 /* ---------- sampul / gerbang ---------- */
@@ -302,12 +303,26 @@ main{position:relative;max-width:var(--col);margin:0 auto;background:var(--navy)
 .toast.show{opacity:1;translate:-50% 0}
 
 /* masuk (hanya bila JS + motion aktif) */
-.anim .rv{opacity:0;translate:0 26px;transition:opacity .9s var(--ease) var(--d,0s),translate 1s var(--ease) var(--d,0s)}
+.anim .rv{opacity:0;translate:0 30px;transition:opacity 1s var(--soft) var(--d,0s),translate 1.3s var(--ease) var(--d,0s)}
 .anim .rv.in{opacity:1;translate:0 0}
-.anim .rv-tilt{opacity:0;translate:0 40px;rotate:4deg;transition:opacity .9s var(--ease) var(--d,0s),translate 1.1s var(--ease) var(--d,0s),rotate 1.1s var(--ease) var(--d,0s)}
+.anim .rv-tilt{opacity:0;translate:0 44px;rotate:5deg;transition:opacity 1s var(--soft) var(--d,0s),translate 1.4s var(--ease) var(--d,0s),rotate 1.6s var(--ease) var(--d,0s)}
 .anim .rv-tilt.in{opacity:1;translate:0 0;rotate:var(--rot,0deg)}
 .anim .petal.rv{translate:var(--from,-30px) 10px}
 .anim .petal.rv.in{translate:0 0}
+/* foto ikut "mendarat": sedikit membesar lalu mengendap saat bagiannya masuk */
+.anim .rv .ph>img,.anim .rv-tilt .ph>img{scale:1.1;transition:scale 2s var(--ease) var(--d,0s)}
+.anim .rv.in .ph>img,.anim .rv-tilt.in .ph>img{scale:1}
+/* gerak yang terikat gulir dijalankan browser di thread kompositor bila didukung */
+@supports (animation-timeline:view()){
+  .anim .ph.drift{view-timeline:--drift block}
+  .anim .ph.drift img{animation:drift linear both;animation-timeline:--drift;animation-range:cover}
+  .anim .film-pin{view-timeline:--film block}
+  .anim .reel{animation:film linear both;animation-timeline:--film;animation-range:contain 0% contain 100%}
+  .anim .frame .ph img{width:116%;max-width:none;margin-left:-8%;animation:pan linear both;animation-timeline:--film;animation-range:contain 0% contain 100%}
+}
+@keyframes drift{from{transform:translate3d(0,6%,0)}to{transform:translate3d(0,-6%,0)}}
+@keyframes film{from{transform:translate3d(0,0,0)}to{transform:translate3d(calc(var(--extra,0px) * -1),0,0)}}
+@keyframes pan{from{transform:translate3d(5%,0,0)}to{transform:translate3d(-5%,0,0)}}
 .anim .sprig path{stroke-dasharray:var(--len,200);stroke-dashoffset:var(--len,200);transition:stroke-dashoffset 1.6s var(--ease) var(--d,.1s)}
 .anim .sprig .lf{opacity:0;transition:opacity .6s ease calc(var(--d,.1s) + .9s)}
 .anim .in .sprig path,.anim .sprig.in path{stroke-dashoffset:0}
@@ -322,8 +337,8 @@ main{position:relative;max-width:var(--col);margin:0 auto;background:var(--navy)
   .stage{display:flex;position:sticky;top:0;height:100vh;background:var(--deep);flex-direction:column;align-items:center;justify-content:center;text-align:center;overflow:hidden}
   .stage .stack{width:min(340px,30vw)}
   .stage .polaroid .ph{position:relative}
-  .stage .polaroid .ph img{position:absolute;inset:0;transition:opacity 1.1s ease}
-  .stage .polaroid .ph img.off{opacity:0}
+  .stage .polaroid .ph img{position:absolute;inset:0;transition:opacity 1.2s var(--soft),scale 2.4s var(--ease)}
+  .stage .polaroid .ph img.off{opacity:0;scale:1.06}
   .stage .when{margin-top:30px;font:500 28px/1.2 var(--serif);color:var(--mist)}
   .stage .where{font:italic 400 20px/1.3 var(--serif);color:var(--peri)}
   .stage .lede{margin-bottom:24px}
@@ -373,7 +388,7 @@ main{position:relative;max-width:var(--col);margin:0 auto;background:var(--navy)
   </aside>
 
   <main id="main">
-    <svg class="threads" id="threads" aria-hidden="true"><path id="tL"/><path id="tR"/><path id="tJ"/><circle class="ring" id="r1" r="15"/><circle class="ring" id="r2" r="15"/><circle class="dot" id="tEnd" r="4"/></svg>
+    <svg class="threads" id="threads" aria-hidden="true"><path class="src" id="tL"/><path class="src" id="tR"/><path class="src" id="tJ"/><circle class="ring" id="r1" r="15"/><circle class="ring" id="r2" r="15"/><circle class="dot" id="tEnd" r="4"/></svg>
 
     <!-- Pembuka -->
     <section class="opening" data-stage="cover" aria-label="Pembuka">
@@ -593,9 +608,29 @@ function tick() {
 tick(); setInterval(tick, 1000);
 
 /* ---------- benang: dua garis yang bersilang di "&" lalu menyatu di tanggal ---------- */
-const main = $("#main"), svg = $("#threads");
-const T = { paths: [], ready: false };
+const main = $("#main"), svg = $("#threads"), NS = "http://www.w3.org/2000/svg";
+// Browser yang mendukung animasi bergantung gulir menjalankan film & parallax di kompositor.
+const SDA = typeof CSS !== "undefined" && CSS.supports("animation-timeline: view()");
+const T = { lines: [], rings: [], ready: false };
+const G = { mainTop: 0, vh: innerHeight };
 const rel = (el) => { const a = el.getBoundingClientRect(), b = main.getBoundingClientRect(); return { x: a.left - b.left, y: a.top - b.top, w: a.width, h: a.height }; };
+// Garis dipecah jadi potongan pendek: tiap frame hanya potongan yang sedang tumbuh yang digambar ulang.
+function segment(src) {
+  const len = src.getTotalLength(), pts = [];
+  for (let s = 0; s < len; s += 6) { const p = src.getPointAtLength(s); pts.push([s, p.x, p.y]); }
+  const e = src.getPointAtLength(len); pts.push([len, e.x, e.y]);
+  for (let i = 1, top = pts[0][2]; i < pts.length; i++) top = pts[i][2] = Math.max(top, pts[i][2]);
+  const segs = [];
+  for (let i = 0; i < pts.length - 1; i += 24) {
+    const run = pts.slice(i, Math.min(i + 25, pts.length));
+    const el = document.createElementNS(NS, "path");
+    el.setAttribute("d", "M" + run.map(([, x, y]) => `${x.toFixed(1)} ${y.toFixed(1)}`).join("L"));
+    const sl = run[run.length - 1][0] - run[0][0] + 1;
+    el.style.strokeDasharray = `${sl} ${sl + 2}`; el.style.strokeDashoffset = MOTION ? sl : 0;
+    svg.appendChild(el); segs.push({ el, s0: run[0][0], len: sl, v: MOTION ? 0 : sl });
+  }
+  return { pts, segs, len };
+}
 function buildThreads() {
   const W = main.clientWidth, H = main.scrollHeight, m = Math.min(14, W * 0.035);
   svg.setAttribute("viewBox", `0 0 ${W} ${H}`); svg.style.height = H + "px";
@@ -613,27 +648,34 @@ function buildThreads() {
   $("#r1").setAttribute("cx", ax - 9); $("#r1").setAttribute("cy", ky);
   $("#r2").setAttribute("cx", ax + 9); $("#r2").setAttribute("cy", ky);
   $("#tEnd").setAttribute("cx", m); $("#tEnd").setAttribute("cy", end);
-  T.paths = ["#tL", "#tR", "#r1", "#r2", "#tJ"].map((q) => {
-    const el = $(q), len = el.getTotalLength();
-    // tabel panjang → y, supaya garis tergambar sampai titik yang sedang dibaca
-    const lut = []; for (let s = 0; s <= len; s += 24) lut.push([s, el.getPointAtLength(s).y]);
-    lut.push([len, el.getPointAtLength(len).y]);
-    el.style.strokeDasharray = len; el.style.strokeDashoffset = MOTION ? len : 0;
-    return { el, len, lut, ring: q.startsWith("#r") };
-  });
-  T.ky = ky; T.end = end; T.ready = true;
-  drawThreads();
+  for (const l of T.lines) for (const s of l.segs) s.el.remove();
+  T.lines = ["#tL", "#tR", "#tJ"].map((q) => segment($(q)));
+  T.rings = ["#r1", "#r2"].map((q) => { const el = $(q), len = el.getTotalLength(); el.style.strokeDasharray = len; el.style.strokeDashoffset = MOTION ? len : 0; return { el, len, v: -1 }; });
+  T.ky = ky; T.end = end; T.dot = undefined; T.ready = true;
 }
-function drawThreads() {
+// panjang garis yang sudah "terjahit" sampai ketinggian y, diinterpolasi supaya tidak meloncat
+function lenAt(pts, y) {
+  if (y <= pts[0][2]) return 0;
+  let lo = 0, hi = pts.length - 1;
+  if (y >= pts[hi][2]) return pts[hi][0];
+  while (hi - lo > 1) { const mid = (lo + hi) >> 1; if (pts[mid][2] <= y) lo = mid; else hi = mid; }
+  const a = pts[lo], b = pts[hi], k = b[2] > a[2] ? (y - a[2]) / (b[2] - a[2]) : 1;
+  return a[0] + (b[0] - a[0]) * k;
+}
+function drawThreads(y) {
   if (!T.ready || !MOTION) return;
-  const yView = -main.getBoundingClientRect().top + innerHeight * 0.72;
-  for (const p of T.paths) {
-    let shown;
-    if (p.ring) shown = Math.max(0, Math.min(1, (yView - T.ky) / 120)) * p.len;
-    else { shown = 0; for (const [s, y] of p.lut) { if (y > yView) break; shown = s; } }
-    p.el.style.strokeDashoffset = p.len - shown;
+  const yView = y - G.mainTop + G.vh * 0.72;
+  for (const l of T.lines) {
+    const S = lenAt(l.pts, yView) + (yView >= l.pts[l.pts.length - 1][2] ? 1 : 0);
+    for (const s of l.segs) {
+      const v = Math.round(Math.max(0, Math.min(s.len, S - s.s0)) * 2) / 2;
+      if (v !== s.v) { s.v = v; s.el.style.strokeDashoffset = s.len - v; }
+    }
   }
-  $("#tEnd").style.opacity = yView > T.end ? 1 : 0;
+  const rp = Math.max(0, Math.min(1, (yView - T.ky) / 140)), re = 1 - (1 - rp) ** 3;
+  for (const r of T.rings) { const v = Math.round(re * r.len * 2) / 2; if (v !== r.v) { r.v = v; r.el.style.strokeDashoffset = r.len - v; } }
+  const on = yView > T.end;
+  if (on !== T.dot) { T.dot = on; $("#tEnd").style.opacity = on ? 1 : 0; $("#tEnd").style.scale = on ? 1 : 0.2; }
 }
 
 /* ---------- film strip ditahan ---------- */
@@ -644,33 +686,57 @@ function layoutFilm() {
   document.body.classList.toggle("no-pin", !pinOn);
   if (!pinOn) { pin.style.height = ""; reel.style.transform = ""; return; }
   const extra = Math.max(0, reel.scrollWidth - stick.clientWidth);
-  pin.style.height = innerHeight + extra + "px";
-  T.filmExtra = extra;
+  // lvh: tinggi tetap walau bilah alamat HP muncul/hilang, jadi halaman tidak meloncat
+  pin.style.height = `calc(100lvh + ${extra}px)`;
+  reel.style.setProperty("--extra", extra + "px");
+  G.filmExtra = extra;
 }
-function moveFilm() {
-  if (!pinOn) return;
-  const r = pin.getBoundingClientRect(), span = r.height - innerHeight;
-  const p = span > 0 ? Math.max(0, Math.min(1, -r.top / span)) : 0;
-  reel.style.transform = `translate3d(${(-p * T.filmExtra).toFixed(1)}px,0,0)`;
+function moveFilm(y) {
+  if (!pinOn || SDA) return;
+  const span = G.pinH - G.vh, p = span > 0 ? Math.max(0, Math.min(1, (y - G.pinTop) / span)) : 0;
+  reel.style.transform = `translate3d(${(-p * G.filmExtra).toFixed(1)}px,0,0)`;
 }
 
-/* ---------- parallax halus pada foto kelopak ---------- */
+/* ---------- parallax halus pada foto kelopak (cadangan bila kompositor tidak mendukung) ---------- */
 const drifts = $$("[data-speed]").map((el) => ({ el, box: el.closest(".ph"), s: +el.dataset.speed }));
-function moveDrift() {
-  if (!MOTION) return;
+function moveDrift(y) {
+  if (!MOTION || SDA) return;
   for (const d of drifts) {
-    const r = d.box.getBoundingClientRect();
-    if (r.bottom < -100 || r.top > innerHeight + 100) continue;
-    const off = Math.max(-r.height * 0.07, Math.min(r.height * 0.07, (r.top + r.height / 2 - innerHeight / 2) * -d.s));
+    const top = d.top - y;
+    if (top + d.h < -100 || top > G.vh + 100) continue;
+    const off = Math.max(-d.h * 0.07, Math.min(d.h * 0.07, (top + d.h / 2 - G.vh / 2) * -d.s));
     d.el.style.transform = `translate3d(0,${off.toFixed(1)}px,0)`;
   }
 }
-let raf = 0;
-function onScroll() { if (raf) return; raf = requestAnimationFrame(() => { raf = 0; drawThreads(); moveFilm(); moveDrift(); }); }
+
+/* ---------- satu putaran gerak: nilai gulir diredam supaya garis & foto meluncur, tidak tersentak ---------- */
+let cur = scrollY, lastT = 0, looping = false;
+function frame(t) {
+  const dt = lastT ? Math.min(64, t - lastT) : 16; lastT = t;
+  const tgt = scrollY;
+  cur += (tgt - cur) * (1 - Math.exp(-dt / 95));
+  if (Math.abs(tgt - cur) < 0.4) cur = tgt;
+  drawThreads(cur); moveFilm(cur); moveDrift(cur);
+  if (cur !== tgt) requestAnimationFrame(frame); else { looping = false; lastT = 0; }
+}
+function onScroll() { if (!looping) { looping = true; requestAnimationFrame(frame); } }
 addEventListener("scroll", onScroll, { passive: true });
-function relayout() { layoutFilm(); buildThreads(); onScroll(); }
-addEventListener("resize", relayout);
-new ResizeObserver(() => relayout()).observe(main);
+function measure() {
+  G.vh = innerHeight;
+  G.mainTop = main.getBoundingClientRect().top + scrollY;
+  const r = pin.getBoundingClientRect(); G.pinTop = r.top + scrollY; G.pinH = r.height;
+  for (const d of drifts) { const b = d.box.getBoundingClientRect(); d.top = b.top + scrollY; d.h = b.height; }
+}
+function relayout() { layoutFilm(); buildThreads(); measure(); cur = scrollY; drawThreads(cur); moveFilm(cur); moveDrift(cur); }
+// Bilah alamat HP yang muncul/hilang hanya mengubah tinggi sedikit: cukup ukur ulang, jangan bangun ulang garis.
+let lastW = innerWidth, lastH = innerHeight, rlTimer = 0;
+const relayoutSoon = () => { clearTimeout(rlTimer); rlTimer = setTimeout(relayout, 140); };
+addEventListener("resize", () => {
+  const w = innerWidth, h = innerHeight;
+  if (w === lastW && Math.abs(h - lastH) < 200) { measure(); onScroll(); return; }
+  lastW = w; lastH = h; relayoutSoon();
+});
+new ResizeObserver(relayoutSoon).observe(main);
 
 /* ---------- muncul berurutan per bagian ---------- */
 $$("main section").forEach((sec) => $$(".rv,.rv-tilt", sec).forEach((el, i) => el.style.setProperty("--d", `${Math.min(i, 8) * 0.075}s`)));
