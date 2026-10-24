@@ -164,22 +164,33 @@ main{position:relative;max-width:var(--col);margin:0 auto;background:var(--navy)
 .sheet .link{margin-top:12px;color:var(--ink)}
 .sheet .note{font:italic 400 22px/1.3 var(--serif);color:var(--ink-soft);margin-top:46px}
 
-/* galeri: film strip yang ditahan (pinned) dan bergeser saat digulir */
-.gallery{background:var(--deep)}
-.film-pin{position:relative}
-.film-stick{position:sticky;top:0;height:100svh;display:flex;flex-direction:column;justify-content:center;overflow:hidden;padding:40px 0}
+/* galeri: film strip yang digeser sendiri, berhenti tepat di tiap foto */
+.gallery{background:var(--deep);padding:110px 0 100px}
 .gallery .head{text-align:center;padding:0 var(--m) 30px}
 .film{position:relative;background:#070a12;padding:26px 0}
 .film::before,.film::after{content:"";position:absolute;left:0;right:0;height:10px;background:repeating-linear-gradient(90deg,transparent 0 9px,#2a3150 9px 19px,transparent 19px 26px)}
 .film::before{top:8px}.film::after{bottom:8px}
-.reel{display:flex;gap:12px;padding:0 var(--m);width:max-content;will-change:transform}
-.frame{flex:none;width:min(230px,62vw);cursor:zoom-in;border:0;padding:0;background:none;text-align:left;color:var(--peri)}
+.reel{display:flex;gap:12px;padding:0 var(--m);overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scroll-padding:0 var(--m);scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.reel::-webkit-scrollbar{display:none}
+.reel.dragging{scroll-snap-type:none;cursor:grabbing}
+.reel.dragging .frame{cursor:grabbing}
+.frame{flex:none;width:min(230px,62vw);scroll-snap-align:start;cursor:zoom-in;border:0;padding:0;background:none;text-align:left;color:var(--peri);user-select:none;-webkit-user-select:none}
+.frame img{-webkit-user-drag:none}
 .frame .ph{aspect-ratio:3/4}
 .frame span{display:block;margin-top:10px;font:italic 400 18px/1.2 var(--serif)}
-.gallery .hint{text-align:center;font:italic 400 19px/1.4 var(--serif);color:var(--peri);padding:26px var(--m) 0}
-.no-pin .film-stick{position:static;height:auto;padding:100px 0}
-.no-pin .film{overflow-x:auto;scroll-snap-type:x mandatory}
-.no-pin .frame{scroll-snap-align:center}
+.film-nav{display:flex;align-items:center;justify-content:center;gap:22px;padding:24px var(--m) 0}
+.film-nav .count{font:500 20px/1 var(--serif);color:var(--peri);min-width:76px;text-align:center;font-variant-numeric:tabular-nums}
+.film-nav .count b{font-weight:500;color:var(--gold)}
+.arrow{width:48px;height:48px;border-radius:50%;border:1.5px solid var(--gold);background:none;color:var(--gold);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .25s var(--soft),color .25s var(--soft),opacity .25s,transform .25s var(--ease)}
+.arrow svg{width:20px;height:20px}
+.arrow:hover:not(:disabled){background:var(--gold);color:var(--gold-ink)}
+.arrow:active:not(:disabled){transform:scale(.92)}
+.arrow:disabled{opacity:.3;cursor:default}
+.arrow:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.gallery .hint{text-align:center;font:italic 400 19px/1.4 var(--serif);color:var(--peri);padding:18px var(--m) 0}
+/* sekali saat galeri muncul, strip "mengintip" ke kiri supaya terlihat bisa digeser */
+.anim .film.in .frame{animation:peek 1.4s var(--ease) 1s both}
+@keyframes peek{0%,100%{translate:0}35%{translate:-46px}}
 
 /* RSVP: kartu balasan yang diisi */
 .rsvp{background:var(--navy);padding:100px 0 120px;overflow:hidden}
@@ -316,12 +327,11 @@ main{position:relative;max-width:var(--col);margin:0 auto;background:var(--navy)
 @supports (animation-timeline:view()){
   .anim .ph.drift{view-timeline:--drift block}
   .anim .ph.drift img{animation:drift linear both;animation-timeline:--drift;animation-range:cover}
-  .anim .film-pin{view-timeline:--film block}
-  .anim .reel{animation:film linear both;animation-timeline:--film;animation-range:contain 0% contain 100%}
-  .anim .frame .ph img{width:116%;max-width:none;margin-left:-8%;animation:pan linear both;animation-timeline:--film;animation-range:contain 0% contain 100%}
+  /* foto di dalam bingkai bergeser sedikit berlawanan arah saat strip digeser */
+  .anim .frame{view-timeline:--fr inline}
+  .anim .frame .ph img{width:116%;max-width:none;margin-left:-8%;animation:pan linear both;animation-timeline:--fr}
 }
 @keyframes drift{from{transform:translate3d(0,6%,0)}to{transform:translate3d(0,-6%,0)}}
-@keyframes film{from{transform:translate3d(0,0,0)}to{transform:translate3d(calc(var(--extra,0px) * -1),0,0)}}
 @keyframes pan{from{transform:translate3d(5%,0,0)}to{transform:translate3d(-5%,0,0)}}
 .anim .sprig path{stroke-dasharray:var(--len,200);stroke-dashoffset:var(--len,200);transition:stroke-dashoffset 1.6s var(--ease) var(--d,.1s)}
 .anim .sprig .lf{opacity:0;transition:opacity .6s ease calc(var(--d,.1s) + .9s)}
@@ -466,16 +476,17 @@ main{position:relative;max-width:var(--col);margin:0 auto;background:var(--navy)
 
     <!-- Galeri -->
     <section class="gallery" data-stage="galeri-1" aria-labelledby="h-gallery">
-      <div class="film-pin" id="filmPin">
-        <div class="film-stick">
-          <div class="head">
-            <p class="lede rv">Galeri</p>
-            <h2 class="title rv" id="h-gallery">Potret <i>kami</i></h2>
-          </div>
-          <div class="film rv" id="film"><div class="reel" id="reel"></div></div>
-          <p class="hint rv" id="filmHint">Setiap potret adalah satu babak kecil dari cerita kami.</p>
-        </div>
+      <div class="head">
+        <p class="lede rv">Galeri</p>
+        <h2 class="title rv" id="h-gallery">Potret <i>kami</i></h2>
       </div>
+      <div class="film rv" id="film"><div class="reel" id="reel" role="region" aria-label="Galeri foto, geser ke samping"></div></div>
+      <div class="film-nav rv">
+        <button class="arrow" id="filmPrev" type="button" aria-label="Foto sebelumnya" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m15 5-7 7 7 7"/></svg></button>
+        <p class="count" aria-live="polite"><b id="filmNow">01</b> / <span id="filmAll">06</span></p>
+        <button class="arrow" id="filmNext" type="button" aria-label="Foto berikutnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m9 5 7 7-7 7"/></svg></button>
+      </div>
+      <p class="hint rv" id="filmHint">Geser foto ke samping, ketuk untuk memperbesar.</p>
     </section>
 
     <!-- Konfirmasi -->
@@ -593,7 +604,7 @@ const PHOTOS = [
   ["galeri-1", "Awal cerita", "50% 72%"], ["galeri-2", "Tawa kita", "50% 40%"], ["galeri-3", "Piknik sore", "50% 60%"],
   ["galeri-4", "Dua cincin", "50% 50%"], ["galeri-5", "Hari yang dinanti", "50% 32%"], ["galeri-6", "Pulang bersama", "48% 60%"],
 ];
-$("#reel").innerHTML = PHOTOS.map(([k, cap, pos], i) => `<button class="frame" type="button" data-i="${i}" aria-label="Perbesar foto: ${cap}"><div class="ph"><img src="${IMG[k]}" alt="${cap}" style="object-position:${pos}" loading="lazy"></div><span>${cap}</span></button>`).join("");
+$("#reel").innerHTML = PHOTOS.map(([k, cap, pos], i) => `<button class="frame" type="button" data-i="${i}" aria-label="Perbesar foto: ${cap}"><div class="ph"><img src="${IMG[k]}" alt="${cap}" draggable="false" style="object-position:${pos}" loading="lazy"></div><span>${cap}</span></button>`).join("");
 
 /* ---------- acara ---------- */
 {
@@ -609,7 +620,7 @@ tick(); setInterval(tick, 1000);
 
 /* ---------- benang: dua garis yang bersilang di "&" lalu menyatu di tanggal ---------- */
 const main = $("#main"), svg = $("#threads"), NS = "http://www.w3.org/2000/svg";
-// Browser yang mendukung animasi bergantung gulir menjalankan film & parallax di kompositor.
+// Browser yang mendukung animasi bergantung gulir menjalankan parallax foto di kompositor.
 const SDA = typeof CSS !== "undefined" && CSS.supports("animation-timeline: view()");
 const T = { lines: [], rings: [], ready: false };
 const G = { mainTop: 0, vh: innerHeight };
@@ -678,24 +689,41 @@ function drawThreads(y) {
   if (on !== T.dot) { T.dot = on; $("#tEnd").style.opacity = on ? 1 : 0; $("#tEnd").style.scale = on ? 1 : 0.2; }
 }
 
-/* ---------- film strip ditahan ---------- */
-const pin = $("#filmPin"), reel = $("#reel"), stick = $(".film-stick");
-let pinOn = false;
-function layoutFilm() {
-  pinOn = MOTION && innerHeight >= 560;
-  document.body.classList.toggle("no-pin", !pinOn);
-  if (!pinOn) { pin.style.height = ""; reel.style.transform = ""; return; }
-  const extra = Math.max(0, reel.scrollWidth - stick.clientWidth);
-  // lvh: tinggi tetap walau bilah alamat HP muncul/hilang, jadi halaman tidak meloncat
-  pin.style.height = `calc(100lvh + ${extra}px)`;
-  reel.style.setProperty("--extra", extra + "px");
-  G.filmExtra = extra;
+/* ---------- galeri: digeser sendiri (sentuh, tombol panah, atau seret dengan mouse) ---------- */
+const reel = $("#reel"), frames = $$(".frame", reel), fPrev = $("#filmPrev"), fNext = $("#filmNext");
+$("#filmAll").textContent = String(frames.length).padStart(2, "0");
+const frameStep = () => frames[1].offsetLeft - frames[0].offsetLeft;
+function filmPos() {
+  const max = reel.scrollWidth - reel.clientWidth, x = reel.scrollLeft;
+  const i = x >= max - 4 ? frames.length - 1 : Math.round(x / frameStep());
+  $("#filmNow").textContent = String(i + 1).padStart(2, "0");
+  fPrev.disabled = x < 4; fNext.disabled = x >= max - 4;
 }
-function moveFilm(y) {
-  if (!pinOn || SDA) return;
-  const span = G.pinH - G.vh, p = span > 0 ? Math.max(0, Math.min(1, (y - G.pinTop) / span)) : 0;
-  reel.style.transform = `translate3d(${(-p * G.filmExtra).toFixed(1)}px,0,0)`;
-}
+let fRaf = 0;
+reel.addEventListener("scroll", () => { if (!fRaf) fRaf = requestAnimationFrame(() => { fRaf = 0; filmPos(); }); }, { passive: true });
+fPrev.addEventListener("click", () => reel.scrollBy({ left: -frameStep(), behavior: MOTION ? "smooth" : "auto" }));
+fNext.addEventListener("click", () => reel.scrollBy({ left: frameStep(), behavior: MOTION ? "smooth" : "auto" }));
+// Seret dengan mouse di desktop; klik tanpa seret tetap membuka foto.
+let drag = null, dragged = false;
+reel.addEventListener("pointerdown", (e) => { if (e.pointerType === "mouse" && e.button === 0) drag = { x: e.clientX, left: reel.scrollLeft, moved: false }; });
+addEventListener("pointermove", (e) => {
+  if (!drag) return;
+  const dx = e.clientX - drag.x;
+  if (!drag.moved && Math.abs(dx) > 6) { drag.moved = true; reel.classList.add("dragging"); }
+  if (drag.moved) reel.scrollLeft = drag.left - dx;
+});
+addEventListener("pointerup", () => {
+  if (!drag) return;
+  dragged = drag.moved; drag = null;
+  if (!dragged) return;
+  // lepaskan dengan meluncur ke foto terdekat
+  const x = reel.scrollLeft, s = frameStep();
+  reel.classList.remove("dragging");
+  reel.scrollLeft = x;
+  reel.scrollTo({ left: Math.round(x / s) * s, behavior: MOTION ? "smooth" : "auto" });
+  setTimeout(() => (dragged = false), 0);
+});
+reel.addEventListener("click", (e) => { if (dragged) { e.stopPropagation(); e.preventDefault(); } }, true);
 
 /* ---------- parallax halus pada foto kelopak (cadangan bila kompositor tidak mendukung) ---------- */
 const drifts = $$("[data-speed]").map((el) => ({ el, box: el.closest(".ph"), s: +el.dataset.speed }));
@@ -716,7 +744,7 @@ function frame(t) {
   const tgt = scrollY;
   cur += (tgt - cur) * (1 - Math.exp(-dt / 95));
   if (Math.abs(tgt - cur) < 0.4) cur = tgt;
-  drawThreads(cur); moveFilm(cur); moveDrift(cur);
+  drawThreads(cur); moveDrift(cur);
   if (cur !== tgt) requestAnimationFrame(frame); else { looping = false; lastT = 0; }
 }
 function onScroll() { if (!looping) { looping = true; requestAnimationFrame(frame); } }
@@ -724,10 +752,9 @@ addEventListener("scroll", onScroll, { passive: true });
 function measure() {
   G.vh = innerHeight;
   G.mainTop = main.getBoundingClientRect().top + scrollY;
-  const r = pin.getBoundingClientRect(); G.pinTop = r.top + scrollY; G.pinH = r.height;
   for (const d of drifts) { const b = d.box.getBoundingClientRect(); d.top = b.top + scrollY; d.h = b.height; }
 }
-function relayout() { layoutFilm(); buildThreads(); measure(); cur = scrollY; drawThreads(cur); moveFilm(cur); moveDrift(cur); }
+function relayout() { buildThreads(); measure(); cur = scrollY; drawThreads(cur); moveDrift(cur); filmPos(); }
 // Bilah alamat HP yang muncul/hilang hanya mengubah tinggi sedikit: cukup ukur ulang, jangan bangun ulang garis.
 let lastW = innerWidth, lastH = innerHeight, rlTimer = 0;
 const relayoutSoon = () => { clearTimeout(rlTimer); rlTimer = setTimeout(relayout, 140); };
