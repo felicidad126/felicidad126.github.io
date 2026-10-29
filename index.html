@@ -24,6 +24,8 @@ body.locked .inv-section:not(:first-child){display:none}
 body.locked .inv-canvas{min-height:100vh;min-height:100svh;background:var(--cover-bg)}
 .inv-panel{container-type:inline-size;max-width:520px;margin:0 auto;box-shadow:0 0 60px #3e4a3d33}
 .inv-canvas{--s:calc(100cqw / var(--base-width))}
+/* Layar sempit: batas bawah ukuran huruf supaya tetap terbaca (label kapital 11px, teks isi 13px). Desktop tidak berubah. */
+@container (width < 520px){.inv-canvas{--min-label:11px;--min-body:13px}}
 .inv-section{position:relative;overflow:hidden;height:calc(var(--h) * var(--s))}
 .el{position:absolute;margin:0;opacity:var(--o,1)}
 .el p{margin:0}
@@ -33,7 +35,7 @@ body.locked .inv-canvas{min-height:100vh;min-height:100svh;background:var(--cove
 .arch-line::after{content:"";position:absolute;inset:calc(7*var(--s));border:calc(0.8*var(--s)) solid currentColor;border-bottom:0;border-radius:inherit;opacity:.55}
 .arch-line{border-bottom:none}
 .photo{background:linear-gradient(160deg,#c9d3bd,#9aab8b 55%,#6f805f);display:flex;align-items:flex-end;justify-content:center;overflow:hidden}
-.photo span{font:500 calc(11*var(--s))/1 "f-inter";letter-spacing:calc(2*var(--s));color:#ffffffcc;padding-bottom:calc(16*var(--s));text-transform:uppercase}
+.photo span{font:500 max(var(--min-label,0px),calc(11*var(--s)))/1 "f-inter";letter-spacing:calc(2*var(--s));color:#ffffffcc;padding-bottom:calc(16*var(--s));text-transform:uppercase}
 .photo::before{content:"";position:absolute;left:50%;top:38%;width:32%;aspect-ratio:1;border-radius:50%;transform:translate(-50%,-50%);background:#ffffff26}
 .photo::after{content:"";position:absolute;left:50%;top:78%;width:70%;aspect-ratio:1.4;border-radius:50% 50% 0 0;transform:translate(-50%,-50%);background:#ffffff1f}
 .photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
@@ -66,26 +68,26 @@ svg.sprig{width:100%;height:100%;display:block}
 .cd{display:grid;grid-template-columns:repeat(4,1fr);gap:calc(10*var(--s));height:100%}
 .cd div{background:#f7f3eacc;border:1px solid #c2a87866;border-radius:calc(48*var(--s)) calc(48*var(--s)) calc(10*var(--s)) calc(10*var(--s));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:calc(4*var(--s))}
 .cd b{font-weight:500;line-height:1}
-.cd small{font:500 calc(10*var(--s))/1 "f-inter";letter-spacing:calc(2*var(--s));color:#6f6b60;text-transform:uppercase}
+.cd small{font:500 max(var(--min-label,0px),calc(10*var(--s)))/1 "f-inter";letter-spacing:calc(2*var(--s));color:#6f6b60;text-transform:uppercase}
 .addr{text-align:center;display:flex;flex-direction:column;align-items:center;gap:calc(6*var(--s))}
 .addr .venue{font-family:"f-lora";font-weight:600;font-size:1.3em;color:#34352f;line-height:1.3}
 .addr .time{font-weight:600;color:#5f6f55;letter-spacing:calc(1*var(--s))}
-.pill{display:inline-flex;align-items:center;justify-content:center;gap:calc(6*var(--s));border-radius:999px;font:600 calc(12*var(--s))/1 "f-inter";letter-spacing:calc(1*var(--s));padding:calc(11*var(--s)) calc(20*var(--s));border:1px solid #3e4a3d;color:#3e4a3d;background:transparent;cursor:pointer;margin-top:calc(8*var(--s));text-decoration:none}
+.pill{display:inline-flex;align-items:center;justify-content:center;gap:calc(6*var(--s));border-radius:999px;font:600 max(var(--min-body,0px),calc(12*var(--s)))/1 "f-inter";letter-spacing:calc(1*var(--s));padding:calc(11*var(--s)) calc(20*var(--s));border:1px solid #3e4a3d;color:#3e4a3d;background:transparent;cursor:pointer;margin-top:calc(8*var(--s));text-decoration:none}
 .pill.solid{background:#3e4a3d;color:#fff}
 .grid{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:1fr;gap:calc(10*var(--s));height:100%}
 .grid .photo{position:relative;border-radius:calc(14*var(--s))}
 .grid .photo:nth-child(1){grid-row:span 2;border-radius:calc(105*var(--s)) calc(105*var(--s)) calc(14*var(--s)) calc(14*var(--s))}
 .grid .photo:nth-child(6){grid-column:span 2}
 .greet{height:100%;overflow:auto}
-.form{display:flex;flex-direction:column;gap:calc(14*var(--s));background:#f7f3ea;border-radius:calc(20*var(--s));padding:calc(26*var(--s));height:100%}
-.form label{display:flex;flex-direction:column;gap:calc(6*var(--s));font-weight:600;font-size:.92em}
+.form{display:flex;flex-direction:column;gap:calc(14*var(--s));background:#f7f3ea;border-radius:calc(20*var(--s));padding:calc(26*var(--s));min-height:100%}
+.form label{display:flex;flex-direction:column;gap:calc(6*var(--s));font-weight:600;font-size:max(var(--min-body,0px),.92em)}
 .form label em{font-style:normal;color:#9c8050}
-.form input,.form select,.form textarea{font:inherit;font-weight:400;font-size:calc(14*var(--s));padding:calc(11*var(--s)) calc(14*var(--s));border:1px solid var(--line);border-radius:calc(10*var(--s));background:#fff;color:#34352f;width:100%}
+.form input,.form select,.form textarea{font:inherit;font-weight:400;font-size:max(16px,calc(14*var(--s)));padding:calc(11*var(--s)) calc(14*var(--s));border:1px solid var(--line);border-radius:calc(10*var(--s));background:#fff;color:#34352f;width:100%}
 .form textarea{resize:none;height:calc(84*var(--s))}
 .form .pill{align-self:stretch;margin-top:auto;padding:calc(14*var(--s))}
 .wish{border-top:1px solid #c2a87855;padding:calc(14*var(--s)) 0}
 .wish b{font-family:"f-lora";font-size:1.05em}
-.wish small{color:#8a877c;display:block;font-size:.8em;margin-top:calc(4*var(--s))}
+.wish small{color:#8a877c;display:block;font-size:max(var(--min-label,0px),.8em);margin-top:calc(4*var(--s))}
 .gift{display:flex;flex-direction:column;gap:calc(14*var(--s))}
 .bank{position:relative;background:linear-gradient(135deg,#3e4a3d,#5f6f55);color:#f1eee4;border-radius:calc(18*var(--s));padding:calc(22*var(--s));overflow:hidden}
 .bank::after{content:"";position:absolute;right:calc(-40*var(--s));top:calc(-40*var(--s));width:calc(160*var(--s));height:calc(160*var(--s));border:1px solid #c2a87888;border-radius:50%}
@@ -93,15 +95,15 @@ svg.sprig{width:100%;height:100%;display:block}
 .bank .pill{border-color:#c2a878;color:#f1eee4}
 .giftaddr{background:#f7f3ea;border-radius:calc(18*var(--s));padding:calc(18*var(--s));text-align:center;color:#6f6b60}
 .giftaddr b{color:#34352f;display:block;margin-bottom:calc(4*var(--s))}
-.form .err{margin:0;color:#a2463b;font-weight:500;font-size:.9em}
-.form .note{margin:calc(-4*var(--s)) 0 0;text-align:center;color:#8a877c;font-size:.8em}
+.form .err{margin:0;color:#a2463b;font-weight:500;font-size:max(var(--min-body,0px),.9em)}
+.form .note{margin:calc(-4*var(--s)) 0 0;text-align:center;color:#8a877c;font-size:max(var(--min-label,0px),.8em)}
 /* RSVP terkirim: isian diganti ucapan terima kasih di kotak yang sama */
 .form.sent>:not(.done),.form:not(.sent) .done{display:none}
 .done{margin:auto 0;display:flex;flex-direction:column;align-items:center;gap:calc(12*var(--s));text-align:center}
 .done b{font:400 calc(44*var(--s))/1.1 "f-great-vibes";color:#3e4a3d}
 .done p{margin:0;color:#6f6b60;line-height:1.6;max-width:calc(300*var(--s))}
 .form .done .pill{align-self:center;margin-top:0;padding:calc(11*var(--s)) calc(22*var(--s))}
-.wcount{margin:0 0 calc(4*var(--s));font-size:.8em;font-weight:600;letter-spacing:calc(2*var(--s));text-transform:uppercase;color:#8a877c}
+.wcount{margin:0 0 calc(4*var(--s));font-size:max(var(--min-label,0px),.8em);font-weight:600;letter-spacing:calc(2*var(--s));text-transform:uppercase;color:#8a877c}
 .toast{position:fixed;left:50%;bottom:90px;z-index:70;width:max-content;max-width:calc(100vw - 32px);transform:translate(-50%,20px);opacity:0;padding:11px 18px;border-radius:999px;background:#3e4a3d;color:#f1eee4;font:500 14px/1.3 "f-inter",system-ui,sans-serif;box-shadow:0 10px 30px #3e4a3d55;transition:opacity .3s,transform .3s;pointer-events:none}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 .btn{display:flex;align-items:center;justify-content:center;border-radius:999px;border:0;cursor:pointer;text-decoration:none}
@@ -181,8 +183,11 @@ function photoImg(demo, _width, eager) {
 
 const fill = (t) => t.replace(/\{\{(\w+)\}\}/g, (_, k) => PH[k] ?? "");
 
-function textStyle(st) {
-  return `font-family:'f-${st.fontId}';font-size:${s(st.fontSize)};color:${st.color};text-align:${st.align};line-height:${st.lineHeight};letter-spacing:${s(st.letterSpacing)};`;
+// Ukuran huruf dalam satuan kanvas, dengan batas bawah px di layar sempit (lihat --min-* di CSS).
+const fontSize = (n, min = "body") => `max(var(--min-${min},0px),${s(n)})`;
+
+function textStyle(st, min) {
+  return `font-family:'f-${st.fontId}';font-size:${fontSize(st.fontSize, min)};color:${st.color};text-align:${st.align};line-height:${st.lineHeight};letter-spacing:${s(st.letterSpacing)};`;
 }
 
 function tiptapHtml(doc) {
@@ -245,10 +250,10 @@ function widget(e) {
       return `<form class="w form" style="${base}" data-form="${esc(e.formId)}" novalidate>${form.fields.map(field).join("")}<p class="err" role="alert" hidden></p><button class="pill solid">Kirim Konfirmasi</button><p class="note">Preview: data tersimpan di perangkat ini saja.</p><div class="done" role="status"><b>Terima kasih</b><p></p><button class="pill" type="button">Ubah Jawaban</button></div></form>`;
     }
     case "widget-greeting":
-      return `<div class="greet"><form class="w form" style="${base};height:auto" data-greet novalidate><label>Nama<input name="name" maxlength="80" autocomplete="name" placeholder="Nama Anda" value="${esc(GUEST)}"></label><label>Ucapan<textarea name="msg" maxlength="500" placeholder="Tulis doa dan ucapan"></textarea></label><p class="err" role="alert" hidden></p><button class="pill solid">Kirim Ucapan</button></form>
+      return `<div class="greet"><form class="w form" style="${base};min-height:0" data-greet novalidate><label>Nama<input name="name" maxlength="80" autocomplete="name" placeholder="Nama Anda" value="${esc(GUEST)}"></label><label>Ucapan<textarea name="msg" maxlength="500" placeholder="Tulis doa dan ucapan"></textarea></label><p class="err" role="alert" hidden></p><button class="pill solid">Kirim Ucapan</button></form>
         <div class="w" style="${base};margin-top:${s(18)}"><p class="wcount"></p><div class="wlist"></div></div></div>`;
     case "widget-gift": {
-      const acct = e.showAccounts ? `<div class="bank"><div style="opacity:.75;font-size:.85em;letter-spacing:${s(2)}">BANK CONTOH</div><div class="no">1234 5678 90</div><div>a.n. ${esc(EVENT.bride.fullName)}</div><button class="pill" type="button" data-copy="1234567890">Salin Nomor</button></div>` : "";
+      const acct = e.showAccounts ? `<div class="bank"><div style="opacity:.75;font-size:max(var(--min-label,0px),.85em);letter-spacing:${s(2)}">BANK CONTOH</div><div class="no">1234 5678 90</div><div>a.n. ${esc(EVENT.bride.fullName)}</div><button class="pill" type="button" data-copy="1234567890">Salin Nomor</button></div>` : "";
       const addr = e.showAddress ? `<div class="giftaddr"><b>Kirim Kado</b>${esc(EVENT.events.akad.address)}</div>` : "";
       return `<div class="w gift" style="${base}">${acct}${addr}</div>`;
     }
@@ -282,8 +287,9 @@ function renderElement(e) {
     case "text":
     case "text-static":
       node.classList.add("txt");
-      css += textStyle(e.style);
       node.innerHTML = tiptapHtml(e.content);
+      // Teks kapital (THE WEDDING OF, MEMPELAI, ...) memakai batas label; teks lain batas teks isi.
+      css += textStyle(e.style, /[A-Z]/.test(node.textContent) && node.textContent === node.textContent.toUpperCase() ? "label" : "body");
       break;
     case "graphic":
       css += `color:${e.tint ?? "#8a9a7b"};`;
@@ -386,8 +392,8 @@ function fitTexts() {
     const node = elNode(e);
     const overflows = () => textOverflow(node) > 1 || [...node.children].some((p) => p.scrollWidth > p.clientWidth + 1);
     let fs = e.style.fontSize;
-    node.style.fontSize = s(fs);
-    while (fs > e.style.minFontSize && overflows()) node.style.fontSize = s((fs = Math.max(e.style.minFontSize, fs - 1)));
+    node.style.fontSize = fontSize(fs);
+    while (fs > e.style.minFontSize && overflows()) node.style.fontSize = fontSize((fs = Math.max(e.style.minFontSize, fs - 1)));
   }
 }
 
@@ -716,9 +722,39 @@ function layoutCover() {
   coverNode.style.setProperty("--btn-y", bottom + 16 - lift);
   coverNode.style.setProperty("--h", height - lift);
 }
+/*
+ * Bagian lain: teks atau widget yang meluap dari kotaknya (huruf minimum di layar sempit, nama
+ * panjang) mendorong elemen di bawahnya turun, dan elemen yang membingkainya (lengkung, kartu)
+ * ikut memanjang. Tanpa luapan, posisi dan ukuran tetap seperti di data.
+ */
+function layoutSections() {
+  const unit = canvas.clientWidth / DOC.canvas.baseWidth;
+  for (const id of DOC.sectionOrderIds) {
+    const sec = DOC.sections[id];
+    if (sec.hidden || id === cover.sectionId) continue;
+    const els = sec.elementOrderIds.map((i) => DOC.elements[i]);
+    for (const e of els) Object.assign(elNode(e).style, { top: s(e.y), height: s(e.height) });
+    const shift = new Map(), grow = new Map();
+    let total = 0;
+    for (const t of els) {
+      const node = elNode(t);
+      const over = (node.classList.contains("txt") ? textOverflow(node) : node.scrollHeight - node.clientHeight) / unit;
+      if (over <= 1) continue;
+      total += over;
+      for (const e of els) {
+        if (e === t) continue;
+        if (e.y >= t.y + t.height - 1) shift.set(e, (shift.get(e) ?? 0) + over);
+        else if (e.y <= t.y && e.y + e.height >= t.y + t.height && !elNode(e).classList.contains("txt")) grow.set(e, (grow.get(e) ?? 0) + over);
+      }
+    }
+    for (const e of els) Object.assign(elNode(e).style, { top: s(e.y + (shift.get(e) ?? 0)), height: s(e.height + (grow.get(e) ?? 0)) });
+    document.getElementById(`s-${id}`).style.setProperty("--h", sec.height + total);
+  }
+}
 function relayout() {
   fitTexts();
   layoutCover();
+  layoutSections();
 }
 relayout();
 let layoutRaf = 0;
