@@ -60,7 +60,7 @@ a{color:inherit}
 .gate-body{left:0;right:0;bottom:0;padding:0 24px max(36px,env(safe-area-inset-bottom));text-align:center}
 .gate-dust{inset:0;pointer-events:none}
 .kicker{font:500 11px/1.4 var(--sans);letter-spacing:.42em;text-transform:uppercase;color:var(--gold)}
-.gate .names{font:400 clamp(50px,14vw,76px)/1.05 var(--script);white-space:nowrap;margin:10px 0 4px;color:#fff;text-shadow:0 4px 30px #0006}
+.gate .names{font:400 clamp(50px,14vw,76px)/1.05 var(--script);white-space:nowrap;text-wrap:balance;margin:10px 0 4px;color:#fff;text-shadow:0 4px 30px #0006}
 .gate .names i{font-style:normal;color:var(--gold);font-size:.7em;display:inline-block;margin:0 .1em}
 .gate .date{font:500 19px/1.4 var(--serif);letter-spacing:.18em;color:var(--on-night)}
 .gate .to{margin:22px auto 18px;max-width:340px;font:400 13px/1.5 var(--sans);color:var(--on-night-2)}
@@ -252,7 +252,7 @@ section{position:relative;overflow:hidden}
 .closing>.ph::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,#151a3540,#151a3500 25%,#151a35d0 62%,#151a35)}
 .closing .body{position:relative;z-index:2}
 .closing p{font:400 19px/1.7 var(--serif);color:var(--on-night);max-width:360px;margin:18px auto 0}
-.closing .names{font:400 clamp(46px,13vw,60px)/1.1 var(--script);margin:22px 0 0;white-space:nowrap}
+.closing .names{font:400 clamp(46px,13vw,60px)/1.1 var(--script);margin:22px 0 0;white-space:nowrap;text-wrap:balance}
 .closing .names i{font-style:normal;color:var(--gold);font-size:.7em}
 footer{background:var(--ink);color:#8f89a6;text-align:center;font-size:12px;line-height:1.7;padding:26px 28px 96px}
 footer a{color:var(--gold)}
@@ -294,7 +294,7 @@ footer a{color:var(--gold)}
   @keyframes kb{to{scale:1.08}}
   .stage-shade{position:absolute;inset:0;background:linear-gradient(90deg,#151a3500 50%,#151a35aa),linear-gradient(180deg,#151a3566,#151a3500 35%,#151a3500 62%,#151a35cc 82%,#151a35f2)}
   .stage-txt{position:absolute;left:56px;bottom:48px;right:56px}
-  .stage-txt .names{font:400 clamp(56px,5vw,84px)/1 var(--script);margin:8px 0 4px;white-space:nowrap}
+  .stage-txt .names{font:400 clamp(56px,5vw,84px)/1 var(--script);margin:8px 0 4px;white-space:nowrap;text-wrap:balance}
   .stage-txt .names i{font-style:normal;color:var(--gold);font-size:.66em}
   .stage-txt .date{font:500 20px/1.4 var(--serif);letter-spacing:.2em}
   .gate-photo{inset:-5% calc(var(--col) - 140px) -5% -4%}
@@ -797,10 +797,28 @@ const stageIO = new IntersectionObserver((es) => {
 }, { rootMargin: "-45% 0px -45% 0px" });
 $$("[data-stage]").forEach((n) => stageIO.observe(n));
 
+// Nama panjang: huruf mengecil sampai muat satu baris (paling kecil 60% ukuran semula), baru setelah itu boleh turun baris.
+function fitLine(el, ratio = 0.6) {
+  if (!el.clientWidth) return;
+  el.style.fontSize = "";
+  el.style.whiteSpace = "nowrap";
+  const max = parseFloat(getComputedStyle(el).fontSize), min = max * ratio;
+  let fs = max;
+  while (fs > min && el.scrollWidth > el.clientWidth + 1) el.style.fontSize = `${(fs = Math.max(min, fs - 1))}px`;
+  el.style.whiteSpace = el.scrollWidth > el.clientWidth + 1 ? "normal" : "";
+}
+const NAMES = ".gate .names, .stage-txt .names, .hero .names span, .person h3, .closing .names";
+const fitNames = () => $$(NAMES).forEach((el) => fitLine(el));
+fitNames();
+document.fonts?.ready.then(fitNames);
+let fitRaf = 0;
+addEventListener("resize", () => { cancelAnimationFrame(fitRaf); fitRaf = requestAnimationFrame(fitNames); });
+
 /* ---------- buka undangan ---------- */
 function openInvite(instant) {
   document.body.classList.remove("locked");
   $("#music").classList.add("show");
+  fitNames();
   if (instant || !MOTION) { gate.classList.add("gone"); return; }
   gate.classList.add("opening");
   setTimeout(() => gate.classList.add("gone"), 1700);

@@ -83,7 +83,7 @@ main>section>*{position:relative;z-index:1}
 .polaroid .ph{aspect-ratio:4/5}
 .polaroid .ph img{object-position:50% 80%}
 .polaroid{container-type:inline-size}
-.polaroid .cap{font:400 17cqw/1 var(--script);color:var(--ink);padding:5cqw 0 6cqw;white-space:nowrap;text-align:center}
+.polaroid .cap{font:400 17cqw/1 var(--script);color:var(--ink);padding:5cqw 0 6cqw;white-space:nowrap;text-wrap:balance;text-align:center}
 .tape{position:absolute;left:50%;top:-14px;width:116px;height:30px;margin-left:-58px;background:var(--tape);rotate:-2deg;z-index:2}
 .gate .when{margin-top:28px;font:500 26px/1.2 var(--serif);color:var(--mist)}
 .gate .where{font:italic 400 19px/1.3 var(--serif);color:var(--peri);margin-top:2px}
@@ -136,8 +136,8 @@ main{position:relative;max-width:var(--col);margin:0 auto;background:var(--navy)
 /* mempelai: zig-zag kelopak */
 .couple{padding:100px var(--m) 110px;background:var(--deep)}
 .couple .head{text-align:center;margin-bottom:56px}
-.person{display:grid;grid-template-columns:57% 1fr;gap:20px;align-items:center}
-.person.groom{grid-template-columns:1fr 57%}
+.person{display:grid;grid-template-columns:57% minmax(0,1fr);gap:20px;align-items:center}
+.person.groom{grid-template-columns:minmax(0,1fr) 57%}
 .petal{position:relative;aspect-ratio:3/4}
 .petal .ph{position:absolute;inset:0;border-radius:46% 8px 46% 8px/32% 8px 32% 8px}
 .groom .petal .ph{border-radius:8px 46% 8px 46%/8px 32% 8px 32%}
@@ -146,9 +146,13 @@ main{position:relative;max-width:var(--col);margin:0 auto;background:var(--navy)
 .groom .petal{order:2}
 .groom .who{text-align:right}
 .who .role{font:italic 400 19px/1.2 var(--serif);color:var(--peri)}
-.who .name{font-size:60px;color:var(--gold);margin:2px 0 8px}
+.who .name{font-size:60px;color:var(--gold);margin:2px 0 8px;overflow-wrap:anywhere}
 .who .full{font:600 15px/1.35 var(--sans);color:var(--mist)}
 .who .par{font-size:15px;line-height:1.5;color:var(--peri);margin-top:8px}
+/* nama satu kata yang terlalu panjang untuk kolomnya: foto di atas, nama di bawah */
+.person.long{grid-template-columns:1fr;justify-items:center}
+.person.long .petal{order:0;width:min(250px,72%)}
+.person.long .who{text-align:center}
 .amp{display:block;text-align:center;font-size:120px;line-height:.9;color:var(--gold);margin:30px 0 34px}
 
 /* acara */
@@ -768,7 +772,27 @@ function measure() {
   G.mainTop = main.getBoundingClientRect().top + scrollY;
   for (const d of drifts) { const b = d.box.getBoundingClientRect(); d.top = b.top + scrollY; d.h = b.height; }
 }
-function relayout() { buildThreads(); measure(); cur = scrollY; drawThreads(cur); moveDrift(cur); filmPos(); }
+// Nama panjang: huruf mengecil sampai muat satu baris (paling kecil 60% ukuran semula), baru setelah itu boleh turun baris.
+function fitLine(el, ratio = 0.6) {
+  if (!el.clientWidth) return;
+  el.style.fontSize = "";
+  el.style.whiteSpace = "nowrap";
+  const max = parseFloat(getComputedStyle(el).fontSize), min = max * ratio;
+  let fs = max;
+  while (fs > min && el.scrollWidth > el.clientWidth + 1) el.style.fontSize = `${(fs = Math.max(min, fs - 1))}px`;
+  el.style.whiteSpace = el.scrollWidth > el.clientWidth + 1 ? "normal" : "";
+}
+// Nama mempelai yang tetap tidak muat di kolomnya: foto dan nama ditumpuk supaya kata tidak terpotong.
+function fitNames() {
+  $$(".polaroid .cap").forEach((el) => fitLine(el));
+  for (const el of $$(".who .name")) {
+    const person = el.closest(".person");
+    person.classList.remove("long");
+    fitLine(el);
+    if (el.style.whiteSpace === "normal") { person.classList.add("long"); fitLine(el); }
+  }
+}
+function relayout() { fitNames(); buildThreads(); measure(); cur = scrollY; drawThreads(cur); moveDrift(cur); filmPos(); }
 // Bilah alamat HP yang muncul/hilang hanya mengubah tinggi sedikit: cukup ukur ulang, jangan bangun ulang garis.
 let lastW = innerWidth, lastH = innerHeight, rlTimer = 0;
 const relayoutSoon = () => { clearTimeout(rlTimer); rlTimer = setTimeout(relayout, 140); };
