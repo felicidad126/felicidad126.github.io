@@ -406,7 +406,7 @@ function fitTexts() {
 // Keterangan foto contoh
 const credits = document.createElement("footer");
 credits.className = "credits";
-credits.textContent = "Foto contoh dibuat dengan AI (Gemini). Bukan foto mempelai sebenarnya.";
+credits.innerHTML = 'Foto contoh dibuat dengan AI (Gemini). Bukan foto mempelai sebenarnya.<br>Tema lain: <a href="parallax-sway/">Parallax &amp; Sway</a> · <a href="garis-editorial/">Garis Editorial</a>';
 document.body.appendChild(credits);
 
 // Tab berputar di antara tombol lightbox yang terlihat (fokus tidak lolos ke halaman di belakangnya).
