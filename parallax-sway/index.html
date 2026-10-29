@@ -121,17 +121,13 @@ section{position:relative;overflow:hidden}
 .js .rv.in{opacity:1;transform:none}
 
 /* hero */
-.hero{min-height:100svh;padding:150px 28px 70px;display:flex;flex-direction:column;align-items:center;text-align:center;background:radial-gradient(120% 70% at 50% 0%,var(--night-3),var(--night) 70%)}
-.hero .arch{width:min(300px,78%);aspect-ratio:3/4.2;border-radius:999px 999px 18px 18px;margin:26px auto 0;position:relative}
+/* pembuka dipadatkan: sampul sudah memuat nama dan tanggal, jadi di sini cukup basmalah, foto, dan nama satu baris */
+.hero{padding:132px 28px 56px;display:flex;flex-direction:column;align-items:center;text-align:center;background:radial-gradient(120% 70% at 50% 0%,var(--night-3),var(--night) 70%)}
+.hero .arch{width:min(250px,66%);aspect-ratio:3/4.2;border-radius:999px 999px 18px 18px;margin:26px auto 0;position:relative}
 .hero .arch .ph{position:absolute;inset:0;border-radius:inherit}
 .hero .arch::before{content:"";position:absolute;inset:-12px;border:1px solid var(--gold-soft);border-radius:999px 999px 26px 26px}
-.hero .names{font:400 64px/1.05 var(--script);color:#fff;margin:34px 0 0}
-.hero .names span{display:block}
-.hero .names i{font:italic 400 .56em/1.2 var(--serif);color:var(--gold);display:block;margin:2px 0}
-.hero .date{font:500 18px/1.5 var(--serif);letter-spacing:.2em;margin-top:18px;color:var(--on-night)}
-.scroll-cue{margin-top:34px;display:flex;flex-direction:column;align-items:center;gap:10px;font:500 10px/1 var(--sans);letter-spacing:.4em;text-transform:uppercase;color:var(--on-night-2)}
-.scroll-cue::after{content:"";width:1px;height:42px;background:linear-gradient(var(--gold),transparent);animation:cue 2.2s ease-in-out infinite;transform-origin:top}
-@keyframes cue{0%{transform:scaleY(0)}50%{transform:scaleY(1)}100%{transform:scaleY(1);opacity:0}}
+.hero .names{font:400 46px/1.1 var(--script);color:#fff;margin:26px 0 0;align-self:stretch;text-wrap:balance}
+.hero .names i{font:italic 400 .62em/1 var(--serif);color:var(--gold);margin:0 .1em}
 .sky{position:absolute;inset:0;pointer-events:none}
 .sky i{position:absolute;width:2px;height:2px;border-radius:50%;background:#fff;opacity:.7;animation:twinkle var(--t,4s) ease-in-out infinite var(--dl,0s)}
 @keyframes twinkle{50%{opacity:.15}}
@@ -314,7 +310,7 @@ footer a{color:var(--gold)}
 
 @media (prefers-reduced-motion:reduce){
   html:not(.force-motion) .rv{opacity:1!important;transform:none!important;transition:none!important}
-  html:not(.force-motion) .gate .btn-gold,html:not(.force-motion) .scroll-cue::after,html:not(.force-motion) .stage .ph img,html:not(.force-motion) .sky i,html:not(.force-motion) .music.playing svg{animation:none}
+  html:not(.force-motion) .gate .btn-gold,html:not(.force-motion) .stage .ph img,html:not(.force-motion) .sky i,html:not(.force-motion) .music.playing svg{animation:none}
 }
 </style>
 </head>
@@ -355,9 +351,7 @@ footer a{color:var(--gold)}
       <div class="hangers" data-hangers="hero"></div>
       <div class="kicker rv">Bismillahirrahmanirrahim</div>
       <div class="arch rv" data-rv="zoom" style="--d:.15s"><div class="ph"><img src="../foto/galeri-5.jpg" alt="Laras dan Bima di pelaminan" data-speed="0.14" style="object-position:50% 30%"></div></div>
-      <h2 class="names rv" style="--d:.25s"><span>Laras</span><i>&amp;</i><span>Bima</span></h2>
-      <div class="date rv" style="--d:.35s">SABTU · 12 DESEMBER 2026</div>
-      <div class="scroll-cue rv" style="--d:.5s">Gulir</div>
+      <h2 class="names rv" style="--d:.25s">Laras <i>&amp;</i> Bima</h2>
     </section>
 
     <!-- Ayat -->
@@ -854,7 +848,7 @@ function fitLine(el, ratio = 0.6) {
   while (fs > min && el.scrollWidth > el.clientWidth + 1) el.style.fontSize = `${(fs = Math.max(min, fs - 1))}px`;
   el.style.whiteSpace = el.scrollWidth > el.clientWidth + 1 ? "normal" : "";
 }
-const NAMES = ".gate .names, .stage-txt .names, .hero .names span, .person h3, .closing .names";
+const NAMES = ".gate .names, .stage-txt .names, .hero .names, .person h3, .closing .names";
 const fitNames = () => $$(NAMES).forEach((el) => fitLine(el));
 fitNames();
 document.fonts?.ready.then(fitNames);
