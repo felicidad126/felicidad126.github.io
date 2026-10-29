@@ -17,6 +17,7 @@ Font (Great Vibes, Lora, Inter) di-embed di `index.html` dan berlisensi SIL Open
 Tema kedua, di subfolder [`parallax-sway/`](parallax-sway/): palet **Nila Senja** (indigo malam, krem kertas, emas hangat, aksen mawar), tanpa tone sage.
 
 - **Parallax**: sampul berlapis yang bergeser mengikuti kursor / kemiringan HP, foto di dalam bingkai bergerak lebih lambat dari halaman, band foto layar penuh, dan (di desktop) panggung foto yang berganti mengikuti bagian yang dibaca.
+  Efek kemiringan HP hanya berjalan di Android. Di iPhone efek ini butuh izin, dan permintaan izin itu tidak bisa muncul sebelum tombol "Buka Undangan" diketuk, padahal efeknya ada di sampul.
 - **Sway**: untaian melati, bintang, bulan, dan bunga emas tergantung lalu berayun seperti pendulum; bingkai foto mempelai dan polaroid galeri ikut terayun saat halaman digulir.
 - Musik: waltz kotak musik 3/4 yang dirender di browser (tanpa file audio).
 
@@ -36,4 +37,4 @@ Tema ketiga, di subfolder [`garis-editorial/`](garis-editorial/): redesain Garis
 - Dengan nama tamu: https://felicidad126.github.io/garis-editorial/?to=Nama%20Tamu
 - Animasi penuh (abaikan setting reduced-motion): https://felicidad126.github.io/garis-editorial/?motion=full
 
-Satu file mandiri: foto (sama dengan folder `foto/`) dan font di-embed. Font Allura, Cormorant Garamond, dan Nunito Sans berlisensi SIL Open Font License 1.1. RSVP dan ucapan hanya tersimpan di perangkat pengunjung; ucapan contoh, alamat, dan rekening adalah data contoh.
+Foto diambil dari folder `foto/` yang sama dengan dua tema lain (versi HD dari `foto/hd/` untuk tampilan layar penuh); font di-embed. Font Allura, Cormorant Garamond, dan Nunito Sans berlisensi SIL Open Font License 1.1. RSVP dan ucapan hanya tersimpan di perangkat pengunjung; ucapan contoh, alamat, dan rekening adalah data contoh.
