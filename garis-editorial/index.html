@@ -167,6 +167,7 @@ main{position:relative;max-width:var(--col);margin:0 auto;background:var(--navy)
 .cd div{text-align:center;min-width:56px}
 .cd b{display:block;font:500 40px/1 var(--serif);color:var(--gold)}
 .cd small{display:block;margin-top:6px;font-size:14px;color:var(--peri)}
+.cd.over p{max-width:340px;font:italic 400 22px/1.4 var(--serif);color:var(--mist)}
 .cal{text-align:center;margin-top:26px}
 .venue-photo{margin-top:80px;height:min(78svh,620px)}
 .venue-photo img{object-position:50% 50%}
@@ -630,8 +631,14 @@ $("#reel").innerHTML = PHOTOS.map(([k, cap, pos], i) => `<button class="frame" t
   const q = new URLSearchParams({ action: "TEMPLATE", text: "Pernikahan Laras & Bima", dates: `${z(AKAD)}/${z(RESEPSI_END)}`, details: "Akad 09.00 WITA di Rumah Keluarga Mempelai Wanita. Resepsi 19.00 WITA di Gedung Serbaguna Contoh.", location: "Denpasar, Bali" });
   $("#calBtn").href = `https://calendar.google.com/calendar/render?${q}`;
 }
+// Setelah akad dimulai, hitung mundur (yang membeku di 00) diganti pesan.
 function tick() {
-  const d = Math.max(0, Math.floor((new Date(AKAD) - Date.now()) / 1000));
+  const d = Math.max(0, Math.floor((new Date(AKAD) - Date.now()) / 1000)), cd = $("#countdown");
+  if (!d) {
+    const msg = Date.now() < +new Date(RESEPSI_END) ? "Alhamdulillah, hari bahagia telah tiba. Terima kasih atas doa dan kehadiran Anda." : "Alhamdulillah, acara telah berlangsung. Terima kasih atas doa dan restu Anda.";
+    if (cd.dataset.msg !== msg) { cd.dataset.msg = msg; cd.classList.add("over"); cd.removeAttribute("aria-label"); cd.innerHTML = `<p>${msg}</p>`; }
+    return;
+  }
   [Math.floor(d / 86400), Math.floor(d / 3600) % 24, Math.floor(d / 60) % 60, d % 60].forEach((v, i) => ($$("#countdown b")[i].textContent = String(v).padStart(2, "0")));
 }
 tick(); setInterval(tick, 1000);

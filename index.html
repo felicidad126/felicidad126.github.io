@@ -68,6 +68,7 @@ svg.sprig{width:100%;height:100%;display:block}
 .cd{display:grid;grid-template-columns:repeat(4,1fr);gap:calc(10*var(--s));height:100%}
 .cd div{background:#f7f3eacc;border:1px solid #c2a87866;border-radius:calc(48*var(--s)) calc(48*var(--s)) calc(10*var(--s)) calc(10*var(--s));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:calc(4*var(--s))}
 .cd b{font-weight:500;line-height:1}
+.cd.over p{grid-column:1/-1;margin:auto;max-width:calc(330*var(--s));text-align:center;font:italic 400 max(var(--min-body,0px),calc(18*var(--s)))/1.5 "f-lora";color:#3e4a3d}
 .cd small{font:500 max(var(--min-label,0px),calc(10*var(--s)))/1 "f-inter";letter-spacing:calc(2*var(--s));color:#6f6b60;text-transform:uppercase}
 .addr{text-align:center;display:flex;flex-direction:column;align-items:center;gap:calc(6*var(--s))}
 .addr .venue{font-family:"f-lora";font-weight:600;font-size:1.3em;color:#34352f;line-height:1.3}
@@ -935,9 +936,16 @@ const io = new IntersectionObserver((entries) => {
 document.querySelectorAll("[data-anim]").forEach((n) => io.observe(n));
 
 // Countdown
+// Setelah acara dimulai, hitung mundur (yang membeku di 00) diganti pesan.
+const EVENT_END = Math.max(...Object.values(EVENT.events).map((ev) => +new Date(ev.endsAt ?? ev.startsAt)));
 function tick() {
   for (const n of document.querySelectorAll("[data-countdown]")) {
     let d = Math.max(0, Math.floor((new Date(n.dataset.countdown) - Date.now()) / 1000));
+    if (!d) {
+      const msg = Date.now() < EVENT_END ? "Hari bahagia telah tiba. Terima kasih atas doa dan kehadiran Anda." : "Acara telah berlangsung. Terima kasih atas doa dan restu Anda.";
+      if (n.dataset.msg !== msg) { n.dataset.msg = msg; n.classList.add("over"); n.innerHTML = `<p>${msg}</p>`; }
+      continue;
+    }
     const parts = [Math.floor(d / 86400), Math.floor(d / 3600) % 24, Math.floor(d / 60) % 60, d % 60];
     n.querySelectorAll("b").forEach((b, i) => (b.textContent = String(parts[i]).padStart(2, "0")));
   }
