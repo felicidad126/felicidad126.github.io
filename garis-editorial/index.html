@@ -90,6 +90,18 @@ main>section>*{position:relative;z-index:1}
 .gate .guest{font:500 30px/1.2 var(--serif);color:var(--gold);margin:2px 0 22px;max-width:340px}
 @media (max-height:860px){.stack{width:min(250px,62vw)}.gate .lede{margin-bottom:20px}}
 @media (max-height:720px){.stack{width:min(210px,56vw)}.gate .when{margin-top:18px;font-size:22px}.gate .guest{margin-bottom:14px}}
+/* HP: sampul bisa digulir bila isinya lebih tinggi dari layar; ::before/::after menengahkan isi tanpa memotong bagian atas */
+@media (max-width:1023px){
+  .gate{justify-content:flex-start;overflow:hidden auto;overscroll-behavior:contain}
+  .gate::before,.gate::after{content:"";flex:1 0 0}
+}
+@media (max-width:1023px) and (max-height:600px){
+  .gate .gate-top{display:none}
+  .stack{width:min(180px,50vw)}
+  .gate .when{margin-top:14px;font-size:21px}
+  .gate .to{margin-top:12px}
+  .gate .guest{font-size:min(30px,8.4vw);margin-bottom:14px}
+}
 /* urutan pembuka 1400 ms */
 .gate.opening{pointer-events:none}
 .gate.opening .tape{transition:translate .52s var(--ease),rotate .52s var(--ease),opacity .4s;translate:40px -50px;rotate:24deg;opacity:0}
@@ -353,7 +365,7 @@ main{position:relative;max-width:var(--col);margin:0 auto;background:var(--navy)
   .stage .where{font:italic 400 20px/1.3 var(--serif);color:var(--peri)}
   .stage .lede{margin-bottom:24px}
   .stage .sprig{margin-bottom:14px}
-  .gate{display:grid;grid-template-columns:auto minmax(300px,420px);grid-template-areas:"stack top" "stack side";column-gap:7vw;align-content:center;justify-content:center}
+  .gate{display:grid;grid-template-columns:auto minmax(300px,420px);grid-template-areas:"stack top" "stack side";column-gap:7vw;align-content:center;align-content:safe center;justify-content:center;overflow:hidden auto}
   .gate .stack{grid-area:stack;width:min(360px,30vw);align-self:center}
   .gate .gate-top{grid-area:top;align-self:end}
   .gate .side{grid-area:side;align-self:start}
