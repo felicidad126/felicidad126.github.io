@@ -962,6 +962,13 @@ document.addEventListener("visibilitychange", () => {
 });
 
 /* ---------- lightbox ---------- */
+// Tab berputar di antara tombol lightbox yang terlihat (fokus tidak lolos ke halaman di belakangnya).
+function trapTab(e, box) {
+  const f = [...box.querySelectorAll("button")].filter((b) => b.offsetParent);
+  if (!f.length) return;
+  e.preventDefault();
+  f[(f.indexOf(document.activeElement) + (e.shiftKey ? -1 : 1) + f.length) % f.length].focus();
+}
 const LB_ITEMS = [
   { src: "../foto/hd/mempelai-wanita.jpg", cap: "Laras" }, { src: "../foto/hd/mempelai-pria.jpg", cap: "Bima" },
   ...PHOTOS.map((p) => ({ src: p.src.replace("foto/", "foto/hd/"), cap: p.cap })),
@@ -991,6 +998,7 @@ const Lightbox = (() => {
   addEventListener("keydown", (e) => {
     if (!lb.classList.contains("open")) return;
     if (e.key === "Escape") close();
+    if (e.key === "Tab") trapTab(e, lb);
     if (e.key === "ArrowLeft") show(i - 1);
     if (e.key === "ArrowRight") show(i + 1);
   });

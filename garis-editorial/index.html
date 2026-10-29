@@ -901,6 +901,13 @@ $$("[data-copy]").forEach((b) => b.addEventListener("click", async () => {
 }));
 
 /* ---------- lightbox ---------- */
+// Tab berputar di antara tombol lightbox yang terlihat (fokus tidak lolos ke halaman di belakangnya).
+function trapTab(e, box) {
+  const f = [...box.querySelectorAll("button")].filter((b) => b.offsetParent);
+  if (!f.length) return;
+  e.preventDefault();
+  f[(f.indexOf(document.activeElement) + (e.shiftKey ? -1 : 1) + f.length) % f.length].focus();
+}
 const Lightbox = (() => {
   const lb = $("#lb"), img = $("img", lb), bar = $(".bar", lb);
   let i = 0, start = null, last = null;
@@ -916,7 +923,7 @@ const Lightbox = (() => {
   const open = (n) => { last = document.activeElement; show(n); lb.classList.add("open"); $(".x", lb).focus(); };
   const close = () => { lb.classList.remove("open"); last?.focus?.(); };
   $(".x", lb).onclick = close; $(".prev", lb).onclick = () => show(i - 1); $(".next", lb).onclick = () => show(i + 1);
-  addEventListener("keydown", (e) => { if (!lb.classList.contains("open")) return; if (e.key === "Escape") close(); if (e.key === "ArrowLeft") show(i - 1); if (e.key === "ArrowRight") show(i + 1); });
+  addEventListener("keydown", (e) => { if (!lb.classList.contains("open")) return; if (e.key === "Escape") close(); if (e.key === "Tab") trapTab(e, lb); if (e.key === "ArrowLeft") show(i - 1); if (e.key === "ArrowRight") show(i + 1); });
   lb.addEventListener("pointerdown", (e) => { if (!e.target.closest("button")) start = { x: e.clientX, y: e.clientY }; });
   lb.addEventListener("pointermove", (e) => { if (start) img.style.transform = `translate(calc(-50% + ${e.clientX - start.x}px),calc(-50% + ${Math.max(0, e.clientY - start.y)}px))`; });
   lb.addEventListener("pointerup", (e) => {

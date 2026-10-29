@@ -408,6 +408,14 @@ credits.className = "credits";
 credits.textContent = "Foto contoh dibuat dengan AI (Gemini). Bukan foto mempelai sebenarnya.";
 document.body.appendChild(credits);
 
+// Tab berputar di antara tombol lightbox yang terlihat (fokus tidak lolos ke halaman di belakangnya).
+function trapTab(e, box) {
+  const f = [...box.querySelectorAll("button")].filter((b) => b.offsetParent);
+  if (!f.length) return;
+  e.preventDefault();
+  f[(f.indexOf(document.activeElement) + (e.shiftKey ? -1 : 1) + f.length) % f.length].focus();
+}
+
 // Lightbox foto
 const Lightbox = (() => {
   const icon = (d) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg>`;
@@ -489,6 +497,7 @@ const Lightbox = (() => {
   document.addEventListener("keydown", (e) => {
     if (!root.classList.contains("open")) return;
     if (e.key === "Escape") close();
+    else if (e.key === "Tab") trapTab(e, root);
     else if (e.key === "ArrowLeft") show(index - 1);
     else if (e.key === "ArrowRight") show(index + 1);
   });
