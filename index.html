@@ -15,7 +15,7 @@ html,body{margin:0}
 body{background:var(--bg);background-image:radial-gradient(#cfd5c4 1px,transparent 1px);background-size:6px 6px;font-family:"f-inter",system-ui,sans-serif;min-height:100vh}
 /* Sebelum "Buka Undangan" hanya sampul yang tampil, tapi sampul tetap bisa di-scroll di layar pendek. */
 body.locked .inv-section:not(:first-child){display:none}
-body.locked .inv-canvas{padding-bottom:96px;background:var(--cover-bg)}
+body.locked .inv-canvas{min-height:100vh;min-height:100svh;background:var(--cover-bg)}
 .inv-panel{container-type:inline-size;max-width:520px;margin:0 auto;box-shadow:0 0 60px #3e4a3d33}
 .inv-canvas{--s:calc(100cqw / var(--base-width))}
 .inv-section{position:relative;overflow:hidden;height:calc(var(--h) * var(--s))}
@@ -88,9 +88,9 @@ svg.sprig{width:100%;height:100%;display:block}
 .giftaddr{background:#f7f3ea;border-radius:calc(18*var(--s));padding:calc(18*var(--s));text-align:center;color:#6f6b60}
 .giftaddr b{color:#34352f;display:block;margin-bottom:calc(4*var(--s))}
 .btn{display:flex;align-items:center;justify-content:center;border-radius:999px;border:0;cursor:pointer}
-/* Tombol menempel di bawah viewport selama halaman terkunci, supaya selalu terjangkau di layar pendek. */
-.open-btn{position:fixed;left:50%;transform:translateX(-50%);top:min(calc(100svh - 84px - env(safe-area-inset-bottom)),calc(822*var(--s)));font-size:clamp(13px,calc(14*var(--s)),16px)!important;padding:calc(14*var(--s)) calc(30*var(--s));border-radius:999px;border:0;cursor:pointer;display:inline-flex;gap:calc(8*var(--s));align-items:center;box-shadow:0 calc(8*var(--s)) calc(24*var(--s)) #3e4a3d40;z-index:5}
-.open-btn.gone{opacity:0;pointer-events:none;transition:opacity .5s}
+/* Tombol ada di dalam sampul, tepat di bawah nama tamu (posisinya diatur layoutCover). */
+.open-btn{position:absolute;left:50%;transform:translateX(-50%);top:calc(var(--btn-y,822)*var(--s));font-size:clamp(13px,calc(14*var(--s)),16px)!important;padding:calc(14*var(--s)) calc(30*var(--s));border-radius:999px;border:0;cursor:pointer;display:inline-flex;gap:calc(8*var(--s));align-items:center;white-space:nowrap;box-shadow:0 calc(8*var(--s)) calc(24*var(--s)) #3e4a3d40;z-index:5}
+.open-btn.gone{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .5s,visibility 0s .5s}
 .music-btn{position:fixed;bottom:max(20px,env(safe-area-inset-bottom));right:max(16px,calc(50vw - 260px + 16px));width:46px;height:46px;border-radius:50%;border:1px solid #c2a878;background:#3e4a3d;color:#f1eee4;display:none;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 6px 18px #3e4a3d40;z-index:6}
 .music-btn.show{display:flex}
 .music-btn svg{width:20px;height:20px}
@@ -515,6 +515,60 @@ open.onclick = () => {
   }
 };
 coverNode.appendChild(open);
+
+/*
+ * Tata letak sampul: tombol tepat di bawah nama tamu. Bila sampul lebih tinggi dari layar, lengkung,
+ * foto, dan ranting diperkecil dari atas lalu teks di bawahnya ikut naik, supaya nama dan tombol
+ * terlihat tanpa menggulir. Di layar yang terlalu pendek sampul tetap bisa digulir.
+ */
+const COVER_MIN_SCALE = 0.4;
+const coverEls = DOC.sections[cover.sectionId].elementOrderIds.map((id) => DOC.elements[id]);
+const coverTextTop = Math.min(...coverEls.filter((e) => e.type.startsWith("text")).map((e) => e.y));
+const coverArt = coverEls.filter((e) => e.y + e.height <= coverTextTop);
+const coverText = coverEls.filter((e) => !coverArt.includes(e)).sort((a, b) => a.y - b.y);
+const coverArtBottom = Math.max(...coverArt.map((e) => e.y + e.height));
+const elNode = (e) => document.getElementById(`e-${e.id}`);
+// Tinggi layar tanpa bilah alamat (100svh): stabil saat bilah alamat HP muncul/hilang.
+const svhProbe = document.createElement("div");
+svhProbe.style.cssText = "position:fixed;top:0;left:0;width:0;height:100vh;height:100svh;visibility:hidden;pointer-events:none";
+document.body.appendChild(svhProbe);
+// Selisih tinggi isi teks dengan kotaknya (px); positif bila teks turun baris melebihi kotak.
+function textOverflow(node) {
+  let h = 0;
+  for (const p of node.children) h += p.offsetHeight;
+  return h - node.clientHeight;
+}
+function layoutCover() {
+  const W = DOC.canvas.baseWidth, unit = canvas.clientWidth / W;
+  // Teks yang meluap mendorong elemen di bawahnya.
+  let push = 0, bottom = 0;
+  const textY = new Map();
+  for (const e of coverText) {
+    textY.set(e, e.y + push);
+    if (elNode(e).classList.contains("txt")) push += Math.max(0, textOverflow(elNode(e)) / unit);
+    bottom = Math.max(bottom, e.y + e.height + push);
+  }
+  const height = DOC.sections[cover.sectionId].height + push;
+  const k = Math.max(COVER_MIN_SCALE, Math.min(1, 1 - (height - svhProbe.offsetHeight / unit) / coverArtBottom));
+  const lift = coverArtBottom * (1 - k);
+  for (const e of coverArt) {
+    const mid = e.x + e.width / 2;
+    const ax = mid < W / 3 ? e.x : mid > (W * 2) / 3 ? e.x + e.width : W / 2;
+    const node = elNode(e);
+    node.style.left = s(ax + (e.x - ax) * k);
+    node.style.top = s(e.y * k);
+    node.style.width = s(e.width * k);
+    node.style.height = s(e.height * k);
+    if (node.style.borderRadius) node.style.borderRadius = archRadius(e.width * k);
+  }
+  for (const e of coverText) elNode(e).style.top = s(textY.get(e) - lift);
+  coverNode.style.setProperty("--btn-y", bottom + 16 - lift);
+  coverNode.style.setProperty("--h", height - lift);
+}
+layoutCover();
+let layoutRaf = 0;
+addEventListener("resize", () => { cancelAnimationFrame(layoutRaf); layoutRaf = requestAnimationFrame(layoutCover); });
+document.fonts?.ready.then(layoutCover);
 
 /*
  * Musik latar. Aset `doc.music` belum ada, jadi preview memakai instrumental piano buatan sendiri:
