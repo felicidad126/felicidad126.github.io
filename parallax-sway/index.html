@@ -45,7 +45,11 @@ a{color:inherit}
 /* ---------- ornamen gantung (sway) ---------- */
 .hangers{position:absolute;left:0;right:0;top:0;height:0;pointer-events:none;z-index:3}
 .hang{position:absolute;top:0;transform-origin:50% 0}
-.swing{transform-origin:50% 0;will-change:transform}
+.swing{transform-origin:50% 0;will-change:transform;rotate:calc(var(--tilt,0) * 1deg)}
+/* ayunan pelan saat diam; dorongan saat digulir ditambahkan JS lewat transform */
+.motion .swing{animation:sway calc(var(--period,3) * .5s) ease-in-out calc(var(--phase,0) * -1s) infinite alternate}
+.motion .swing.idle{animation-play-state:paused}
+@keyframes sway{from{rotate:calc((var(--tilt,0) - var(--amp,3)) * 1deg)}to{rotate:calc((var(--tilt,0) + var(--amp,3)) * 1deg)}}
 .hang svg{display:block;overflow:visible}
 
 /* ---------- gerbang / sampul ---------- */
@@ -678,42 +682,63 @@ function tick() {
 tick();
 setInterval(tick, 1000);
 
-/* ---------- gerak: parallax + ayunan ---------- */
+/* ---------- gerak: parallax + ayunan ----------
+ * Ayunan pelan saat diam dijalankan CSS (animasi rotate di kompositor). JavaScript hanya bekerja
+ * beberapa detik setelah halaman digulir atau kursor/HP digerakkan: dorongan ayunan (transform,
+ * menumpuk di atas rotate CSS) dan parallax dari posisi elemen yang diukur sekali.
+ */
+if (MOTION) root.classList.add("motion");
+const docTop = (el) => { let y = 0; for (let n = el; n; n = n.offsetParent) y += n.offsetTop; return y; };
 const parallax = $$("[data-speed]").map((el) => ({ el, ref: el.closest(".ph") || el.parentElement, speed: +el.dataset.speed, inPh: !!el.closest(".ph") }));
-const swings = $$(".swing").map((el) => ({
-  el, th: 0, om: 0,
-  w: (2 * Math.PI) / (+el.dataset.period || 3),
-  amp: +(el.dataset.amp || 3), gain: +(el.dataset.gain || 1), tilt: +(el.dataset.tilt || 0),
-  ph: Math.random() * Math.PI * 2, vis: true,
-}));
+function measureParallax() {
+  for (const p of parallax) { p.top = docTop(p.ref); p.h = p.ref.offsetHeight; }
+}
+const swings = $$(".swing").map((el) => {
+  const s = { el, th: 0, om: 0, w: (2 * Math.PI) / (+el.dataset.period || 3), gain: +(el.dataset.gain || 1) };
+  const period = +el.dataset.period || 3;
+  el.style.setProperty("--period", period);
+  el.style.setProperty("--amp", +(el.dataset.amp || 3));
+  el.style.setProperty("--tilt", +(el.dataset.tilt || 0));
+  el.style.setProperty("--phase", (Math.random() * period).toFixed(2));
+  return s;
+});
 const visIO = new IntersectionObserver((es) => {
-  for (const e of es) { const s = swings.find((x) => x.el === e.target); if (s) s.vis = e.isIntersecting; }
+  for (const e of es) { const s = swings.find((x) => x.el === e.target); if (s) { s.vis = e.isIntersecting; e.target.classList.toggle("idle", !e.isIntersecting); } }
 }, { rootMargin: "120px" });
 swings.forEach((s) => visIO.observe(s.el));
 
-let lastY = scrollY, lastT = performance.now(), kick = 0;
 const gate = $("#gate");
 const gateLayers = $$(".gate .layer");
-let pointer = { x: 0, y: 0, tx: 0, ty: 0 };
+let pointer = { x: 0, y: 0, tx: 0, ty: 0 }, kick = 0;
+let lastY = scrollY, lastT = 0, running = false, awakeUntil = 0, parY = null;
+function wake() {
+  awakeUntil = performance.now() + 2500;
+  if (!running && MOTION) { running = true; lastT = 0; requestAnimationFrame(frame); }
+}
+addEventListener("scroll", wake, { passive: true });
 addEventListener("pointermove", (e) => {
   if (gate.classList.contains("gone")) return;
   pointer.tx = e.clientX / innerWidth - 0.5;
   pointer.ty = e.clientY / innerHeight - 0.5;
+  wake();
 }, { passive: true });
 addEventListener("deviceorientation", (e) => {
   if (e.gamma == null || gate.classList.contains("gone")) return;
-  pointer.tx = Math.max(-0.5, Math.min(0.5, e.gamma / 40));
-  pointer.ty = Math.max(-0.5, Math.min(0.5, (e.beta - 40) / 50));
+  const tx = Math.max(-0.5, Math.min(0.5, e.gamma / 40)), ty = Math.max(-0.5, Math.min(0.5, (e.beta - 40) / 50));
+  // Sensor terus mengirim data walau HP diam: bangunkan hanya bila kemiringan benar-benar berubah.
+  if (Math.abs(tx - pointer.tx) + Math.abs(ty - pointer.ty) < 0.004) return;
+  pointer.tx = tx; pointer.ty = ty;
+  wake();
 }, { passive: true });
 
 function frame(now) {
-  const dt = Math.min(0.05, (now - lastT) / 1000);
+  const dt = lastT ? Math.min(0.05, (now - lastT) / 1000) : 1 / 60;
   lastT = now;
-  const vh = innerHeight;
+  let busy = false;
 
   // Gerbang: lapisan bergeser mengikuti pointer / kemiringan HP dengan kedalaman berbeda.
   if (!gate.classList.contains("gone") && !gate.classList.contains("opening")) {
-    const px = pointer.x, py = pointer.y;
+    const px = pointer.x;
     pointer.x += (pointer.tx - pointer.x) * 0.06;
     pointer.y += (pointer.ty - pointer.y) * 0.06;
     for (const l of gateLayers) {
@@ -721,36 +746,46 @@ function frame(now) {
       l.style.transform = `translate3d(${(-pointer.x * d).toFixed(2)}px,${(-pointer.y * d).toFixed(2)}px,0)`;
     }
     kick += (pointer.x - px) * 900;
+    busy ||= Math.abs(pointer.tx - pointer.x) + Math.abs(pointer.ty - pointer.y) > 0.001;
   }
 
-  // Parallax gulir: tiap lapisan bergeser sebanding jaraknya dari tengah layar.
-  for (const p of parallax) {
-    const r = p.ref.getBoundingClientRect();
-    if (r.bottom < -200 || r.top > vh + 200) continue;
-    let off = (r.top + r.height / 2 - vh / 2) * -p.speed;
-    if (p.inPh) off = Math.max(-r.height * 0.14, Math.min(r.height * 0.14, off));
-    p.el.style.transform = `translate3d(0,${off.toFixed(1)}px,0)`;
+  // Parallax gulir: tiap lapisan bergeser sebanding jaraknya dari tengah layar (hanya saat posisi gulir berubah).
+  const y = scrollY, vh = innerHeight;
+  if (y !== parY) {
+    parY = y;
+    for (const p of parallax) {
+      const top = p.top - y;
+      if (top + p.h < -200 || top > vh + 200) continue;
+      let off = (top + p.h / 2 - vh / 2) * -p.speed;
+      if (p.inPh) off = Math.max(-p.h * 0.14, Math.min(p.h * 0.14, off));
+      p.el.style.transform = `translate3d(0,${off.toFixed(1)}px,0)`;
+    }
   }
 
-  // Ayunan: pendulum teredam; gulir memberi dorongan seperti ornamen yang tertinggal inersia.
-  const dy = scrollY - lastY;
-  lastY = scrollY;
-  const push = Math.max(-60, Math.min(60, dy)) * 1.6 + kick;
+  // Dorongan ayunan: pegas teredam kembali ke 0; gulir memberi dorongan seperti ornamen yang tertinggal inersia.
+  const push = Math.max(-60, Math.min(60, y - lastY)) * 1.6 + kick;
+  lastY = y;
   kick = 0;
-  const t = now / 1000;
   for (const s of swings) {
-    if (!s.vis) continue;
-    const target = s.tilt + s.amp * Math.sin(t * s.w * 0.93 + s.ph);
-    s.om += (-(s.w * s.w) * (s.th - target) - 1.1 * s.om) * dt + push * s.gain * dt * 6;
+    // Ornamen di luar layar tidak perlu dihitung: langsung diam.
+    if (!s.vis) { if (s.th) { s.th = s.om = 0; s.el.style.transform = ""; } continue; }
+    s.om += (-(s.w * s.w) * s.th - 1.5 * s.om) * dt + push * s.gain * dt * 6;
     s.om = Math.max(-140, Math.min(140, s.om));
-    s.th += s.om * dt;
-    s.th = Math.max(-22, Math.min(22, s.th));
-    s.el.style.transform = `rotate(${s.th.toFixed(2)}deg)`;
+    s.th = Math.max(-22, Math.min(22, s.th + s.om * dt));
+    if (Math.abs(s.th) < 0.1 && Math.abs(s.om) < 0.5) s.th = s.om = 0;
+    else busy = true;
+    s.el.style.transform = s.th ? `rotate(${s.th.toFixed(2)}deg)` : "";
   }
-  requestAnimationFrame(frame);
+
+  if (busy || now < awakeUntil) requestAnimationFrame(frame);
+  else running = false;
 }
-if (MOTION) requestAnimationFrame(frame);
-else swings.forEach((s) => s.tilt && (s.el.style.transform = `rotate(${s.tilt}deg)`));
+measureParallax();
+addEventListener("load", () => { measureParallax(); parY = null; wake(); });
+document.fonts?.ready.then(() => { measureParallax(); parY = null; wake(); });
+new ResizeObserver(() => { measureParallax(); parY = null; wake(); }).observe($("#main"));
+addEventListener("resize", () => { parY = null; wake(); });
+wake();
 
 // Muncul saat masuk layar
 const rvIO = new IntersectionObserver((es) => {
