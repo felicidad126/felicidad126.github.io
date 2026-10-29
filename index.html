@@ -128,6 +128,7 @@ svg.sprig{width:100%;height:100%;display:block}
 .js-anim [data-anim="Typewriter"] .ch{opacity:0;display:inline-block;translate:0 .25em;transition:opacity .35s ease,translate .5s cubic-bezier(.2,.7,.2,1)}
 .js-anim [data-anim="Typewriter"].is-visible .ch{opacity:1;translate:0 0}
 .ch.sp{width:.25em}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 .wd{white-space:nowrap}
 [data-anim="Breathe"].is-visible{animation:breathe 3s ease-in-out infinite}
 @keyframes breathe{50%{scale:1.06}}
@@ -326,6 +327,8 @@ function renderElement(e) {
       node.innerHTML = widget(e);
   }
   node.style.cssText = css;
+  // Lengkung, ranting, dan garis hanya hiasan: tidak dibacakan pembaca layar.
+  if (e.type === "graphic" || e.type === "rect") node.setAttribute("aria-hidden", "true");
   if (e.animation) {
     const { variant, duration, delay = 0, direction } = e.animation;
     node.dataset.anim = variant;
@@ -337,9 +340,9 @@ function renderElement(e) {
   return node;
 }
 
-/** Typewriter (PLANNING §5.6): huruf jadi <span aria-hidden>, parent diberi aria-label teks utuh. */
+/** Typewriter (PLANNING §5.6): huruf jadi <span aria-hidden>; teks utuhnya disimpan tersembunyi untuk pembaca layar. */
 function splitLetters(node, duration, delay) {
-  node.setAttribute("aria-label", node.textContent);
+  const label = node.textContent;
   const walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT);
   const texts = [];
   while (walker.nextNode()) texts.push(walker.currentNode);
@@ -362,6 +365,7 @@ function splitLetters(node, duration, delay) {
     }
     t.replaceWith(frag);
   }
+  (node.querySelector("p") ?? node).prepend(Object.assign(document.createElement("span"), { className: "sr", textContent: label }));
 }
 
 const canvas = document.getElementById("canvas");
@@ -453,6 +457,7 @@ const Lightbox = (() => {
     s = 1; tx = ty = 0;
     apply(false);
     img.src = it.src;
+    img.alt = it.caption;
     if (it.hd) {
       const hi = new Image();
       hi.onload = () => { if (items[index] === it) img.src = it.hd; };
@@ -563,7 +568,7 @@ const lightboxItems = zoomables.map((n) => {
 zoomables.forEach((n, i) => {
   n.tabIndex = 0;
   n.setAttribute("role", "button");
-  n.setAttribute("aria-label", "Perbesar foto");
+  n.setAttribute("aria-label", lightboxItems[i].caption ? `Perbesar foto: ${lightboxItems[i].caption}` : `Perbesar foto ${i + 1} dari ${zoomables.length}`);
   n.addEventListener("click", () => Lightbox.open(lightboxItems, i));
   n.addEventListener("keydown", (e) => {
     if (e.key === "Enter" || e.key === " ") { e.preventDefault(); Lightbox.open(lightboxItems, i); }
