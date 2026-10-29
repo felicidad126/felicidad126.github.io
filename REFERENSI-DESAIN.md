@@ -128,11 +128,20 @@ Sumber:
 
 ---
 
-## 7. Ide penerapan ke tema yang ada
+## 7. Desain yang dibuat dari referensi ini
 
-| Tema | Ide dari referensi |
-|---|---|
-| **Lengkung Sage** | Ganti ornamen placeholder dengan ilustrasi botani atau monogram personal; tambahkan tekstur kertas halus. |
-| **Parallax & Sway** | Animasi amplop terbuka dengan segel lilin sebelum sampul berlapis muncul; band foto parallax untuk kisah cinta. |
-| **Garis Editorial** | Lapisan vellum buram di atas surat pembuka; RSVP tersambung ke Google Sheets agar balasan benar-benar terkumpul. |
-| **Tema baru** | Palet terakota tua + tinta putih, atau adat modern (batik/ukiran sebagai aksen garis, bukan latar penuh). |
+Empat tema baru, masing-masing dibuat dari nol (tiga tema lama tidak diubah):
+
+| Tema | Konsep | Referensi yang dipakai | Palet |
+|---|---|---|---|
+| [**Truntum Terakota**](truntum-terakota/) | Bingkai foto dengan aksen motif truntum, panel menempel di desktop | Tema adat modern (bagian 3), palet berani (bagian 1) | Terakota tua + tinta putih |
+| [**Edisi Monokrom**](edisi-monokrom/) | Edisi spesial majalah fashion: sampul, daftar isi, spread selebar layar | Tipografi editorial, Joy (split-screen), Riley & Grey, Bliss & Bone | Hitam-putih + aksen marmer |
+| [**Amplop Linen**](amplop-linen/) | Amplop bersegel lilin, lalu delapan kartu die-cut yang digeser | Greenvelope/Paperless Post, vellum, die-cut, kertas bertekstur | Quiet luxury netral |
+| [**Biru Kabut**](biru-kabut/) | Minimalis gaya Swiss: grid ketat, bagian bernomor, linimasa acara | Riset Binus/ITB, teknologi.id, CSS scroll-driven animations (bagian 6) | Biru pastel + abu |
+
+Semua tema baru punya motion yang menyesuaikan konsepnya dan tetap menghormati `prefers-reduced-motion` (`?motion=full` memaksa animasi penuh).
+
+Ide yang belum dipakai:
+- **RSVP ke Google Sheets** lewat Google Apps Script, agar balasan benar-benar terkumpul (sekarang RSVP hanya tersimpan di perangkat tamu).
+- **QR check-in** dan pengingat WhatsApp: butuh layanan di luar GitHub Pages.
+- **Adat Jawa merah-emas-hitam** dengan ukiran atau wayang sebagai aksen.
