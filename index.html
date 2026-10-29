@@ -108,6 +108,7 @@ svg.sprig{width:100%;height:100%;display:block}
 .js-anim [data-anim="Typewriter"] .ch{opacity:0;display:inline-block;translate:0 .25em;transition:opacity .35s ease,translate .5s cubic-bezier(.2,.7,.2,1)}
 .js-anim [data-anim="Typewriter"].is-visible .ch{opacity:1;translate:0 0}
 .ch.sp{width:.25em}
+.wd{white-space:nowrap}
 [data-anim="Breathe"].is-visible{animation:breathe 3s ease-in-out infinite}
 @keyframes breathe{50%{scale:1.06}}
 /* Reduced motion: tanpa gerakan, tetap fade lembut. ?motion=full memaksa animasi penuh untuk demo. */
@@ -130,8 +131,10 @@ const esc = (t) => String(t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&
 const TZ_ABBR = { "Asia/Jakarta": "WIB", "Asia/Makassar": "WITA", "Asia/Jayapura": "WIT" };
 const fmtDate = (ev) => ev ? new Intl.DateTimeFormat("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: ev.timezone }).format(new Date(ev.startsAt)) : "";
 const fmtTime = (iso, tz) => new Intl.DateTimeFormat("id-ID", { hour: "2-digit", minute: "2-digit", timeZone: tz }).format(new Date(iso)).replace(":", ".");
+// Nama tamu dari ?to=Nama: spasi di ujung dibuang, maksimal 60 karakter (di-escape saat ditampilkan).
+const GUEST = (new URLSearchParams(location.search).get("to") || "").trim().slice(0, 60);
 const PH = {
-  guest_name: "Tamu Undangan",
+  guest_name: GUEST || "Tamu Undangan",
   bride_name: EVENT.bride.name,
   groom_name: EVENT.groom.name,
   bride_parents: EVENT.bride.parents,
@@ -212,13 +215,13 @@ function widget(e) {
         if (f.type === "dropdown") input = `<select>${f.options.map((o) => `<option>${esc(o)}</option>`).join("")}</select>`;
         else if (f.type === "text-area") input = `<textarea placeholder="${esc(f.label)}"></textarea>`;
         else if (f.type === "number") input = `<input type="number" min="${f.validation?.min ?? 1}" max="${f.validation?.max ?? 20}" value="1">`;
-        else input = `<input type="${f.type === "phone" ? "tel" : f.type === "email" ? "email" : "text"}" placeholder="${esc(f.label)}">`;
+        else input = `<input type="${f.type === "phone" ? "tel" : f.type === "email" ? "email" : "text"}" placeholder="${esc(f.label)}"${f.system === "name" ? ` value="${esc(GUEST)}"` : ""}>`;
         return `<label><span>${esc(f.label)}${req}</span>${input}</label>`;
       };
       return `<form class="w form" style="${base}" onsubmit="return false">${form.fields.map(field).join("")}<button class="pill solid">Kirim Konfirmasi</button></form>`;
     }
     case "widget-greeting":
-      return `<div class="greet"><div class="w form" style="${base};height:auto"><label>Nama<input placeholder="Nama Anda"></label><label>Ucapan<textarea placeholder="Tulis doa dan ucapan"></textarea></label><button class="pill solid" type="button">Kirim Ucapan</button></div>
+      return `<div class="greet"><div class="w form" style="${base};height:auto"><label>Nama<input placeholder="Nama Anda" value="${esc(GUEST)}"></label><label>Ucapan<textarea placeholder="Tulis doa dan ucapan"></textarea></label><button class="pill solid" type="button">Kirim Ucapan</button></div>
         <div class="w" style="${base};margin-top:${s(18)}">${[["Rani & Keluarga","Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, penuh cinta dan tawa.","2 jam lalu"],["Dimas","Bahagia selalu untuk kalian berdua. Sampai jumpa di hari bahagia!","Kemarin"]].map(([n,m,t])=>`<div class="wish"><b>${n}</b><div>${m}</div><small>${t}</small></div>`).join("")}</div></div>`;
     case "widget-gift": {
       const acct = e.showAccounts ? `<div class="bank"><div style="opacity:.75;font-size:.85em;letter-spacing:${s(2)}">BANK CONTOH</div><div class="no">1234 5678 90</div><div>a.n. ${esc(EVENT.bride.fullName)}</div><button class="pill" type="button">Salin Nomor</button></div>` : "";
@@ -298,13 +301,18 @@ function splitLetters(node, duration, delay) {
   let i = 0;
   for (const t of texts) {
     const frag = document.createDocumentFragment();
-    for (const c of t.data) {
-      const span = document.createElement("span");
-      span.className = c === " " ? "ch sp" : "ch";
-      span.setAttribute("aria-hidden", "true");
-      span.textContent = c === " " ? " " : c;
-      span.style.transitionDelay = `${delay + Math.round((i++ * duration) / total)}ms`;
-      frag.appendChild(span);
+    // Huruf satu kata dibungkus supaya nama yang panjang turun baris di antara kata, bukan di tengah kata.
+    for (const part of t.data.split(/( )/)) {
+      if (!part) continue;
+      const word = part === " " ? frag : frag.appendChild(Object.assign(document.createElement("span"), { className: "wd" }));
+      for (const c of part) {
+        const span = document.createElement("span");
+        span.className = c === " " ? "ch sp" : "ch";
+        span.setAttribute("aria-hidden", "true");
+        span.textContent = c === " " ? " " : c;
+        span.style.transitionDelay = `${delay + Math.round((i++ * duration) / total)}ms`;
+        word.appendChild(span);
+      }
     }
     t.replaceWith(frag);
   }
@@ -321,6 +329,26 @@ for (const id of DOC.sectionOrderIds) {
   node.style.cssText = `--h:${sec.height};background:${sec.backgroundColor}`;
   for (const eid of sec.elementOrderIds) node.appendChild(renderElement(DOC.elements[eid]));
   canvas.appendChild(node);
+}
+
+const elNode = (e) => document.getElementById(`e-${e.id}`);
+// Selisih tinggi isi teks dengan kotaknya (px); positif bila teks turun baris melebihi kotak.
+function textOverflow(node) {
+  let h = 0;
+  for (const p of node.children) h += p.offsetHeight;
+  return h - node.clientHeight;
+}
+// Teks bergaya minFontSize (nama mempelai, nama tamu, tanggal) mengecil sampai muat di kotaknya,
+// paling kecil minFontSize; baru setelah itu boleh turun baris.
+const fitEls = Object.values(DOC.elements).filter((e) => e.style?.minFontSize && elNode(e));
+function fitTexts() {
+  for (const e of fitEls) {
+    const node = elNode(e);
+    const overflows = () => textOverflow(node) > 1 || [...node.children].some((p) => p.scrollWidth > p.clientWidth + 1);
+    let fs = e.style.fontSize;
+    node.style.fontSize = s(fs);
+    while (fs > e.style.minFontSize && overflows()) node.style.fontSize = s((fs = Math.max(e.style.minFontSize, fs - 1)));
+  }
 }
 
 // Keterangan foto contoh
@@ -527,17 +555,10 @@ const coverTextTop = Math.min(...coverEls.filter((e) => e.type.startsWith("text"
 const coverArt = coverEls.filter((e) => e.y + e.height <= coverTextTop);
 const coverText = coverEls.filter((e) => !coverArt.includes(e)).sort((a, b) => a.y - b.y);
 const coverArtBottom = Math.max(...coverArt.map((e) => e.y + e.height));
-const elNode = (e) => document.getElementById(`e-${e.id}`);
 // Tinggi layar tanpa bilah alamat (100svh): stabil saat bilah alamat HP muncul/hilang.
 const svhProbe = document.createElement("div");
 svhProbe.style.cssText = "position:fixed;top:0;left:0;width:0;height:100vh;height:100svh;visibility:hidden;pointer-events:none";
 document.body.appendChild(svhProbe);
-// Selisih tinggi isi teks dengan kotaknya (px); positif bila teks turun baris melebihi kotak.
-function textOverflow(node) {
-  let h = 0;
-  for (const p of node.children) h += p.offsetHeight;
-  return h - node.clientHeight;
-}
 function layoutCover() {
   const W = DOC.canvas.baseWidth, unit = canvas.clientWidth / W;
   // Teks yang meluap mendorong elemen di bawahnya.
@@ -565,10 +586,14 @@ function layoutCover() {
   coverNode.style.setProperty("--btn-y", bottom + 16 - lift);
   coverNode.style.setProperty("--h", height - lift);
 }
-layoutCover();
+function relayout() {
+  fitTexts();
+  layoutCover();
+}
+relayout();
 let layoutRaf = 0;
-addEventListener("resize", () => { cancelAnimationFrame(layoutRaf); layoutRaf = requestAnimationFrame(layoutCover); });
-document.fonts?.ready.then(layoutCover);
+addEventListener("resize", () => { cancelAnimationFrame(layoutRaf); layoutRaf = requestAnimationFrame(relayout); });
+document.fonts?.ready.then(relayout);
 
 /*
  * Musik latar. Aset `doc.music` belum ada, jadi preview memakai instrumental piano buatan sendiri:
