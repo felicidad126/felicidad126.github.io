@@ -605,7 +605,7 @@ const store = {
   get(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } },
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
 };
-const AKAD = "2026-12-12T09:00:00+08:00", RESEPSI_END = "2026-12-12T22:00:00+08:00";
+const AKAD = "2026-12-12T09:00:00+08:00", RESEPSI_END = "2026-12-12T21:30:00+08:00";
 
 // Nama tamu dari ?to=
 const guest = (params.get("to") || "").trim().slice(0, 60);
