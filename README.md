@@ -36,4 +36,4 @@ Tema ketiga, di subfolder [`garis-editorial/`](garis-editorial/): redesain Garis
 - Dengan nama tamu: https://felicidad126.github.io/garis-editorial/?to=Nama%20Tamu
 - Animasi penuh (abaikan setting reduced-motion): https://felicidad126.github.io/garis-editorial/?motion=full
 
-Satu file mandiri: foto (sama dengan folder `foto/`) dan font di-embed. Font Allura, Cormorant Garamond, dan Nunito Sans berlisensi SIL Open Font License 1.1. RSVP dan ucapan hanya tersimpan di perangkat pengunjung; ucapan contoh, alamat, dan rekening adalah data contoh.
+Foto diambil dari folder `foto/` yang sama dengan dua tema lain (versi HD dari `foto/hd/` untuk tampilan layar penuh); font di-embed. Font Allura, Cormorant Garamond, dan Nunito Sans berlisensi SIL Open Font License 1.1. RSVP dan ucapan hanya tersimpan di perangkat pengunjung; ucapan contoh, alamat, dan rekening adalah data contoh.
