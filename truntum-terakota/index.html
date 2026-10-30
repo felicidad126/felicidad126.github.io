@@ -731,7 +731,9 @@ setInterval(tick, 1000);
 const rvIO = new IntersectionObserver((es) => {
   for (const e of es) if (e.isIntersecting) { e.target.classList.add("in"); rvIO.unobserve(e.target); }
 }, { threshold: 0.12, rootMargin: "0px 0px -6% 0px" });
-const startReveal = () => $$(".rv, .band").forEach((n) => rvIO.observe(n));
+// Elemen yang hanya disembunyikan secara visual (judul pembuka di desktop, 1×1px) tidak pernah terdeteksi masuk layar,
+// jadi langsung ditandai tampil, bukan diamati.
+const startReveal = () => $$(".rv, .band").forEach((n) => (n.getBoundingClientRect().width > 1 ? rvIO.observe(n) : n.classList.add("in")));
 
 // Kata pada nama dibungkus (.w) supaya bisa naik satu per satu; "&" (<i>) tetap, ikut dihitung urutannya.
 function splitWords(el) {
