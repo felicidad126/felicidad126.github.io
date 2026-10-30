@@ -147,13 +147,13 @@ a{color:inherit}
 main{max-width:var(--col);margin:0 auto;outline:none;background:var(--tera)}
 .stage{display:none}
 
-/* ---------- pembuka: foto selebar kolom (sampul memakai bingkai), nama menumpang di gradasi bawah foto ---------- */
+/* ---------- pembuka: foto selebar kolom (sampul memakai bingkai), nama menumpang di gradasi bawah foto ----------
+   Tanggal tidak diulang di sini (sudah di sampul dan bagian Acara); di desktop nama juga sudah ada di panel kiri. */
 .hero{padding:58px 0 40px;overflow:hidden}
 .hero>.kicker{position:relative;z-index:1}
 .hero .ph{margin-top:26px;aspect-ratio:4/5}
 .hero .ph::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#7a332233 0%,transparent 20%,transparent 45%,#7a3322e6 85%,var(--tera) 100%);pointer-events:none}
 .hero .names{position:relative;margin:-84px 0 0;padding:0 20px;font-size:clamp(48px,14vw,66px);line-height:1.04;text-shadow:0 2px 22px #4a1c1166}
-.hero .date{margin-top:14px;line-height:1.9}
 .cue{position:relative;width:1px;height:44px;margin:24px auto 0;background:linear-gradient(var(--ink-line),transparent)}
 .cue svg{position:absolute;left:50%;top:0;width:9px;height:9px;translate:-50% -50%;color:var(--ink)}
 .motion .cue svg{animation:cue 2.6s cubic-bezier(.5,0,.5,1) infinite}
@@ -392,6 +392,7 @@ footer a{color:var(--ink)}
   .stage .ph{height:min(60vh,560px);aspect-ratio:3/4}
   .stage .names{margin-top:30px;font-size:clamp(48px,4.4vw,72px);line-height:1}
   .stage .kicker{margin-top:16px}
+  .hero .names{display:none}
   main{margin:0;max-width:none;box-shadow:-24px 0 60px #1e0a0466}
   /* tombol musik di pojok panel kiri, tidak menutupi isi undangan */
   .music{right:calc(var(--col) + 20px)}
@@ -440,7 +441,6 @@ footer a{color:var(--ink)}
       <div class="kicker rv">Bismillahirrahmanirrahim</div>
       <div class="ph zoom rv" style="--d:.1s" data-cap="Hari H"><img src="../foto/galeri-5.jpg" alt="Laras dan Bima di pelaminan" style="object-position:50% 30%"></div>
       <h2 class="names rv" id="h-hero" style="--d:.25s;--nd:.4s">Laras <i>&amp;</i> Bima</h2>
-      <div class="kicker date rv" style="--d:.35s">Sabtu, 12 Desember 2026<br>Denpasar, Bali</div>
       <div class="cue" aria-hidden="true"><svg><use href="#tr-s"/></svg></div>
     </section>
     <div class="band" aria-hidden="true"></div>
