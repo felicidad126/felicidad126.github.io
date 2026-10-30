@@ -781,6 +781,18 @@ function clearSky() {
       const s = star.getBoundingClientRect();
       star.style.visibility = keep.some((k) => s.left < k.r && k.l < s.right && s.top < k.b && k.t < s.bottom) ? "hidden" : "";
     }
+    // Bunga gugur melintas setinggi layar: lajurnya digeser ke tepi bila jangkauan ayunan + putarannya
+    // mengenai teks/foto, dan disembunyikan bila celah di tepi terlalu sempit (layar sempit, nama panjang).
+    const box = sky.getBoundingClientRect();
+    if (!keep.length || !box.width) continue;
+    const L = Math.min(...keep.map((k) => k.l)) - box.left, R = Math.max(...keep.map((k) => k.r)) - box.left;
+    for (const fall of sky.querySelectorAll(":scope > .fall")) {
+      const pct = +(fall.dataset.x ??= parseFloat(fall.style.left));
+      const reach = parseFloat(fall.style.getPropertyValue("--sw")) + 0.71 * parseFloat(fall.firstElementChild.style.width);
+      const x = pct < 50 ? Math.min((box.width * pct) / 100, L - 2 - reach) : Math.max((box.width * pct) / 100, R + 2 + reach);
+      fall.style.left = `${x.toFixed(1)}px`;
+      fall.style.display = x < 2 || x > box.width - 2 ? "none" : "";
+    }
   }
 }
 const layoutNames = () => { fitNames(); clearSky(); };
