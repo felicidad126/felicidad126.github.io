@@ -767,9 +767,9 @@ const fitNames = () => { $$(".gate .names, .stage .names, .hero .names, .person 
 function clearSky() {
   const settled = (el, r) => { const m = new DOMMatrixReadOnly(getComputedStyle(el).transform); return { l: r.left - m.e, r: r.right - m.e, t: r.top - m.f, b: r.bottom - m.f }; };
   for (const sky of $$("[data-sky]")) {
-    const keep = $$(".kicker, .names, .to, .frame, .btn", sky.parentElement).map((el) => {
-      const pad = el.matches(".frame") ? 12 : 4;
-      const box = el.matches(".frame, .btn") ? el.getBoundingClientRect() : (() => { const rg = document.createRange(); rg.selectNodeContents(el); return rg.getBoundingClientRect(); })();
+    const keep = $$(".kicker, .names, .to, .frame, .kn, .btn", sky.parentElement).map((el) => {
+      const pad = el.matches(".frame, .kn") ? 2 : 4;
+      const box = el.matches(".frame, .kn, .btn") ? el.getBoundingClientRect() : (() => { const rg = document.createRange(); rg.selectNodeContents(el); return rg.getBoundingClientRect(); })();
       const r = settled(el, box);
       return box.width ? { l: r.l - pad, r: r.r + pad, t: r.t - pad, b: r.b + pad } : null;
     }).filter(Boolean);
