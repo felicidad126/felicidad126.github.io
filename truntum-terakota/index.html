@@ -114,7 +114,9 @@ a{color:inherit}
 .js .gate{position:fixed;inset:0}
 .gate-in{position:relative;min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:max(34px,env(safe-area-inset-top)) 24px max(30px,env(safe-area-inset-bottom))}
 .gate .frame{margin-top:18px}
-.gate .ph{height:clamp(200px,44svh,430px);aspect-ratio:3/4}
+/* Lebar ditulis eksplisit dari tinggi (3:4): Safari/WebKit tidak memakai aspect-ratio untuk lebar alami,
+   sehingga bingkai melebar penuh dan foto terdorong ke kiri. */
+.gate .ph{--ph:clamp(200px,44svh,430px);height:var(--ph);width:calc(var(--ph) * .75);max-width:100%;margin-inline:auto}
 .gate .names{font-size:clamp(44px,13vw,68px);line-height:1;margin:24px 0 0;max-width:100%;letter-spacing:-.01em}
 .gate .date{margin-top:12px}
 .gate .divider{margin:18px auto 14px}
@@ -127,7 +129,7 @@ a{color:inherit}
 /* Layar pendek (mis. iPhone SE): foto & jarak dipadatkan supaya tombol tetap terlihat tanpa menggulir. */
 @media (max-height:700px){
   .gate-in{padding-top:max(22px,env(safe-area-inset-top));padding-bottom:20px}
-  .gate .ph{height:38svh}
+  .gate .ph{--ph:38svh}
   .gate .names{margin-top:16px}
   .gate .divider{margin:12px auto 10px}
   #openBtn{margin-top:16px}
@@ -136,7 +138,7 @@ a{color:inherit}
 @media (max-height:580px){
   .gate-in{padding-top:max(16px,env(safe-area-inset-top));padding-bottom:14px}
   .gate .frame{margin-top:12px}
-  .gate .ph{height:30svh}
+  .gate .ph{--ph:30svh}
   .gate .names{margin-top:12px}
   .gate .date{margin-top:8px}
   .gate .divider{margin:8px auto 6px}
@@ -390,7 +392,7 @@ footer a{color:var(--ink)}
 @media (min-width:960px){
   .shell{display:grid;grid-template-columns:minmax(0,1fr) var(--col)}
   .stage{position:sticky;top:0;height:100vh;height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;background:var(--grain),radial-gradient(90% 70% at 50% 30%,#8f412a 0%,transparent 70%),var(--tera);color:var(--ink);text-align:center}
-  .stage .ph{height:min(60vh,560px);aspect-ratio:3/4}
+  .stage .ph{--ph:min(60vh,560px);height:var(--ph);width:calc(var(--ph) * .75);max-width:100%;margin-inline:auto}
   .stage .names{margin-top:30px;font-size:clamp(48px,4.4vw,72px);line-height:1}
   .stage .kicker{margin-top:16px}
   .hero .names{display:none}
