@@ -136,7 +136,7 @@ Empat tema baru, masing-masing dibuat dari nol (tiga tema lama tidak diubah):
 |---|---|---|---|
 | [**Truntum Terakota**](truntum-terakota/) | Bingkai foto dengan aksen motif truntum, panel menempel di desktop | Tema adat modern (bagian 3), palet berani (bagian 1) | Terakota tua + tinta putih |
 | [**Edisi Monokrom**](edisi-monokrom/) | Edisi spesial majalah fashion: sampul, daftar isi, spread selebar layar | Tipografi editorial, Joy (split-screen), Riley & Grey, Bliss & Bone | Hitam-putih + aksen marmer |
-| [**Amplop Linen**](amplop-linen/) | Amplop bersegel lilin, lalu delapan kartu die-cut yang digeser | Greenvelope/Paperless Post, vellum, die-cut, kertas bertekstur | Quiet luxury netral |
+| [**Amplop Linen**](amplop-linen/) | Amplop bersegel lilin, lalu sembilan kartu die-cut yang digeser | Greenvelope/Paperless Post, vellum, die-cut, kertas bertekstur | Quiet luxury netral |
 | [**Biru Kabut**](biru-kabut/) | Minimalis gaya Swiss: grid ketat, bagian bernomor, linimasa acara | Riset Binus/ITB, teknologi.id, CSS scroll-driven animations (bagian 6) | Biru pastel + abu |
 
 Semua tema baru punya motion yang menyesuaikan konsepnya dan tetap menghormati `prefers-reduced-motion` (`?motion=full` memaksa animasi penuh).
