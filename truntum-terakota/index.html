@@ -118,7 +118,7 @@ a{color:inherit}
 .gate .names{font-size:clamp(44px,13vw,68px);line-height:1;margin:24px 0 0;max-width:100%;letter-spacing:-.01em}
 .gate .date{margin-top:12px}
 .gate .divider{margin:18px auto 14px}
-.to{margin:0;font-size:13px;line-height:1.6;color:var(--ink-2)}
+.to{margin:0;max-width:100%;font-size:13px;line-height:1.6;color:var(--ink-2)}
 .to b{display:block;margin-top:4px;font:italic 400 24px/1.3 var(--serif);color:var(--ink);overflow-wrap:anywhere}
 #openBtn{margin-top:22px}
 .gate.opening{transform:translateY(-100%);transition:transform 1.15s cubic-bezier(.75,0,.2,1) .3s;pointer-events:none}
@@ -131,6 +131,16 @@ a{color:inherit}
   .gate .names{margin-top:16px}
   .gate .divider{margin:12px auto 10px}
   #openBtn{margin-top:16px}
+}
+/* Lebih pendek lagi (mis. 320x500, 360x560): foto 30svh dan jarak lebih rapat. */
+@media (max-height:580px){
+  .gate-in{padding-top:max(16px,env(safe-area-inset-top));padding-bottom:14px}
+  .gate .frame{margin-top:12px}
+  .gate .ph{height:30svh}
+  .gate .names{margin-top:12px}
+  .gate .date{margin-top:8px}
+  .gate .divider{margin:8px auto 6px}
+  #openBtn{margin-top:12px}
 }
 
 /* ---------- kerangka: satu kolom; di desktop ada panel tetap di kiri ---------- */
@@ -747,7 +757,8 @@ function fitLine(el, ratio = 0.6) {
   while (fs > min && el.scrollWidth > el.clientWidth + 1) el.style.fontSize = `${(fs = Math.max(min, fs - 1))}px`;
   el.style.whiteSpace = el.scrollWidth > el.clientWidth + 1 ? "normal" : "";
 }
-const fitNames = () => $$(".gate .names, .stage .names, .hero .names, .person h3, .closing .names").forEach((el) => fitLine(el));
+// Nama tamu ikut dikecilkan (paling kecil 70%) sebelum turun baris, supaya tombol sampul tetap terlihat di layar pendek.
+const fitNames = () => { $$(".gate .names, .stage .names, .hero .names, .person h3, .closing .names").forEach((el) => fitLine(el)); fitLine($("#guest"), 0.7); };
 fitNames();
 document.fonts?.ready.then(fitNames);
 let fitRaf = 0;
