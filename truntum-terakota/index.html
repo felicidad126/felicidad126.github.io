@@ -933,9 +933,11 @@ const Lightbox = (() => {
     lastFocus = document.activeElement;
     show(Math.max(0, LB_ITEMS.findIndex((x) => x.src.endsWith(src.split("/").pop()))));
     lb.classList.add("open");
+    // Halaman di belakang foto tidak ikut tergulir (scroll mouse/trackpad).
+    root.style.overflow = "hidden";
     $(".x", lb).focus();
   }
-  function close() { lb.classList.remove("open"); lastFocus?.focus?.(); }
+  function close() { lb.classList.remove("open"); root.style.overflow = ""; lastFocus?.focus?.(); }
   $(".x", lb).onclick = close;
   $(".prev", lb).onclick = () => show(i - 1);
   $(".next", lb).onclick = () => show(i + 1);
