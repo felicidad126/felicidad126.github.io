@@ -248,6 +248,11 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
 .pparents{margin:6px 0 0;font:italic 14px/1.45 var(--f-serif);color:var(--ink-2)}
 .ig{display:inline-flex;align-items:center;gap:5px;margin-top:6px;min-height:32px;font:13px/1 var(--f-serif);color:var(--ink);text-decoration:none;border-bottom:1px solid #3b322b4d}
 .ig svg{width:14px;height:14px}
+/* Handle Instagram kedua mempelai sejajar di bawah, walau nama/orang tua salah satunya lebih panjang. */
+.pair>.person{align-self:stretch}
+.person figcaption{flex:1;display:flex;flex-direction:column}
+.person .pparents{margin-bottom:6px}
+.person .ig{align-self:center;margin-top:auto}
 .c-couple .lead{margin-top:6px}
 
 /* 4 · Foto: map kertas oat dengan takik ibu jari, berisi cetakan foto */
@@ -542,7 +547,8 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
           <div class="pair">
             <figure class="person">
               <div class="window"><img src="../foto/mempelai-wanita.jpg" alt="Laras, mempelai wanita" style="object-position:50% 22%" loading="lazy" decoding="async"></div>
-              <figcaption><h3 class="pname">Laras</h3><p class="pfull">Larasati Pramesti</p><p class="pparents">Putri dari Bapak Wiryo Hadi &amp; Ibu Sekar Arum</p></figcaption>
+              <figcaption><h3 class="pname">Laras</h3><p class="pfull">Larasati Pramesti</p><p class="pparents">Putri dari Bapak Wiryo Hadi &amp; Ibu Sekar Arum</p>
+                <a class="ig" href="https://instagram.com/laras.contoh" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor"/></svg>laras.contoh</a></figcaption>
             </figure>
             <span class="amp" aria-hidden="true">&amp;</span>
             <figure class="person">
