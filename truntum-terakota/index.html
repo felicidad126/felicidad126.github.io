@@ -731,7 +731,9 @@ setInterval(tick, 1000);
 const rvIO = new IntersectionObserver((es) => {
   for (const e of es) if (e.isIntersecting) { e.target.classList.add("in"); rvIO.unobserve(e.target); }
 }, { threshold: 0.12, rootMargin: "0px 0px -6% 0px" });
-const startReveal = () => $$(".rv, .band").forEach((n) => rvIO.observe(n));
+// Elemen yang hanya disembunyikan secara visual (judul pembuka di desktop, 1×1px) tidak pernah terdeteksi masuk layar,
+// jadi langsung ditandai tampil, bukan diamati.
+const startReveal = () => $$(".rv, .band").forEach((n) => (n.getBoundingClientRect().width > 1 ? rvIO.observe(n) : n.classList.add("in")));
 
 // Kata pada nama dibungkus (.w) supaya bisa naik satu per satu; "&" (<i>) tetap, ikut dihitung urutannya.
 function splitWords(el) {
@@ -788,9 +790,16 @@ function clearSky() {
     const box = sky.getBoundingClientRect();
     if (!keep.length || !box.width) continue;
     const L = Math.min(...keep.map((k) => k.l)) - box.left, R = Math.max(...keep.map((k) => k.r)) - box.left;
+    // Di layar sempit (HP) bunga dan ayunannya diperkecil supaya tetap muat di celah tepi yang sempit.
+    const narrow = box.width < 480;
     for (const fall of sky.querySelectorAll(":scope > .fall")) {
+      const svg = fall.firstElementChild;
       const pct = +(fall.dataset.x ??= parseFloat(fall.style.left));
-      const reach = parseFloat(fall.style.getPropertyValue("--sw")) + 0.71 * parseFloat(fall.firstElementChild.style.width);
+      const sw = +(fall.dataset.sw ??= parseFloat(fall.style.getPropertyValue("--sw"))) * (narrow ? 0.4 : 1);
+      const size = +(fall.dataset.size ??= parseFloat(svg.style.width)) * (narrow ? 0.7 : 1);
+      fall.style.setProperty("--sw", `${sw.toFixed(1)}px`);
+      svg.style.width = svg.style.height = `${size.toFixed(1)}px`;
+      const reach = sw + 0.71 * size;
       const x = pct < 50 ? Math.min((box.width * pct) / 100, L - 2 - reach) : Math.max((box.width * pct) / 100, R + 2 + reach);
       fall.style.left = `${x.toFixed(1)}px`;
       fall.style.display = x < 2 || x > box.width - 2 ? "none" : "";
