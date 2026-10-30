@@ -77,8 +77,9 @@ html.locked,html.locked body{overflow:hidden}
 .mast-in .amp{font-style:italic;font-weight:400;margin:0 .07em 0 .05em}
 .cv-tag{position:relative;display:flex;justify-content:space-between;margin:.7cqh 0 0;padding-top:.9cqh;color:var(--ink);font:italic 500 max(11px,min(3.4cqw,1.8cqh))/1.2 var(--serif)}
 .cv-lines{position:relative;z-index:0;list-style:none;margin:4.2cqh 0 0;padding:0;max-width:52cqw;text-shadow:0 1px 14px #14131299}
-/* Bokeh daun di kiri atas foto terang: bayangan gelap lembut di belakang cover lines supaya teks putih tetap terbaca. */
-.cv-lines::before{content:"";position:absolute;z-index:-1;inset:-3cqh -20cqw -5cqh -6cqw;background:linear-gradient(90deg,#141312b3 0,#1413128c 55%,#14131200);-webkit-mask-image:linear-gradient(180deg,#0000,#000 3cqh,#000 calc(100% - 5cqh),#0000);mask-image:linear-gradient(180deg,#0000,#000 3cqh,#000 calc(100% - 5cqh),#0000)}
+/* Bokeh daun di kiri atas foto terang: bayangan gelap lembut di belakang cover lines supaya teks putih tetap terbaca.
+   Peralihan dari kepala sampul yang terang dibuat panjang dan melandai supaya tidak membentuk garis. */
+.cv-lines::before{content:"";position:absolute;z-index:-1;inset:-8cqh -20cqw -5cqh -6cqw;background:linear-gradient(90deg,#141312b3 0,#1413128c 55%,#14131200);-webkit-mask-image:linear-gradient(180deg,#0000,#00000012 1.8cqh,#00000047 3.6cqh,#00000094 5.4cqh,#000000d4 7.2cqh,#000 9.0cqh,#000 calc(100% - 5cqh),#0000);mask-image:linear-gradient(180deg,#0000,#00000012 1.8cqh,#00000047 3.6cqh,#00000094 5.4cqh,#000000d4 7.2cqh,#000 9.0cqh,#000 calc(100% - 5cqh),#0000)}
 .cv-lead{display:block;font:italic 400 min(10.5cqw,5.4cqh)/.95 var(--serif);letter-spacing:-.02em;margin-bottom:1.6cqh}
 .cv-lines li{padding:1cqh 0;border-top:1px solid #f4f1ec80}
 .cv-lines li:first-child{border-top:0;padding-top:0}
