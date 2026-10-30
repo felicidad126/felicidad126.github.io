@@ -648,8 +648,8 @@ const bloom = (cls) => `<svg class="bloom ${cls}" viewBox="-12 -12 24 24" aria-h
 $$(".divider").forEach((d) => (d.innerHTML = `<i></i>${use("tr-s")}${bloom("b")}${use("tr-s")}<i></i>`));
 // Bunga di keempat sudut bingkai
 $$(".frame").forEach((f) => f.insertAdjacentHTML("beforeend", ["tl", "tr", "bl", "br"].map((p) => bloom(`kn ${p}`)).join("")));
-// Taburan seperti bintang: posisi dari seed (sama tiap kali dibuka), hanya di pita atas dan tepi kiri/kanan
-// supaya tidak menimpa foto dan teks. [jumlah, seed]
+// Taburan seperti bintang: posisi dari seed (sama tiap kali dibuka), di pita atas dan tepi kiri/kanan.
+// Bintang yang tetap jatuh di atas teks atau foto disembunyikan clearSky(). [jumlah, seed]
 const SKY = { gate: [30, 7], stage: [30, 11] };
 const rng = (seed) => () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646;
 for (const sky of $$("[data-sky]")) {
@@ -760,10 +760,31 @@ function fitLine(el, ratio = 0.6) {
 }
 // Nama tamu ikut dikecilkan (paling kecil 70%) sebelum turun baris, supaya tombol sampul tetap terlihat di layar pendek.
 const fitNames = () => { $$(".gate .names, .stage .names, .hero .names, .person h3, .closing .names").forEach((el) => fitLine(el)); fitLine($("#guest"), 0.7); };
-fitNames();
-document.fonts?.ready.then(fitNames);
+// Bintang taburan yang menimpa teks, foto (termasuk bunga sudutnya), atau tombol disembunyikan. Letak teks
+// bergantung ukuran layar dan panjang nama, jadi dihitung ulang tiap kali tata letak berubah. Pergeseran
+// animasi masuk (.gi) dikurangkan supaya yang diukur posisi akhirnya.
+function clearSky() {
+  const settled = (el, r) => { const m = new DOMMatrixReadOnly(getComputedStyle(el).transform); return { l: r.left - m.e, r: r.right - m.e, t: r.top - m.f, b: r.bottom - m.f }; };
+  for (const sky of $$("[data-sky]")) {
+    const keep = $$(".kicker, .names, .to, .frame, .btn", sky.parentElement).map((el) => {
+      const pad = el.matches(".frame") ? 12 : 4;
+      const box = el.matches(".frame, .btn") ? el.getBoundingClientRect() : (() => { const rg = document.createRange(); rg.selectNodeContents(el); return rg.getBoundingClientRect(); })();
+      const r = settled(el, box);
+      return box.width ? { l: r.l - pad, r: r.r + pad, t: r.t - pad, b: r.b + pad } : null;
+    }).filter(Boolean);
+    for (const star of sky.querySelectorAll(":scope > svg")) {
+      const s = star.getBoundingClientRect();
+      star.style.visibility = keep.some((k) => s.left < k.r && k.l < s.right && s.top < k.b && k.t < s.bottom) ? "hidden" : "";
+    }
+  }
+}
+const layoutNames = () => { fitNames(); clearSky(); };
+layoutNames();
+// Font Google dimuat saat pertama dipakai (mis. Fraunces italic untuk nama tamu), bisa setelah fonts.ready.
+document.fonts?.ready.then(layoutNames);
+document.fonts?.addEventListener?.("loadingdone", layoutNames);
 let fitRaf = 0;
-addEventListener("resize", () => { cancelAnimationFrame(fitRaf); fitRaf = requestAnimationFrame(fitNames); });
+addEventListener("resize", () => { cancelAnimationFrame(fitRaf); fitRaf = requestAnimationFrame(layoutNames); });
 
 /* ---------- buka undangan ---------- */
 const gate = $("#gate"), shell = $(".shell");
@@ -776,7 +797,7 @@ function openInvite(instant) {
   shell.inert = false;
   $(".stage").classList.add("play");
   $("#music").classList.add("show");
-  fitNames();
+  layoutNames();
   if (instant || !MOTION) { gate.classList.add("gone"); startReveal(); return; }
   gate.classList.add("opening");
   setTimeout(startReveal, 650);
