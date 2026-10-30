@@ -52,7 +52,8 @@ html.locked,html.locked body{overflow:hidden}
 .cv-front,.cv-side{grid-area:1/1}
 .cv-front{position:relative;overflow:hidden;container-type:size;color:var(--paper)}
 .cv-photo{position:absolute;inset:0;margin:0}
-.cv-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 58%}
+/* --lift (diisi JS): foto diperbesar bertumpu di bawah supaya wajah naik di atas blok nama tamu yang tinggi. */
+.cv-photo img{width:100%;height:calc(100% + var(--lift,0px));margin-top:calc(var(--lift,0px) * -1);object-fit:cover;object-position:50% 58%}
 /* Atas terang untuk masthead hitam, kiri dan bawah gelap untuk teks putih. Gradasi atas ikut turun bila
    kepala sampul lebih tinggi (masthead dua baris), gradasi bawah ikut naik bila blok nama tamu naik (nama
    panjang di layar pendek); --head dan --card diisi JS dengan tinggi kedua blok itu. */
@@ -491,7 +492,7 @@ textarea.inp{resize:vertical;min-height:96px;font-size:19px;line-height:1.5}
 <section class="cover" id="cover" aria-label="Sampul undangan">
   <div class="spread" id="spread">
     <div class="cv-front">
-      <figure class="cv-photo"><img class="bw" src="../foto/cover.jpg" srcset="../foto/cover.jpg 800w, ../foto/hd/cover.jpg 1073w" sizes="(min-width:900px) 600px, 100vw" alt="Laras dan Bima berjalan bergandengan tangan di jalan setapak berpohon" fetchpriority="high"></figure>
+      <figure class="cv-photo"><img class="bw" data-faces=".54 .66" src="../foto/cover.jpg" srcset="../foto/cover.jpg 800w, ../foto/hd/cover.jpg 1073w" sizes="(min-width:900px) 600px, 100vw" alt="Laras dan Bima berjalan bergandengan tangan di jalan setapak berpohon" fetchpriority="high"></figure>
       <div class="cv-in">
         <p class="cv-issue"><span>Edisi spesial</span><span>Vol. 12</span><span>Harga: doa restu</span></p>
         <h1 class="mast"><span class="sr">Laras &amp; Bima</span><span class="mast-in" id="mast" aria-hidden="true">LARAS&amp;BIMA</span></h1>
@@ -886,15 +887,33 @@ function fitLine(el, ratio = 0.6) {
 // dan gradasi gelap bawah sampul ikut naik setinggi blok itu.
 // Pergeseran animasi masuk blok nama tamu dikurangkan supaya yang diukur posisi akhirnya.
 const SPREAD = matchMedia("(min-width:900px) and (min-height:560px)");
+// Wajah di foto sampul (rentang tinggi data-faces, 0–1 dari atas foto) tidak boleh tertutup blok nama tamu.
+// Bila tertutup (nama tamu sangat panjang di layar pendek), foto diperbesar bertumpu di bawah sampai wajah
+// naik di atas blok itu; bila tidak tertolong dengan pembesaran wajar (mis. HP mendatar), foto dibiarkan.
+function faceLift(top) {
+  const img = $(".cv-photo img"), front = $(".cv-front");
+  const [f0, f1] = (img.dataset.faces || "").split(" ").map(Number);
+  const iw = img.naturalWidth, ih = img.naturalHeight, W = front.clientWidth, H = front.clientHeight;
+  if (!iw || !f1) return { lift: 0 };
+  const py = parseFloat(getComputedStyle(img).objectPosition.split(" ")[1]) / 100, y0 = front.getBoundingClientRect().top;
+  const y = (lift, f) => { const h = ih * Math.max(W / iw, (H + lift) / ih); return y0 - lift + (H + lift - h) * py + f * h; };
+  for (let lift = 0; lift <= H * 0.3; lift += 4) if (y(lift, f1) <= top - 8) return { lift, faceTop: y(lift, f0) };
+  return { lift: 0 };
+}
 function fitCoverLines() {
   const lines = $$(".cv-lines li").slice(2).reverse(), card = $(".cv-card"), front = $(".cv-front");
   lines.forEach((li) => { li.hidden = false; });
   front.style.removeProperty("--card");
+  front.style.removeProperty("--lift");
   if (SPREAD.matches) return;
   const top = card.getBoundingClientRect().top - new DOMMatrix(getComputedStyle(card).transform).m42;
   front.style.setProperty("--card", `${Math.round(front.getBoundingClientRect().bottom - top)}px`);
+  const { lift, faceTop } = faceLift(top);
+  if (lift) front.style.setProperty("--lift", `${lift}px`);
+  // Cover line yang menabrak blok nama tamu, atau wajah yang baru dinaikkan, disembunyikan dari bawah.
+  const limit = lift ? Math.min(top - 12, faceTop - 8) : top - 12;
   for (const li of lines) {
-    if ($(".cv-lines").getBoundingClientRect().bottom <= top - 12) break;
+    if ($(".cv-lines").getBoundingClientRect().bottom <= limit) break;
     li.hidden = true;
   }
 }
@@ -906,6 +925,7 @@ const layoutCover = () => {
   fitCoverLines();
 };
 layoutCover();
+$(".cv-photo img").addEventListener("load", layoutCover);
 document.fonts?.ready.then(layoutCover);
 document.fonts?.addEventListener?.("loadingdone", layoutCover);
 {
