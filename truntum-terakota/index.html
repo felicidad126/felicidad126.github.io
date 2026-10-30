@@ -208,7 +208,8 @@ main{max-width:var(--col);margin:0 auto;outline:none;background:var(--tera)}
 .g:first-child .ph{aspect-ratio:auto;height:100%}
 .g:last-child .ph{aspect-ratio:16/9}
 .g .ph::after{content:"";position:absolute;inset:6px;border:1px solid #f6ecdf80;pointer-events:none}
-.g figcaption{position:absolute;left:15px;bottom:13px;font:600 9.5px/1 var(--sans);letter-spacing:.22em;text-transform:uppercase;color:var(--ink);text-shadow:0 1px 8px #000a;pointer-events:none}
+/* keterangan di atas gradasi gelap (di dalam garis bingkai) supaya terbaca juga di foto yang terang */
+.g figcaption{position:absolute;left:6px;right:6px;bottom:6px;padding:30px 9px 8px;background:linear-gradient(180deg,#2a0d0600,#2a0d06a6 55%,#2a0d06d9);font:600 11px/1.2 var(--sans);letter-spacing:.2em;text-transform:uppercase;text-align:left;color:var(--ink);text-shadow:0 1px 6px #0008;pointer-events:none}
 .hint{margin:18px 0 0;font-size:13px;color:var(--brown-2)}
 
 /* ---------- formulir (kartu balasan di latar pasir) ---------- */
