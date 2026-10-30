@@ -1149,48 +1149,89 @@ $$("[data-copy]").forEach((b) => b.addEventListener("click", async () => {
 }));
 
 /* ---------- Musik: piano elektrik lembut, dirender di browser (tanpa file audio) ---------- */
-const Music = {
-  audio: null, playing: false,
-  render() {
-    const rate = 22050, beat = 60 / 72, bars = 8, len = Math.round(rate * beat * 4 * bars);
-    const data = new Float32Array(len);
-    const hz = (n) => 440 * 2 ** ((n - 69) / 12);
-    // Nada ditulis melingkar (indeks modulo panjang) supaya ekor nada menyambung saat diulang.
+// Dirender sekali saat halaman dimuat lewat OfflineAudioContext (di luar thread utama), lalu diputar lewat
+// <audio loop>. Tombol "Buka Undangan" cukup memutarnya, jadi animasi buka sampul tidak tertahan.
+const Music = (() => {
+  const RATE = 22050, BEAT = 60 / 72, BARS = 8, LOOP = BEAT * 4 * BARS;
+  const hz = (n) => 440 * 2 ** ((n - 69) / 12);
+  const audio = new Audio();
+  audio.loop = true;
+  audio.volume = 0.6;
+  audio.preload = "auto";
+  audio.setAttribute("playsinline", "");
+  let url = null, wanted = false, unlocked = false;
+
+  // WAV 16-bit mono.
+  function wavUrl(data) {
+    const n = data.length, v = new DataView(new ArrayBuffer(44 + n * 2));
+    const str = (o, s) => [...s].forEach((c, i) => v.setUint8(o + i, c.charCodeAt(0)));
+    str(0, "RIFF"); v.setUint32(4, 36 + n * 2, true); str(8, "WAVEfmt "); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+    v.setUint32(24, RATE, true); v.setUint32(28, RATE * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true); str(36, "data"); v.setUint32(40, n * 2, true);
+    for (let i = 0; i < n; i++) v.setInt16(44 + i * 2, Math.max(-1, Math.min(1, data[i])) * 32767, true);
+    return URL.createObjectURL(new Blob([v], { type: "audio/wav" }));
+  }
+  const SILENT = wavUrl(new Float32Array(2205));
+
+  // Dua putaran dirender lalu putaran kedua diambil, supaya ekor nada menyambung mulus saat diulang.
+  async function render() {
+    const Off = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+    if (!Off) return null;
+    const ctx = new Off(1, Math.ceil(RATE * LOOP * 2), RATE);
+    // Tremolo pelan 4,5 Hz.
+    const out = ctx.createGain(), lfo = ctx.createOscillator(), depth = ctx.createGain();
+    out.gain.value = 0.9; lfo.frequency.value = 4.5; depth.gain.value = 0.063;
+    lfo.connect(depth).connect(out.gain); lfo.start(0);
+    out.connect(ctx.destination);
+    // Nada dasar + harmonik ke-2 dan ke-3 yang cepat meluruh; meluruh pelan selama ditahan, cepat sesudahnya.
     const note = (midi, at, dur, vel) => {
-      const f = hz(midi), start = Math.round(at * rate), n = Math.round((dur + 1.6) * rate);
-      for (let i = 0; i < n; i++) {
-        const t = i / rate;
-        const env = Math.min(1, t / .006) * Math.exp(-t * (t < dur ? 1.1 : 5));
-        const tone = Math.sin(2 * Math.PI * f * t) + .22 * Math.sin(4 * Math.PI * f * t) * Math.exp(-t * 7) + .06 * Math.sin(6 * Math.PI * f * t) * Math.exp(-t * 12);
-        data[(start + i) % len] += tone * env * vel * (1 + .07 * Math.sin(2 * Math.PI * 4.5 * t));
-      }
+      const env = ctx.createGain();
+      env.gain.setValueAtTime(0, at);
+      env.gain.linearRampToValueAtTime(vel, at + 0.006);
+      env.gain.setTargetAtTime(0, at + 0.006, 1 / 1.1);
+      env.gain.setTargetAtTime(0, at + dur, 0.12);
+      env.connect(out);
+      [[1, 1, 0], [2, 0.22, 7], [3, 0.06, 12]].forEach(([mul, amp, dec]) => {
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.frequency.value = hz(midi) * mul;
+        g.gain.setValueAtTime(amp, at);
+        if (dec) g.gain.setTargetAtTime(0, at, 1 / dec);
+        o.connect(g).connect(env);
+        o.start(at); o.stop(at + dur + 1.2);
+      });
     };
     // Fmaj7, Em7, Dm7, Cmaj7 lalu Fmaj7, Em7, Dm7, G6/9: progresi turun yang tenang.
     const chords = [[53, 57, 60, 64], [52, 55, 59, 62], [50, 53, 57, 60], [48, 52, 55, 59], [53, 57, 60, 64], [52, 55, 59, 62], [50, 53, 57, 60], [43, 50, 52, 57]];
     const mel = [[72, 0], [69, 1.5], [67, 2.5], [71, 4], [67, 5.5], [69, 8], [65, 9.5], [64, 10.5], [67, 12], [64, 14], [72, 16], [74, 17.5], [71, 18.5], [69, 20], [67, 21.5], [65, 24], [64, 25.5], [62, 26.5], [67, 28], [69, 30]];
-    chords.forEach((c, b) => c.forEach((m, k) => note(m, (b * 4 + k * .06) * beat, 3.6 * beat, .085)));
-    mel.forEach(([m, at]) => note(m, at * beat, 1.2 * beat, .11));
-    // WAV 16-bit mono.
-    const buf = new ArrayBuffer(44 + len * 2), v = new DataView(buf);
-    const str = (o, s) => [...s].forEach((c, i) => v.setUint8(o + i, c.charCodeAt(0)));
-    str(0, "RIFF"); v.setUint32(4, 36 + len * 2, true); str(8, "WAVEfmt "); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
-    v.setUint32(24, rate, true); v.setUint32(28, rate * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true); str(36, "data"); v.setUint32(40, len * 2, true);
-    for (let i = 0; i < len; i++) v.setInt16(44 + i * 2, Math.max(-1, Math.min(1, data[i] * .9)) * 32767, true);
-    return URL.createObjectURL(new Blob([buf], { type: "audio/wav" }));
-  },
-  async play() {
-    if (!this.audio) { this.audio = new Audio(this.render()); this.audio.loop = true; this.audio.volume = .6; }
-    try { await this.audio.play(); this.set(true); } catch { this.set(false); }
-  },
-  pause() { this.audio?.pause(); this.set(false); },
-  set(on) {
-    this.playing = on;
+    for (let loop = 0; loop < 2; loop++) {
+      const t0 = loop * LOOP;
+      chords.forEach((c, b) => c.forEach((m, k) => note(m, t0 + (b * 4 + k * 0.06) * BEAT, 3.6 * BEAT, 0.085)));
+      mel.forEach(([m, at]) => note(m, t0 + at * BEAT, 1.2 * BEAT, 0.11));
+    }
+    const buf = await new Promise((res, rej) => { ctx.oncomplete = (e) => res(e.renderedBuffer); const p = ctx.startRendering(); if (p && p.catch) p.catch(rej); });
+    const len = Math.round(RATE * LOOP);
+    return wavUrl(buf.getChannelData(0).slice(len, len * 2));
+  }
+  const ready = render().then((u) => { url = u; if (unlocked && u) { audio.src = u; if (wanted) audio.play().catch(() => {}); } }).catch(() => {});
+
+  function set(on) {
+    wanted = on;
     const b = $("#musicBtn");
     b.classList.toggle("playing", on);
     b.setAttribute("aria-pressed", String(on));
     b.setAttribute("aria-label", on ? "Jeda musik" : "Putar musik");
-  },
-};
+  }
+  return {
+    ready, audio,
+    get playing() { return wanted; },
+    // Ketukan pertama membuka izin putar di elemen audio (pakai audio senyap bila musik belum selesai dirender).
+    play() {
+      set(true);
+      if (!unlocked) { unlocked = true; audio.src = url || SILENT; }
+      audio.play().catch((e) => { if (e.name === "NotAllowedError") set(false); });
+    },
+    pause() { set(false); audio.pause(); },
+  };
+})();
 $("#musicBtn").addEventListener("click", () => (Music.playing ? Music.pause() : Music.play()));
 document.addEventListener("visibilitychange", () => { if (document.hidden && Music.playing) Music.audio.pause(); else if (!document.hidden && Music.playing) Music.audio.play().catch(() => {}); });
 </script>
