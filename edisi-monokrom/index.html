@@ -53,35 +53,47 @@ html.locked,html.locked body{overflow:hidden}
 .cv-front{position:relative;overflow:hidden;container-type:size;color:var(--paper)}
 .cv-photo{position:absolute;inset:0;margin:0}
 .cv-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 58%}
-/* Atas terang untuk masthead hitam, kiri dan bawah gelap untuk teks putih. */
+/* Atas terang untuk masthead hitam, kiri dan bawah gelap untuk teks putih. Gradasi atas ikut turun bila
+   kepala sampul lebih tinggi (masthead dua baris), gradasi bawah ikut naik bila blok nama tamu naik (nama
+   panjang di layar pendek); --head dan --card diisi JS dengan tinggi kedua blok itu. */
 .cv-photo::after{content:"";position:absolute;inset:0;background:
-  linear-gradient(180deg,#f4f1ecf2 0,#f4f1ecc4 13%,#f4f1ec00 24%),
+  linear-gradient(180deg,#f4f1ecf2 0,#f4f1ecc4 max(13%,var(--head,0px)),#f4f1ec00 max(24%,var(--head,0px) + 11%)),
   linear-gradient(90deg,#141312a6 0,#14131200 58%),
-  linear-gradient(0deg,#141312f2 0,#141312a8 24%,#14131200 48%)}
+  linear-gradient(0deg,#141312f2 0,#141312a8 max(24%,var(--card,0px) + 28px),#14131200 max(48%,var(--card,0px) + 24%))}
 .cv-in{position:relative;height:100%;display:flex;flex-direction:column;padding:max(12px,env(safe-area-inset-top)) 5.5cqw 0}
-.cv-issue{position:relative;display:flex;justify-content:space-between;gap:8px;margin:0;padding-bottom:1.1cqh;color:var(--ink);font:600 min(2.6cqw,1.35cqh)/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;white-space:nowrap}
+.cv-issue{position:relative;display:flex;justify-content:space-between;gap:8px;margin:0;padding-bottom:1.1cqh;color:var(--ink);font:600 max(11px,min(2.6cqw,1.35cqh))/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;white-space:nowrap}
 /* Garis sampul digambar dari kiri ke kanan saat sampul muncul. */
+@container (width < 350px){.cv-issue{font-stretch:80%}}
 .cv-issue::after,.cv-tag::before{content:"";position:absolute;left:0;right:0;height:1px;background:var(--ink);transform-origin:0 50%}
 .cv-issue::after{bottom:0}
 .cv-tag::before{top:0}
 .mast{margin:.9cqh 0 0;color:var(--ink);font-weight:900;font-family:var(--serif);line-height:.84;text-align:center;overflow:hidden;padding-bottom:.06em}
 .mast-in{display:inline-block;white-space:nowrap;letter-spacing:-.035em;font-size:60px}
 .mast-in span{display:inline-block}
+/* Nama mempelai panjang: masthead dua baris (dipecah sebelum "&"). Tiap baris memotong hurufnya sendiri
+   supaya huruf baris pertama tidak terlihat di baris kedua saat naik. */
+.mast-in.two{line-height:.92}
+.mast-in.two .ml{display:block;clip-path:inset(-1em -1em -.06em)}
 .mast-in .amp{font-style:italic;font-weight:400;margin:0 .07em 0 .05em}
-.cv-tag{position:relative;display:flex;justify-content:space-between;margin:.7cqh 0 0;padding-top:.9cqh;color:var(--ink);font:italic 500 min(3.4cqw,1.8cqh)/1.2 var(--serif)}
-.cv-lines{list-style:none;margin:4.2cqh 0 0;padding:0;max-width:52cqw;text-shadow:0 1px 14px #14131299}
+.cv-tag{position:relative;display:flex;justify-content:space-between;margin:.7cqh 0 0;padding-top:.9cqh;color:var(--ink);font:italic 500 max(11px,min(3.4cqw,1.8cqh))/1.2 var(--serif)}
+.cv-lines{position:relative;z-index:0;list-style:none;margin:4.2cqh 0 0;padding:0;max-width:52cqw;text-shadow:0 1px 14px #14131299}
+/* Bokeh daun di kiri atas foto terang: bayangan gelap lembut di belakang cover lines supaya teks putih tetap terbaca. */
+.cv-lines::before{content:"";position:absolute;z-index:-1;inset:-3cqh -20cqw -5cqh -6cqw;background:linear-gradient(90deg,#141312b3 0,#1413128c 55%,#14131200);-webkit-mask-image:linear-gradient(180deg,#0000,#000 3cqh,#000 calc(100% - 5cqh),#0000);mask-image:linear-gradient(180deg,#0000,#000 3cqh,#000 calc(100% - 5cqh),#0000)}
 .cv-lead{display:block;font:italic 400 min(10.5cqw,5.4cqh)/.95 var(--serif);letter-spacing:-.02em;margin-bottom:1.6cqh}
 .cv-lines li{padding:1cqh 0;border-top:1px solid #f4f1ec80}
 .cv-lines li:first-child{border-top:0;padding-top:0}
-.cv-lines b{display:block;font:800 min(4.5cqw,2.35cqh)/1.05 var(--sans);font-stretch:72%;letter-spacing:.01em;text-transform:uppercase}
-.cv-lines small{display:block;margin-top:.3em;font:500 min(3.1cqw,1.6cqh)/1.25 var(--sans);letter-spacing:.04em;opacity:.92}
-.cv-side{z-index:2;align-self:end;display:grid;grid-template-columns:1fr auto;align-items:end;gap:4px 14px;padding:0 5.5vw max(18px,env(safe-area-inset-bottom));color:var(--paper)}
-.cv-for{grid-column:1/-1;margin:0;font:600 10.5px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--grey-l)}
+.cv-lines b{display:block;font:800 max(11px,min(4.5cqw,2.35cqh))/1.05 var(--sans);font-stretch:72%;letter-spacing:.01em;text-transform:uppercase}
+.cv-lines small{display:block;margin-top:.3em;font:500 max(11px,min(3.1cqw,1.6cqh))/1.25 var(--sans);letter-spacing:.04em;opacity:.92}
+.cv-side{z-index:2;align-self:end;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:4px 14px;padding:0 5.5vw max(18px,env(safe-area-inset-bottom));color:var(--paper)}
+.cv-for{grid-column:1/-1;margin:0;font:600 11px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--paper)}
 .cv-to{margin:6px 0 0;font:400 13px/1.3 var(--sans);color:#e2ddd6}
 .cv-guest{margin:2px 0 14px;font:italic 400 clamp(26px,7.6vw,40px)/1.05 var(--serif);overflow-wrap:anywhere}
 .cv-note,.cv-num{display:none}
-.cv-side .btn{grid-column:1}
-.code{grid-column:2;grid-row:1/3;align-self:end;margin:0 0 2px;background:var(--paper);color:var(--ink);padding:6px 7px 4px;text-align:center;font:600 7.5px/1 var(--sans);letter-spacing:.14em}
+/* Blok nama tamu selebar sampul (barcode di baris tombol), supaya nama panjang tidak terlalu banyak baris. */
+.cv-card{grid-column:1/-1}
+/* Padding tombol menyempit di layar 320px supaya "Buka Undangan" tetap satu baris. */
+.cv-side .btn{grid-column:1;padding-inline:min(26px,5vw);white-space:nowrap}
+.code{grid-column:2;grid-row:2;align-self:end;margin:0 0 2px;background:var(--paper);color:var(--ink);padding:6px 7px 4px;text-align:center;font:600 7.5px/1 var(--sans);letter-spacing:.14em}
 .code svg{display:block;width:64px;height:30px;margin-bottom:4px}
 .cv-page{display:none}
 
@@ -104,7 +116,7 @@ html.locked,html.locked body{overflow:hidden}
   .cv-front{box-shadow:inset -22px 0 26px -18px #000a}
   .cv-in{padding:2.2cqh 5.5cqw 0}
   .cv-side{position:relative;align-self:stretch;align-items:stretch;display:flex;flex-direction:column;padding:calc(var(--pw) * .075);background:var(--paper);color:var(--ink);box-shadow:inset 22px 0 26px -18px #1413124d;container-type:inline-size}
-  .cv-page{display:flex;justify-content:space-between;margin:0;padding-bottom:10px;border-bottom:1px solid var(--ink);font:600 10px/1 var(--sans);letter-spacing:.18em;text-transform:uppercase}
+  .cv-page{display:flex;justify-content:space-between;margin:0;padding-bottom:10px;border-bottom:1px solid var(--ink);font:600 11px/1 var(--sans);letter-spacing:.18em;text-transform:uppercase}
   .cv-card{margin:7cqw 0 0;padding:10px;background:var(--marble) center/cover}
   .cv-card-in{background:var(--paper);padding:7cqw 6cqw 6cqw;text-align:center}
   .cv-for{color:var(--grey)}
@@ -129,7 +141,7 @@ html.locked,html.locked body{overflow:hidden}
 @keyframes cast{45%{opacity:1}}
 .cover.fade{opacity:0;transition:opacity .5s ease;pointer-events:none}
 /* Masuk: huruf masthead naik satu per satu dari balik garis, foto sedikit menjauh, cover lines berurutan. */
-.motion .mast-in span{animation:up .95s cubic-bezier(.2,.75,.2,1) both;animation-delay:calc(var(--i) * 55ms + .25s)}
+.motion .mast-in span:not(.ml){animation:up .95s cubic-bezier(.2,.75,.2,1) both;animation-delay:calc(var(--i) * 55ms + .25s)}
 .motion .cv-photo img{animation:settle 2.8s cubic-bezier(.2,.7,.2,1) both}
 .motion .cv-issue::after,.motion .cv-tag::before{animation:draw 1.1s cubic-bezier(.6,0,.2,1) .1s both}
 .motion .cv-tag span{animation:fadeup .8s ease both .8s}
@@ -149,7 +161,7 @@ html.locked,html.locked body{overflow:hidden}
 .ink{--bg:var(--ink);color:var(--paper)}
 /* Header berjalan menempel di atas selama halamannya dibaca, lalu didorong header halaman berikutnya;
    garis bawahnya ikut terisi sesuai posisi baca (scroll-driven, bila browser mendukung). */
-.run{position:sticky;top:0;z-index:6;display:grid;grid-template-columns:1fr auto 1fr;align-items:end;gap:12px;margin:0 0 clamp(40px,7vw,96px);padding:12px 0 9px;background:var(--bg);font:600 10.5px/1.2 var(--sans);letter-spacing:.18em;text-transform:uppercase}
+.run{position:sticky;top:0;z-index:6;display:grid;grid-template-columns:1fr auto 1fr;align-items:end;gap:12px;margin:0 0 clamp(40px,7vw,96px);padding:12px 0 9px;background:var(--bg);font:600 11px/1.2 var(--sans);letter-spacing:.18em;text-transform:uppercase}
 .run::before,.run::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1.5px;background:currentColor;transform-origin:0 50%}
 .run::after{height:4px;bottom:-1.25px;transform:scaleX(0)}
 .run span:nth-child(2){text-align:center}
@@ -193,7 +205,7 @@ html.locked,html.locked body{overflow:hidden}
 .verse p{margin:0;font:italic 400 clamp(19px,2.2vw,23px)/1.5 var(--serif)}
 .verse cite{display:block;margin-top:12px;font:normal 600 11px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase}
 .sign{margin:22px 0 0;font:italic 500 30px/1 var(--serif)}
-.sign small{display:block;margin-top:8px;font:normal 600 10.5px/1.3 var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--grey)}
+.sign small{display:block;margin-top:8px;font:normal 600 11px/1.3 var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--grey)}
 .ed-ph{margin:0 0 22px}
 .ed-ph img{width:100%;aspect-ratio:16/10;object-fit:cover;object-position:50% 38%}
 @media (min-width:900px){
@@ -209,7 +221,8 @@ html.locked,html.locked body{overflow:hidden}
 .pname{margin:.1em 0 .25em;font:500 clamp(48px,7.8vw,104px)/.92 var(--serif);letter-spacing:-.03em}
 .parents{margin:0 0 26px;font:500 15px/1.5 var(--sans);color:var(--grey)}
 .pq{margin:0;padding-left:20px;border-left:2px solid var(--ink);font:italic 400 clamp(21px,2.4vw,27px)/1.38 var(--serif);max-width:30ch}
-.prof .lnk{margin-top:26px}
+.ig{display:inline-flex;align-items:center;gap:8px;margin:26px 0 0;font:600 13px/1 var(--sans);letter-spacing:.06em;color:var(--grey)}
+.ig svg{width:16px;height:16px;flex:none}
 .amp-big{margin:clamp(20px,3vw,24px) 0 0;text-align:center;font:italic 400 clamp(120px,22vw,300px)/.7 var(--serif);color:var(--ink);user-select:none}
 @media (min-width:900px){
   .prof figure{grid-column:1/6}
@@ -248,7 +261,7 @@ html.locked,html.locked body{overflow:hidden}
 .cd div{padding:clamp(14px,2.6vw,26px) 4px;text-align:center;border-left:1px solid #f4f1ec59}
 .cd div:first-child{border-left:0}
 .cd b{display:block;font:500 clamp(40px,8.4vw,104px)/1 var(--serif);font-variant-numeric:lining-nums tabular-nums;letter-spacing:-.02em}
-.cd small{display:block;margin-top:8px;font:600 10.5px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--grey-l)}
+.cd small{display:block;margin-top:8px;font:600 11px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--grey-l)}
 .cd p{grid-column:1/-1;margin:0;padding:26px 0;text-align:center;font:italic 400 clamp(22px,3vw,32px)/1.3 var(--serif)}
 .ev{padding-top:18px;border-top:1.5px solid var(--paper)}
 .ev-t{margin:0;font:400 clamp(92px,12.5vw,176px)/.82 var(--serif);letter-spacing:-.045em;font-variant-numeric:lining-nums tabular-nums}
@@ -300,15 +313,15 @@ html.locked,html.locked body{overflow:hidden}
 /* Hal. 09: kupon balasan */
 .cp-intro p.body{margin:0;font:400 18px/1.6 var(--serif);max-width:36ch}
 .coupon{position:relative;margin-top:14px;border:2px dashed var(--ink);background:var(--paper);padding:clamp(26px,4.4vw,48px) clamp(20px,4vw,48px) clamp(22px,3.6vw,40px)}
-.cut{position:absolute;top:-11px;left:22px;display:flex;align-items:center;gap:8px;padding:0 10px;background:var(--paper-2);font:700 10px/20px var(--sans);letter-spacing:.2em;text-transform:uppercase}
+.cut{position:absolute;top:-11px;left:22px;display:flex;align-items:center;gap:8px;padding:0 10px;background:var(--paper-2);font:700 11px/20px var(--sans);letter-spacing:.2em;text-transform:uppercase}
 .cut svg{width:18px;height:18px}
 .cp-head{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:26px;padding-bottom:16px;border-bottom:1px solid var(--ink)}
 .cp-head h3{margin:0;font:500 clamp(30px,4vw,44px)/1 var(--serif);letter-spacing:-.02em}
 .cp-head h3 em{font-style:italic;font-weight:400}
-.cp-head p{margin:8px 0 0;font:600 10.5px/1.3 var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--grey)}
+.cp-head p{margin:8px 0 0;font:600 11px/1.3 var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--grey)}
 .stampbox{flex:none;width:72px;height:84px;border:1px solid var(--ink);display:grid;place-items:center;padding:6px;text-align:center;font:700 8px/1.35 var(--sans);letter-spacing:.14em;text-transform:uppercase;outline:1px solid var(--ink);outline-offset:-5px}
 .fld{display:block;margin:0 0 24px;border:0;padding:0}
-.fld>span,.fld legend{display:block;padding:0;margin-bottom:6px;font:700 10.5px/1.3 var(--sans);letter-spacing:.2em;text-transform:uppercase}
+.fld>span,.fld legend{display:block;padding:0;margin-bottom:6px;font:700 11px/1.3 var(--sans);letter-spacing:.2em;text-transform:uppercase}
 .inp{width:100%;border:0;border-bottom:1.5px solid var(--ink);border-radius:0;background:transparent;padding:6px 0 8px;font:400 21px/1.3 var(--serif);color:var(--ink)}
 .inp::placeholder{color:#726c65;font-style:italic}
 .inp:focus{outline:none;border-bottom-width:3px;padding-bottom:6.5px}
@@ -339,7 +352,7 @@ textarea.inp{resize:vertical;min-height:96px;font-size:19px;line-height:1.5}
 .letters{columns:2 300px;column-gap:clamp(24px,3vw,44px)}
 .ltr{break-inside:avoid;margin:0 0 26px;padding-top:14px;border-top:1px solid var(--ink)}
 .ltr blockquote{margin:0;font:italic 400 clamp(19px,1.9vw,21px)/1.5 var(--serif)}
-.ltr footer{display:flex;justify-content:space-between;gap:12px;margin-top:12px;font:700 10.5px/1.3 var(--sans);letter-spacing:.18em;text-transform:uppercase}
+.ltr footer{display:flex;justify-content:space-between;gap:12px;margin-top:12px;font:700 11px/1.3 var(--sans);letter-spacing:.18em;text-transform:uppercase}
 .ltr footer span{color:var(--grey);font-weight:600}
 .lt-count{margin:0 0 18px;font:600 11px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--grey)}
 .wform{margin-top:26px}
@@ -383,7 +396,7 @@ textarea.inp{resize:vertical;min-height:96px;font-size:19px;line-height:1.5}
 .colo-in{background:var(--paper);color:var(--ink);padding:clamp(22px,3vw,34px)}
 .colo h3{margin:0 0 14px;padding-bottom:10px;border-bottom:1.5px solid var(--ink);font:500 30px/1 var(--serif);letter-spacing:-.01em}
 .colo dl{margin:0;font:400 14px/1.45 var(--sans)}
-.colo dt{margin-top:12px;font:700 10px/1.3 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--grey)}
+.colo dt{margin-top:12px;font:700 11px/1.3 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--grey)}
 .colo dd{margin:3px 0 0}
 .colo .code{position:static;display:inline-block;margin:20px 0 0;padding:0;background:none;text-align:left}
 .colo .code svg{width:96px;height:40px}
@@ -556,6 +569,7 @@ textarea.inp{resize:vertical;min-height:96px;font-size:19px;line-height:1.5}
           <h3 class="pname" data-split="mask" id="h-bride">Larasati <em>Pramesti</em></h3>
           <p class="parents">Putri dari Bapak Wiryo Hadi &amp; Ibu Sekar Arum</p>
           <blockquote class="pq" data-split="rise">“Saya kira kami hanya sama-sama terlambat. Ternyata kami sedang menuju tempat yang sama.”</blockquote>
+          <p class="ig"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>@laras.contoh</p>
         </div>
       </article>
       <p class="amp-big rv" aria-hidden="true">&amp;</p>
@@ -566,7 +580,7 @@ textarea.inp{resize:vertical;min-height:96px;font-size:19px;line-height:1.5}
           <h3 class="pname" data-split="mask" id="h-groom">Bima Arya <em>Nugraha</em></h3>
           <p class="parents">Putra dari Bapak Arif Hidayat &amp; Ibu Siti Aminah</p>
           <blockquote class="pq" data-split="rise">“Hari itu kursinya tinggal dua. Sejak itu saya tidak pernah ingin duduk di tempat lain.”</blockquote>
-          <a class="lnk" href="https://instagram.com/bima.contoh" target="_blank" rel="noopener">@bima.contoh <span aria-hidden="true">↗</span></a>
+          <p class="ig"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>@bima.contoh</p>
         </div>
       </article>
     </div>
@@ -671,13 +685,13 @@ textarea.inp{resize:vertical;min-height:96px;font-size:19px;line-height:1.5}
         <div class="coupon rv" id="coupon">
           <span class="cut" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M8.6 7.6 20 17M8.6 16.4 20 7"/></svg>Gunting di sini</span>
           <div class="cp-head">
-            <div><h3>Ya, saya <em>datang</em>.</h3><p>Kupon No. 1212 · berlaku untuk edisi ini</p></div>
+            <div><h3 id="cpHead">Konfirmasi <em>kehadiran</em>.</h3><p>Kupon No. 1212 · berlaku untuk edisi ini</p></div>
             <div class="stampbox" aria-hidden="true">Prangko tidak perlu</div>
           </div>
           <form id="rsvpForm" novalidate>
             <label class="fld"><span>Nama</span><input class="inp" name="name" maxlength="80" autocomplete="name" placeholder="Nama lengkap" required></label>
             <fieldset class="fld">
-              <legend>Kehadiran</legend>
+              <legend>Kehadiran · pilih satu</legend>
               <div class="ticks">
                 <label class="tick"><input type="radio" name="att" value="hadir" required>Ya, saya akan hadir</label>
                 <label class="tick"><input type="radio" name="att" value="tidak">Maaf, tidak dapat hadir</label>
@@ -802,7 +816,7 @@ textarea.inp{resize:vertical;min-height:96px;font-size:19px;line-height:1.5}
 </div>
 
 <script>
-const EVENT = {"bride":{"name":"Laras","fullName":"Larasati Pramesti","parents":"Putri dari Bapak Wiryo Hadi & Ibu Sekar Arum"},"groom":{"name":"Bima","fullName":"Bima Arya Nugraha","parents":"Putra dari Bapak Arif Hidayat & Ibu Siti Aminah","instagram":"bima.contoh"},"events":{"akad":{"startsAt":"2026-12-12T09:00:00+08:00","endsAt":"2026-12-12T10:30:00+08:00","timezone":"Asia/Makassar","venue":"Rumah Keluarga Mempelai Wanita","address":"Jl. Contoh Raya No. 1, Denpasar, Bali","lat":-8.65,"lng":115.2167},"resepsi":{"startsAt":"2026-12-12T19:00:00+08:00","endsAt":"2026-12-12T21:30:00+08:00","timezone":"Asia/Makassar","venue":"Gedung Serbaguna Contoh","address":"Jl. Contoh Kedua No. 2, Denpasar, Bali","lat":-8.66,"lng":115.21}}};
+const EVENT = {"bride":{"name":"Laras","fullName":"Larasati Pramesti","parents":"Putri dari Bapak Wiryo Hadi & Ibu Sekar Arum","instagram":"laras.contoh"},"groom":{"name":"Bima","fullName":"Bima Arya Nugraha","parents":"Putra dari Bapak Arif Hidayat & Ibu Siti Aminah","instagram":"bima.contoh"},"events":{"akad":{"startsAt":"2026-12-12T09:00:00+08:00","endsAt":"2026-12-12T10:30:00+08:00","timezone":"Asia/Makassar","venue":"Rumah Keluarga Mempelai Wanita","address":"Jl. Contoh Raya No. 1, Denpasar, Bali","lat":-8.65,"lng":115.2167},"resepsi":{"startsAt":"2026-12-12T19:00:00+08:00","endsAt":"2026-12-12T21:30:00+08:00","timezone":"Asia/Makassar","venue":"Gedung Serbaguna Contoh","address":"Jl. Contoh Kedua No. 2, Denpasar, Bali","lat":-8.66,"lng":115.21}}};
 const PHOTOS = [
   { src: "galeri-6.jpg", cap: "Dua langkah, satu arah", alt: "Laras dan Bima berjalan di pematang sawah terasering saat senja" },
   { src: "galeri-1.jpg", cap: "Awal cerita", alt: "Laras dan Bima berjalan di jalan setapak berpohon kelapa" },
@@ -831,16 +845,72 @@ $$('input[name="name"]').forEach((i) => { i.value = GUEST; });
 
 /* ---------- Masthead: huruf dipecah untuk animasi, ukurannya dipas selebar sampul ---------- */
 const mast = $("#mast");
-mast.innerHTML = [...mast.textContent].map((c, i) => `<span${c === "&" ? ' class="amp"' : ""} style="--i:${i}">${c === "&" ? "&amp;" : c}</span>`).join("");
+// Huruf dikelompokkan per baris (.ml), sebelum dan sesudah "&", untuk mode dua baris.
+const MAST = mast.textContent, AMP = MAST.indexOf("&");
+const letters = (s, o) => [...s].map((c, i) => `<span${c === "&" ? ' class="amp"' : ""} style="--i:${i + o}">${c === "&" ? "&amp;" : c}</span>`).join("");
+mast.innerHTML = AMP > 0 ? `<span class="ml">${letters(MAST.slice(0, AMP), 0)}</span><span class="ml">${letters(MAST.slice(AMP), AMP)}</span>` : letters(MAST, 0);
 function fitMast() {
   const box = mast.parentElement;
+  mast.classList.remove("two");
   mast.style.fontSize = "100px";
-  const w = mast.getBoundingClientRect().width;
-  if (w) mast.style.fontSize = `${Math.floor(100 * box.clientWidth / w * 10) / 10}px`;
+  let w = mast.getBoundingClientRect().width;
+  if (!w) return;
+  // Nama mempelai panjang (lebih dari ±10 kali ukuran hurufnya) dibuat dua baris supaya masthead tetap besar.
+  if (AMP > 0 && w > 1000) { mast.classList.add("two"); w = mast.getBoundingClientRect().width; }
+  mast.style.fontSize = `${Math.floor(100 * box.clientWidth / w * 10) / 10}px`;
 }
-fitMast();
-document.fonts?.ready.then(fitMast);
-addEventListener("resize", fitMast);
+
+// Teks dikecilkan dulu (paling kecil `ratio` dari ukuran asalnya) sebelum turun baris.
+function fitLine(el, ratio = 0.6) {
+  if (el.clientWidth < 2) return;
+  el.style.fontSize = "";
+  el.style.whiteSpace = "nowrap";
+  const max = parseFloat(getComputedStyle(el).fontSize), min = max * ratio;
+  let fs = max;
+  while (fs > min && el.scrollWidth > el.clientWidth + 1) el.style.fontSize = `${(fs = Math.max(min, fs - 1))}px`;
+  const fits = el.scrollWidth <= el.clientWidth + 1;
+  el.style.whiteSpace = "";
+  if (fits) return;
+  // Tetap tidak muat satu baris: hurufnya dibesarkan lagi selama jumlah barisnya tidak bertambah.
+  const rows = () => Math.round(el.offsetHeight / parseFloat(getComputedStyle(el).lineHeight));
+  const n = rows();
+  while (fs < max) {
+    el.style.fontSize = `${Math.min(max, fs + 1)}px`;
+    if (rows() > n) break;
+    fs = Math.min(max, fs + 1);
+  }
+  el.style.fontSize = `${fs}px`;
+}
+// Di HP, cover line dari bawah disembunyikan bila menabrak blok nama tamu (layar pendek, nama tamu panjang),
+// dan gradasi gelap bawah sampul ikut naik setinggi blok itu.
+// Pergeseran animasi masuk blok nama tamu dikurangkan supaya yang diukur posisi akhirnya.
+const SPREAD = matchMedia("(min-width:900px) and (min-height:560px)");
+function fitCoverLines() {
+  const lines = $$(".cv-lines li").slice(2).reverse(), card = $(".cv-card"), front = $(".cv-front");
+  lines.forEach((li) => { li.hidden = false; });
+  front.style.removeProperty("--card");
+  if (SPREAD.matches) return;
+  const top = card.getBoundingClientRect().top - new DOMMatrix(getComputedStyle(card).transform).m42;
+  front.style.setProperty("--card", `${Math.round(front.getBoundingClientRect().bottom - top)}px`);
+  for (const li of lines) {
+    if ($(".cv-lines").getBoundingClientRect().bottom <= top - 12) break;
+    li.hidden = true;
+  }
+}
+const layoutCover = () => {
+  fitMast();
+  fitLine($("#guest"), 0.7);  // nama tamu paling kecil 70%
+  const front = $(".cv-front");
+  front.style.setProperty("--head", `${Math.round($(".cv-tag").getBoundingClientRect().bottom - front.getBoundingClientRect().top)}px`);
+  fitCoverLines();
+};
+layoutCover();
+document.fonts?.ready.then(layoutCover);
+document.fonts?.addEventListener?.("loadingdone", layoutCover);
+{
+  let raf = 0;
+  addEventListener("resize", () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(layoutCover); });
+}
 
 /* ---------- Barcode dekoratif: pola batang tetap dari tanggal + inisial ---------- */
 $$("svg.bars").forEach((svg) => {
@@ -1042,10 +1112,14 @@ document.addEventListener("keydown", (e) => {
 /* ---------- Kupon balasan (RSVP) ---------- */
 const rsvpForm = $("#rsvpForm");
 const countFld = $("#countFld");
+// Judul kupon mengikuti pilihan kehadiran; netral selama tamu belum memilih.
+const HEADS = { hadir: "Ya, saya <em>datang</em>.", tidak: "Maaf, saya <em>berhalangan</em>." };
+const setHead = (att) => { $("#cpHead").innerHTML = HEADS[att] || "Konfirmasi <em>kehadiran</em>."; };
 function syncCount() {
   const no = rsvpForm.att.value === "tidak";
   countFld.style.opacity = no ? ".4" : "";
   rsvpForm.count.disabled = no;
+  setHead(rsvpForm.att.value);
 }
 rsvpForm.addEventListener("change", syncCount);
 function showRsvp(r) {
@@ -1053,6 +1127,7 @@ function showRsvp(r) {
   rsvpForm.hidden = sent;
   $("#rsvpDone").hidden = !sent;
   if (!sent) return;
+  setHead(r.att);
   $("#rsvpMsg").textContent = r.att === "hadir"
     ? `Terima kasih, ${r.name}. Kursi untuk ${r.count} orang kami siapkan. Sampai jumpa pada 12 Desember.`
     : `Terima kasih, ${r.name}. Doa Anda tetap kami nantikan, di mana pun Anda berada.`;
@@ -1149,48 +1224,89 @@ $$("[data-copy]").forEach((b) => b.addEventListener("click", async () => {
 }));
 
 /* ---------- Musik: piano elektrik lembut, dirender di browser (tanpa file audio) ---------- */
-const Music = {
-  audio: null, playing: false,
-  render() {
-    const rate = 22050, beat = 60 / 72, bars = 8, len = Math.round(rate * beat * 4 * bars);
-    const data = new Float32Array(len);
-    const hz = (n) => 440 * 2 ** ((n - 69) / 12);
-    // Nada ditulis melingkar (indeks modulo panjang) supaya ekor nada menyambung saat diulang.
+// Dirender sekali saat halaman dimuat lewat OfflineAudioContext (di luar thread utama), lalu diputar lewat
+// <audio loop>. Tombol "Buka Undangan" cukup memutarnya, jadi animasi buka sampul tidak tertahan.
+const Music = (() => {
+  const RATE = 22050, BEAT = 60 / 72, BARS = 8, LOOP = BEAT * 4 * BARS;
+  const hz = (n) => 440 * 2 ** ((n - 69) / 12);
+  const audio = new Audio();
+  audio.loop = true;
+  audio.volume = 0.6;
+  audio.preload = "auto";
+  audio.setAttribute("playsinline", "");
+  let url = null, wanted = false, unlocked = false;
+
+  // WAV 16-bit mono.
+  function wavUrl(data) {
+    const n = data.length, v = new DataView(new ArrayBuffer(44 + n * 2));
+    const str = (o, s) => [...s].forEach((c, i) => v.setUint8(o + i, c.charCodeAt(0)));
+    str(0, "RIFF"); v.setUint32(4, 36 + n * 2, true); str(8, "WAVEfmt "); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+    v.setUint32(24, RATE, true); v.setUint32(28, RATE * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true); str(36, "data"); v.setUint32(40, n * 2, true);
+    for (let i = 0; i < n; i++) v.setInt16(44 + i * 2, Math.max(-1, Math.min(1, data[i])) * 32767, true);
+    return URL.createObjectURL(new Blob([v], { type: "audio/wav" }));
+  }
+  const SILENT = wavUrl(new Float32Array(2205));
+
+  // Dua putaran dirender lalu putaran kedua diambil, supaya ekor nada menyambung mulus saat diulang.
+  async function render() {
+    const Off = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+    if (!Off) return null;
+    const ctx = new Off(1, Math.ceil(RATE * LOOP * 2), RATE);
+    // Tremolo pelan 4,5 Hz.
+    const out = ctx.createGain(), lfo = ctx.createOscillator(), depth = ctx.createGain();
+    out.gain.value = 0.9; lfo.frequency.value = 4.5; depth.gain.value = 0.063;
+    lfo.connect(depth).connect(out.gain); lfo.start(0);
+    out.connect(ctx.destination);
+    // Nada dasar + harmonik ke-2 dan ke-3 yang cepat meluruh; meluruh pelan selama ditahan, cepat sesudahnya.
     const note = (midi, at, dur, vel) => {
-      const f = hz(midi), start = Math.round(at * rate), n = Math.round((dur + 1.6) * rate);
-      for (let i = 0; i < n; i++) {
-        const t = i / rate;
-        const env = Math.min(1, t / .006) * Math.exp(-t * (t < dur ? 1.1 : 5));
-        const tone = Math.sin(2 * Math.PI * f * t) + .22 * Math.sin(4 * Math.PI * f * t) * Math.exp(-t * 7) + .06 * Math.sin(6 * Math.PI * f * t) * Math.exp(-t * 12);
-        data[(start + i) % len] += tone * env * vel * (1 + .07 * Math.sin(2 * Math.PI * 4.5 * t));
-      }
+      const env = ctx.createGain();
+      env.gain.setValueAtTime(0, at);
+      env.gain.linearRampToValueAtTime(vel, at + 0.006);
+      env.gain.setTargetAtTime(0, at + 0.006, 1 / 1.1);
+      env.gain.setTargetAtTime(0, at + dur, 0.12);
+      env.connect(out);
+      [[1, 1, 0], [2, 0.22, 7], [3, 0.06, 12]].forEach(([mul, amp, dec]) => {
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.frequency.value = hz(midi) * mul;
+        g.gain.setValueAtTime(amp, at);
+        if (dec) g.gain.setTargetAtTime(0, at, 1 / dec);
+        o.connect(g).connect(env);
+        o.start(at); o.stop(at + dur + 1.2);
+      });
     };
     // Fmaj7, Em7, Dm7, Cmaj7 lalu Fmaj7, Em7, Dm7, G6/9: progresi turun yang tenang.
     const chords = [[53, 57, 60, 64], [52, 55, 59, 62], [50, 53, 57, 60], [48, 52, 55, 59], [53, 57, 60, 64], [52, 55, 59, 62], [50, 53, 57, 60], [43, 50, 52, 57]];
     const mel = [[72, 0], [69, 1.5], [67, 2.5], [71, 4], [67, 5.5], [69, 8], [65, 9.5], [64, 10.5], [67, 12], [64, 14], [72, 16], [74, 17.5], [71, 18.5], [69, 20], [67, 21.5], [65, 24], [64, 25.5], [62, 26.5], [67, 28], [69, 30]];
-    chords.forEach((c, b) => c.forEach((m, k) => note(m, (b * 4 + k * .06) * beat, 3.6 * beat, .085)));
-    mel.forEach(([m, at]) => note(m, at * beat, 1.2 * beat, .11));
-    // WAV 16-bit mono.
-    const buf = new ArrayBuffer(44 + len * 2), v = new DataView(buf);
-    const str = (o, s) => [...s].forEach((c, i) => v.setUint8(o + i, c.charCodeAt(0)));
-    str(0, "RIFF"); v.setUint32(4, 36 + len * 2, true); str(8, "WAVEfmt "); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
-    v.setUint32(24, rate, true); v.setUint32(28, rate * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true); str(36, "data"); v.setUint32(40, len * 2, true);
-    for (let i = 0; i < len; i++) v.setInt16(44 + i * 2, Math.max(-1, Math.min(1, data[i] * .9)) * 32767, true);
-    return URL.createObjectURL(new Blob([buf], { type: "audio/wav" }));
-  },
-  async play() {
-    if (!this.audio) { this.audio = new Audio(this.render()); this.audio.loop = true; this.audio.volume = .6; }
-    try { await this.audio.play(); this.set(true); } catch { this.set(false); }
-  },
-  pause() { this.audio?.pause(); this.set(false); },
-  set(on) {
-    this.playing = on;
+    for (let loop = 0; loop < 2; loop++) {
+      const t0 = loop * LOOP;
+      chords.forEach((c, b) => c.forEach((m, k) => note(m, t0 + (b * 4 + k * 0.06) * BEAT, 3.6 * BEAT, 0.085)));
+      mel.forEach(([m, at]) => note(m, t0 + at * BEAT, 1.2 * BEAT, 0.11));
+    }
+    const buf = await new Promise((res, rej) => { ctx.oncomplete = (e) => res(e.renderedBuffer); const p = ctx.startRendering(); if (p && p.catch) p.catch(rej); });
+    const len = Math.round(RATE * LOOP);
+    return wavUrl(buf.getChannelData(0).slice(len, len * 2));
+  }
+  const ready = render().then((u) => { url = u; if (unlocked && u) { audio.src = u; if (wanted) audio.play().catch(() => {}); } }).catch(() => {});
+
+  function set(on) {
+    wanted = on;
     const b = $("#musicBtn");
     b.classList.toggle("playing", on);
     b.setAttribute("aria-pressed", String(on));
     b.setAttribute("aria-label", on ? "Jeda musik" : "Putar musik");
-  },
-};
+  }
+  return {
+    ready, audio,
+    get playing() { return wanted; },
+    // Ketukan pertama membuka izin putar di elemen audio (pakai audio senyap bila musik belum selesai dirender).
+    play() {
+      set(true);
+      if (!unlocked) { unlocked = true; audio.src = url || SILENT; }
+      audio.play().catch((e) => { if (e.name === "NotAllowedError") set(false); });
+    },
+    pause() { set(false); audio.pause(); },
+  };
+})();
 $("#musicBtn").addEventListener("click", () => (Music.playing ? Music.pause() : Music.play()));
 document.addEventListener("visibilitychange", () => { if (document.hidden && Music.playing) Music.audio.pause(); else if (!document.hidden && Music.playing) Music.audio.play().catch(() => {}); });
 </script>
