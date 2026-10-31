@@ -61,7 +61,6 @@ body.locked .inv-canvas{min-height:100vh;min-height:100svh;background:var(--cove
 @media (hover:none){.lb .prev,.lb .next{display:none}}
 @media (prefers-reduced-motion:reduce){.lb.open{animation:none}.lb img.anim{transition:none}}
 .credits{max-width:520px;margin:0 auto;padding:18px 72px 84px;text-align:center;font:12px/1.6 "f-inter",system-ui,sans-serif;color:#59684f}
-.credits a{color:inherit}
 body.locked .credits{display:none}
 svg.sprig{width:100%;height:100%;display:block}
 /* widget */
@@ -406,7 +405,7 @@ function fitTexts() {
 // Keterangan foto contoh
 const credits = document.createElement("footer");
 credits.className = "credits";
-credits.innerHTML = 'Foto contoh dibuat dengan AI (Gemini). Bukan foto mempelai sebenarnya.<br>Tema lain: <a href="parallax-sway/">Parallax &amp; Sway</a> · <a href="garis-editorial/">Garis Editorial</a>';
+credits.innerHTML = 'Foto contoh dibuat dengan AI (Gemini). Bukan foto mempelai sebenarnya.';
 document.body.appendChild(credits);
 
 // Tab berputar di antara tombol lightbox yang terlihat (fokus tidak lolos ke halaman di belakangnya).
