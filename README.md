@@ -59,17 +59,17 @@ Font Fraunces dan Manrope dimuat dari Google Fonts, berlisensi SIL Open Font Lic
 
 # Edisi Monokrom — Preview Undangan Digital
 
-Tema kelima, di subfolder [`edisi-monokrom/`](edisi-monokrom/): undangan sebagai **edisi spesial majalah fashion**, hitam-putih dengan aksen marmer. Sampul majalah dengan cover lines dan nama tamu, daftar isi bernomor halaman, profil mempelai, feature kisah cinta, agenda dengan angka besar, portofolio foto, kupon balasan RSVP, surat pembaca, iklan baris untuk amplop digital, dan sampul belakang. Di desktop, dan di HP dalam posisi mendatar, sampul tampil sebagai spread dua halaman.
+Tema kelima, di subfolder [`edisi-monokrom/`](edisi-monokrom/): **lookbook fashion hitam-putih yang sinematik**, dengan cerita "dari monokrom ke warna". Tipografi Bodoni besar, foto selebar layar bernuansa cetak perak, gambar bunga bergaris tinta, dan sedikit marmer di balik kartu RSVP. Urutannya: sampul, salam, QS Ar-Rum 21, mempelai, kisah kami (2019 · 2023 · 2026), simpan tanggal, acara, lookbook foto, RSVP, ucapan, amplop digital, dan penutup berwarna penuh. Di desktop, dan di HP dalam posisi mendatar, sampul tampil sebagai spread dua halaman.
 
-- Motion: huruf masthead masuk bergantian, sampul berbalik seperti halaman majalah saat dibuka, foto disapu clip-path, ticker berjalan, angka agenda menghitung naik.
-- Foto ditampilkan hitam-putih; lightbox menampilkan versi HD berwarna.
-- Musik: loop piano elektrik lembut yang dirender di browser.
+- Motion: huruf nama naik satu per satu, saat dibuka sampul berganti seperti adegan film (bilah hitam menutup, kartu judul, lalu terbuka), foto tersingkap seperti tirai dan perlahan berwarna saat sampai di tengah layar, angka tanggal menggulung, dan lookbook bergeser ke samping mengikuti scroll di desktop.
+- Foto mulai hitam-putih lalu berwarna; foto penutup dan lightbox tampil berwarna penuh.
+- Musik: loop piano elektrik lembut yang dirender di browser saat halaman dimuat.
 
 - Lihat: https://felicidad126.github.io/edisi-monokrom/
 - Dengan nama tamu: https://felicidad126.github.io/edisi-monokrom/?to=Nama%20Tamu
 - Animasi penuh (abaikan setting reduced-motion): https://felicidad126.github.io/edisi-monokrom/?motion=full
 
-Font Bodoni Moda dan Archivo dimuat dari Google Fonts, berlisensi SIL Open Font License 1.1.
+Font Bodoni Moda dan Plus Jakarta Sans dimuat dari Google Fonts, berlisensi SIL Open Font License 1.1.
 
 ---
 

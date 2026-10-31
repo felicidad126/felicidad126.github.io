@@ -135,7 +135,7 @@ Empat tema baru, masing-masing dibuat dari nol (tiga tema lama tidak diubah):
 | Tema | Konsep | Referensi yang dipakai | Palet |
 |---|---|---|---|
 | [**Truntum Terakota**](truntum-terakota/) | Bingkai foto dengan aksen motif truntum, panel menempel di desktop | Tema adat modern (bagian 3), palet berani (bagian 1) | Terakota tua + tinta putih |
-| [**Edisi Monokrom**](edisi-monokrom/) | Edisi spesial majalah fashion: sampul, daftar isi, spread selebar layar | Tipografi editorial, Joy (split-screen), Riley & Grey, Bliss & Bone | Hitam-putih + aksen marmer |
+| [**Edisi Monokrom**](edisi-monokrom/) | Lookbook fashion sinematik: foto hitam-putih yang perlahan berwarna, tipografi Bodoni besar | Tipografi editorial, Joy (split-screen), Riley & Grey, Bliss & Bone (hitam-putih, marmer, flora) | Hitam-putih + aksen marmer |
 | [**Amplop Linen**](amplop-linen/) | Amplop bersegel lilin, lalu sembilan kartu die-cut yang digeser | Greenvelope/Paperless Post, vellum, die-cut, kertas bertekstur | Quiet luxury netral |
 | [**Biru Kabut**](biru-kabut/) | Pagi berkabut yang romantis: foto muncul dari kabut, panel kaca buram, ranting hydrangea | Riset Binus/ITB dan teknologi.id (modern simpel, tipografi elegan), lapisan transparan ala vellum | Biru pastel + abu |
 
