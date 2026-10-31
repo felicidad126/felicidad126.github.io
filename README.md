@@ -59,7 +59,7 @@ Font Fraunces dan Manrope dimuat dari Google Fonts, berlisensi SIL Open Font Lic
 
 # Edisi Monokrom — Preview Undangan Digital
 
-Tema kelima, di subfolder [`edisi-monokrom/`](edisi-monokrom/): undangan sebagai **edisi spesial majalah fashion**, hitam-putih dengan aksen marmer. Sampul majalah dengan cover lines dan nama tamu, daftar isi bernomor halaman, profil mempelai, feature kisah cinta, agenda dengan angka besar, portofolio foto, kupon balasan RSVP, surat pembaca, iklan baris untuk amplop digital, dan sampul belakang. Di desktop tampil sebagai spread selebar layar.
+Tema kelima, di subfolder [`edisi-monokrom/`](edisi-monokrom/): undangan sebagai **edisi spesial majalah fashion**, hitam-putih dengan aksen marmer. Sampul majalah dengan cover lines dan nama tamu, daftar isi bernomor halaman, profil mempelai, feature kisah cinta, agenda dengan angka besar, portofolio foto, kupon balasan RSVP, surat pembaca, iklan baris untuk amplop digital, dan sampul belakang. Di desktop, dan di HP dalam posisi mendatar, sampul tampil sebagai spread dua halaman.
 
 - Motion: huruf masthead masuk bergantian, sampul berbalik seperti halaman majalah saat dibuka, foto disapu clip-path, ticker berjalan, angka agenda menghitung naik.
 - Foto ditampilkan hitam-putih; lightbox menampilkan versi HD berwarna.

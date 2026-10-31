@@ -65,6 +65,7 @@ html.locked,html.locked body{overflow:hidden}
 .cv-issue{position:relative;display:flex;justify-content:space-between;gap:8px;margin:0;padding-bottom:1.1cqh;color:var(--ink);font:600 max(11px,min(2.6cqw,1.35cqh))/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;white-space:nowrap}
 /* Garis sampul digambar dari kiri ke kanan saat sampul muncul. */
 @container (width < 350px){.cv-issue{font-stretch:80%}}
+@container (width < 290px){.cv-issue{letter-spacing:.1em}.cv-issue span:nth-child(2){display:none}}
 .cv-issue::after,.cv-tag::before{content:"";position:absolute;left:0;right:0;height:1px;background:var(--ink);transform-origin:0 50%}
 .cv-issue::after{bottom:0}
 .cv-tag::before{top:0}
@@ -110,8 +111,9 @@ html.locked,html.locked body{overflow:hidden}
 .ink .btn-line:hover span{color:var(--ink)}
 .btn[disabled]{opacity:.55;cursor:wait}
 
-/* Desktop: sampul + halaman dalam terbuka berdampingan seperti majalah di atas meja. */
-@media (min-width:900px) and (min-height:560px){
+/* Desktop: sampul + halaman dalam terbuka berdampingan seperti majalah di atas meja. Layar pendek dan lebar
+   (HP mendatar) memakai susunan yang sama setinggi layar, supaya nama tamu tidak menutupi foto. */
+@media (min-width:900px) and (min-height:560px),(orientation:landscape) and (max-height:559px) and (min-width:560px){
   .cover{display:grid;place-items:center;background:var(--paper-2)}
   .spread{--pw:min(calc((100svh - 72px) * .75),calc(50vw - 44px),600px);--ph:calc(var(--pw) / .75);position:relative;inset:auto;grid-template-columns:var(--pw) var(--pw);height:var(--ph);box-shadow:0 40px 90px -30px #14131280,0 2px 6px #14131226}
   .cv-front,.cv-side{grid-area:auto}
@@ -131,6 +133,18 @@ html.locked,html.locked body{overflow:hidden}
   .cv-side .btn:hover{background:var(--ink-2)}
   .code{position:absolute;right:calc(var(--pw) * .075);bottom:calc(var(--pw) * .075);margin:0;padding:0;background:none}
   .code svg{width:84px;height:38px}
+}
+/* Layar pendek-lebar: halaman setinggi layar, kartu nama tamu lebih rapat, catatan dan barcode ditiadakan.
+   Bila halaman kanan tetap tidak muat, JS menyembunyikan angka 12.12 (.tight) lalu header halaman (.tighter). */
+@media (orientation:landscape) and (max-height:559px) and (min-width:560px){
+  .spread{--pw:min(calc(100svh * .75),calc(50vw - 16px));grid-template-rows:100%}
+  .cv-card{margin-top:5cqw}
+  .cv-card-in{padding:5cqw 5cqw 4.5cqw}
+  .cv-num{margin-bottom:14px;font-size:min(96px,20svh)}
+  .cv-side.tight .cv-num{display:none}
+  .cv-side.tight .btn{margin-top:auto}
+  .cv-side.tighter .cv-page{display:none}
+  .cv-note,.cv-side .code{display:none}
 }
 /* Membuka sampul: halaman diputar ke kiri seperti membalik majalah. Bayangan menggelap di halaman
    yang berputar, dan bayangan jatuh sebentar di daftar isi di bawahnya. */
@@ -883,38 +897,71 @@ function fitLine(el, ratio = 0.6) {
   }
   el.style.fontSize = `${fs}px`;
 }
-// Di HP, cover line dari bawah disembunyikan bila menabrak blok nama tamu (layar pendek, nama tamu panjang),
-// dan gradasi gelap bawah sampul ikut naik setinggi blok itu.
-// Pergeseran animasi masuk blok nama tamu dikurangkan supaya yang diukur posisi akhirnya.
-const SPREAD = matchMedia("(min-width:900px) and (min-height:560px)");
-// Wajah di foto sampul (rentang tinggi data-faces, 0–1 dari atas foto) tidak boleh tertutup blok nama tamu.
-// Bila tertutup (nama tamu sangat panjang di layar pendek), foto diperbesar bertumpu di bawah sampai wajah
-// naik di atas blok itu; bila tidak tertolong dengan pembesaran wajar (mis. HP mendatar), foto dibiarkan.
-function faceLift(top) {
+// Susunan dua halaman (lihat CSS): desktop, dan layar pendek-lebar seperti HP mendatar (SHORT).
+const SHORT_Q = "(orientation:landscape) and (max-height:559px) and (min-width:560px)";
+const SPREAD = matchMedia(`(min-width:900px) and (min-height:560px),${SHORT_Q}`), SHORT = matchMedia(SHORT_Q);
+// Posisi wajah di layar (rentang tinggi data-faces, 0–1 dari atas foto) bila foto diperbesar `lift` px dari bawah.
+function faceBand(lift = 0) {
   const img = $(".cv-photo img"), front = $(".cv-front");
   const [f0, f1] = (img.dataset.faces || "").split(" ").map(Number);
   const iw = img.naturalWidth, ih = img.naturalHeight, W = front.clientWidth, H = front.clientHeight;
-  if (!iw || !f1) return { lift: 0 };
-  const py = parseFloat(getComputedStyle(img).objectPosition.split(" ")[1]) / 100, y0 = front.getBoundingClientRect().top;
-  const y = (lift, f) => { const h = ih * Math.max(W / iw, (H + lift) / ih); return y0 - lift + (H + lift - h) * py + f * h; };
-  for (let lift = 0; lift <= H * 0.3; lift += 4) if (y(lift, f1) <= top - 8) return { lift, faceTop: y(lift, f0) };
+  if (!iw || !f1) return null;
+  const py = parseFloat(getComputedStyle(img).objectPosition.split(" ")[1]) / 100;
+  const h = ih * Math.max(W / iw, (H + lift) / ih), t = front.getBoundingClientRect().top - lift + (H + lift - h) * py;
+  return { top: t + f0 * h, bottom: t + f1 * h };
+}
+// Wajah tidak boleh tertutup blok nama tamu. Bila tertutup (nama tamu sangat panjang di layar pendek), foto
+// diperbesar bertumpu di bawah sampai wajah naik di atas blok itu; bila tidak tertolong dengan pembesaran wajar,
+// foto dibiarkan.
+function faceLift(top) {
+  for (let lift = 0, H = $(".cv-front").clientHeight; lift <= H * 0.3; lift += 4) {
+    const f = faceBand(lift);
+    if (!f) break;
+    if (f.bottom <= top - 8) return { lift, faceTop: f.top };
+  }
   return { lift: 0 };
 }
+// Di HP tegak, cover line dari bawah disembunyikan bila menabrak blok nama tamu (layar pendek, nama tamu panjang),
+// dan gradasi gelap bawah sampul ikut naik setinggi blok itu. Pergeseran animasi masuk blok nama tamu
+// dikurangkan supaya yang diukur posisi akhirnya.
 function fitCoverLines() {
   const lines = $$(".cv-lines li").slice(2).reverse(), card = $(".cv-card"), front = $(".cv-front");
   lines.forEach((li) => { li.hidden = false; });
   front.style.removeProperty("--card");
   front.style.removeProperty("--lift");
-  if (SPREAD.matches) return;
+  // Cover line disembunyikan dari bawah sampai tidak lagi melewati batas `limit`.
+  const clear = (limit) => {
+    for (const li of lines) {
+      if ($(".cv-lines").getBoundingClientRect().bottom <= limit) break;
+      li.hidden = true;
+    }
+  };
+  if (SPREAD.matches) {
+    // HP mendatar: halaman sampulnya kecil sehingga cover line bisa turun sampai wajah.
+    const f = SHORT.matches && faceBand();
+    if (f) clear(f.top - 8);
+    return;
+  }
   const top = card.getBoundingClientRect().top - new DOMMatrix(getComputedStyle(card).transform).m42;
   front.style.setProperty("--card", `${Math.round(front.getBoundingClientRect().bottom - top)}px`);
   const { lift, faceTop } = faceLift(top);
   if (lift) front.style.setProperty("--lift", `${lift}px`);
-  // Cover line yang menabrak blok nama tamu, atau wajah yang baru dinaikkan, disembunyikan dari bawah.
-  const limit = lift ? Math.min(top - 12, faceTop - 8) : top - 12;
-  for (const li of lines) {
-    if ($(".cv-lines").getBoundingClientRect().bottom <= limit) break;
-    li.hidden = true;
+  // Cover line yang menabrak blok nama tamu, atau wajah yang baru dinaikkan, disembunyikan.
+  clear(lift ? Math.min(top - 12, faceTop - 8) : top - 12);
+}
+// Halaman kanan sampul di layar pendek-lebar: bila tombol melewati batas bawah halaman, angka 12.12 lalu header
+// halaman disembunyikan, dan terakhir nama tamu dipakai di ukuran terkecilnya (70%). Diukur dengan offsetTop
+// supaya animasi masuk tombol tidak ikut terhitung.
+function fitSide() {
+  const side = $(".cv-side"), btn = $("#openBtn"), guest = $("#guest");
+  side.classList.remove("tight", "tighter");
+  if (!SHORT.matches) return;
+  const over = () => btn.offsetTop + btn.offsetHeight > side.clientHeight - parseFloat(getComputedStyle(side).paddingBottom) + 1;
+  if (over()) side.classList.add("tight");
+  if (over()) side.classList.add("tighter");
+  if (over()) {
+    guest.style.fontSize = "";
+    guest.style.fontSize = `${parseFloat(getComputedStyle(guest).fontSize) * 0.7}px`;
   }
 }
 const layoutCover = () => {
@@ -923,6 +970,7 @@ const layoutCover = () => {
   const front = $(".cv-front");
   front.style.setProperty("--head", `${Math.round($(".cv-tag").getBoundingClientRect().bottom - front.getBoundingClientRect().top)}px`);
   fitCoverLines();
+  fitSide();
 };
 layoutCover();
 $(".cv-photo img").addEventListener("load", layoutCover);
