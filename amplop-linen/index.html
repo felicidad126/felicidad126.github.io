@@ -160,12 +160,14 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
   transform:translate(calc(var(--x,0%) + var(--dx,0px)),var(--y,0px)) rotate(calc(var(--r,0deg) + var(--dr,0deg))) scale(var(--s,1));transform-origin:50% 92%;
   opacity:var(--o,1);z-index:var(--z,1)}
 .card:not(.on){pointer-events:none}
+/* Pil "Gulir" hanya untuk kartu aktif; di desktop kartu tetangga yang mengintip tidak ikut menampilkannya. */
+.card:not(.on) .more{visibility:hidden}
 /* HP: isi kartu yang bertumpuk di belakang disembunyikan (kartu yang lebih pendek tidak memperlihatkan tulisan
    kartu di belakangnya); kartu yang baru ditinggalkan tetap berisi selama animasi pindahnya. */
 @media (max-width:899px){
   .card .in{transition:visibility 0s .85s}
   .card .more{transition:opacity .3s,visibility 0s .85s}
-  .card:not(.on) .in,.card:not(.on) .more{visibility:hidden}
+  .card:not(.on) .in{visibility:hidden}
   .card.on .in,.card.on .more{transition-delay:0s}
 }
 /* .tilt: kartu sedikit miring mengikuti kursor (desktop) atau kemiringan HP */
@@ -910,9 +912,10 @@ function sizeCards() {
 sizeCards();
 new ResizeObserver(sizeCards).observe(deck);
 // Tanda gulir di tiap kartu (.more-on di .paper): tampil selama masih ada isi di bawah, pilnya hilang setelah digulir.
+// Ambang 12px: sisa isi lebih dari itu sudah memotong satu baris teks di tepi bawah yang memudar.
 const ICON_DOWN = '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4.5l3 3 3-3"/></svg>';
 const cue = (sc) => {
-  sc.parentElement.classList.toggle("more-on", sc.scrollHeight - sc.clientHeight - sc.scrollTop > 24);
+  sc.parentElement.classList.toggle("more-on", sc.scrollHeight - sc.clientHeight - sc.scrollTop > 12);
   sc.parentElement.classList.toggle("scrolled", sc.scrollTop > 8);
 };
 {
@@ -971,13 +974,19 @@ function move(from, dx = 0) {
   });
 }
 // Isi kartu masuk bertahap setiap kali kartu menjadi aktif.
+// Chromium kadang tetap memakai style lama untuk elemen yang sedang dianimasikan (pointer-events/inert dari saat
+// kartunya belum aktif), sehingga foto/tombol di dalamnya tidak bisa diketuk. Style tiap elemen disegarkan sesaat
+// setelah animasi mulai dan saat animasinya selesai.
 function enter(card, from) {
   if (REDUCED) return;
   if (card.id === "k-1" && !$("#vellum").classList.contains("off")) return; // menunggu vellum dibuka
   const near = WIDE.matches && Math.abs(cards.indexOf(card) - from) === 1;
-  $$(".in > *", card).filter((n) => !n.hidden).forEach((n, j) => n.animate(
+  const items = $$(".in > *", card).filter((n) => !n.hidden);
+  const refresh = (n) => { n.style.pointerEvents = "auto"; n.style.removeProperty("pointer-events"); };
+  items.forEach((n, j) => n.animate(
     [{ opacity: near ? 0.35 : 0, transform: "translateY(14px)" }, { opacity: 1, transform: "none" }],
-    { duration: 600, delay: 170 + j * 65, easing: "cubic-bezier(.2,.7,.2,1)", fill: "backwards" }));
+    { duration: 600, delay: 170 + j * 65, easing: "cubic-bezier(.2,.7,.2,1)", fill: "backwards" }).finished.then(() => refresh(n), () => {}));
+  requestAnimationFrame(() => requestAnimationFrame(() => items.forEach(refresh)));
 }
 WIDE.addEventListener("change", () => cards.forEach((c, i) => apply(c, pose(i - cur))));
 
@@ -1090,6 +1099,8 @@ deck.addEventListener("click", (e) => {
   deck.addEventListener("click", (e) => {
     if (dragging) { e.stopPropagation(); e.preventDefault(); }
   }, true);
+  // Seret bawaan browser untuk gambar/tautan membatalkan geseran mouse (pointercancel); di dalam kartu tidak dipakai.
+  deck.addEventListener("dragstart", (e) => e.preventDefault());
 }
 
 /* ---------- Kemiringan kartu aktif: kursor di desktop, sensor di HP ---------- */
