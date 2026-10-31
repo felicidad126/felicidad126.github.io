@@ -92,16 +92,16 @@ Font Parisienne, EB Garamond, dan Marcellus dimuat dari Google Fonts, berlisensi
 
 # Biru Kabut — Preview Undangan Digital
 
-Tema ketujuh, di subfolder [`biru-kabut/`](biru-kabut/): **minimalis gaya Swiss** dengan palet biru pastel dan abu. Grid ketat, huruf sans besar, bagian bernomor 01–09 dengan indeks dan garis progres di atas, linimasa acara dengan penggaris waktu, dan kartu tamu bergaya tiket (hanya tampilan, tanpa QR atau check-in).
+Tema ketujuh, di subfolder [`biru-kabut/`](biru-kabut/): **pagi berkabut yang lembut dan romantis** dengan palet biru pastel dan abu. Foto muncul dari balik kabut, isi undangan berada di atas panel kaca buram, dan setiap bagian dihiasi ranting hydrangea biru bergaris halus. Komposisinya simetris dan lapang: salam, ayat QS Ar-Rum 21, mempelai dalam bingkai oval, kisah kami, acara, galeri, RSVP, ucapan, amplop digital, dan penutup.
 
-- Motion: CSS scroll-driven animation (di browser yang mendukung) dengan cadangan IntersectionObserver, jadi animasi tetap berjalan di browser lain. Nama naik per huruf, garis dan penggaris waktu tergambar mengikuti scroll, digit hitung mundur menggulung.
-- Tanpa musik.
+- Motion: lapisan kabut melayang pelan di sampul dan di antara bagian; saat "Buka Undangan" ditekan, kabut menutup lalu tersibak ke samping. Foto bergerak dari buram ke tajam saat muncul, ranting hydrangea tergambar lalu mekar, digit hitung mundur berganti lembut.
+- Musik: piano dan pad lembut yang dirender di browser (tanpa file audio).
 
 - Lihat: https://felicidad126.github.io/biru-kabut/
 - Dengan nama tamu: https://felicidad126.github.io/biru-kabut/?to=Nama%20Tamu
 - Animasi penuh (abaikan setting reduced-motion): https://felicidad126.github.io/biru-kabut/?motion=full
 
-Font Hanken Grotesk dan Instrument Serif dimuat dari Google Fonts, berlisensi SIL Open Font License 1.1.
+Font Gilda Display, Corinthia, dan Figtree dimuat dari Google Fonts, berlisensi SIL Open Font License 1.1.
 
 ---
 
