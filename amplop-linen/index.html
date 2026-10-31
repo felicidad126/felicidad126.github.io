@@ -28,7 +28,8 @@
   /* Ukuran kartu: setinggi ruang di antara kepala & navigasi, lebar mengikuti rasio kartu undangan.
      Nilai ini hanya cadangan; JS (sizeCards) mengukur ruang yang benar-benar tersisa di .deck. */
   --ch:clamp(330px,calc(var(--vh) - 168px),700px);
-  --cw:min(calc(100vw - 32px),calc(var(--ch) * .68),440px);
+  --ratio:.68;
+  --cw:min(calc(100vw - 32px),calc(var(--ch) * var(--ratio)),440px);
   /* Serat kertas halus (noise SVG), dipakai di semua kertas. */
   --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .23 0 0 0 0 .19 0 0 0 0 .16 0 0 0 .55 -.2'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
   /* Lapisan dalam amplop: kisi tipis dengan bunga kecil. */
@@ -36,6 +37,8 @@
   --deckle:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='12' viewBox='0 0 80 12'%3E%3Cpath d='M0 0H80V7L76 5.5L72 8.5L68 8.5L64 8.6L60 9.1L56 5.6L52 5L48 5.4L44 5.9L40 7.2L36 5.6L32 8.3L28 8.5L24 9.1L20 6.5L16 4.8L12 5.3L8 6.5L4 5L0 7Z'/%3E%3C/svg%3E");
 }
 @supports (height:100svh){:root{--vh:100svh}}
+/* Layar pendek: kartu sedikit lebih lebar supaya tidak terlalu sempit (dibaca juga oleh sizeCards). */
+@media (max-height:620px){:root{--ratio:.76}}
 *{box-sizing:border-box}
 html,body{margin:0;height:100%}
 body{background:var(--linen);color:var(--ink);font:400 17px/1.55 var(--f-serif);-webkit-font-smoothing:antialiased;overflow:hidden;-webkit-tap-highlight-color:transparent}
@@ -45,6 +48,8 @@ body::before{background:radial-gradient(120% 90% at 50% 40%,#e8dfd1 0%,#ddd2c1 5
 body::after{opacity:.55;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320'%3E%3Cfilter id='h'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.008 .7' numOctaves='2' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .36 0 0 0 0 .29 0 0 0 .9 -.32'/%3E%3C/filter%3E%3Cfilter id='v'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7 .008' numOctaves='2' seed='8' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .36 0 0 0 0 .29 0 0 0 .8 -.3'/%3E%3C/filter%3E%3Crect width='320' height='320' filter='url(%23h)'/%3E%3Crect width='320' height='320' filter='url(%23v)'/%3E%3C/svg%3E"),var(--grain)}
 @media (max-height:499px){body{overflow:auto}}
 .sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+/* Atribut hidden harus menang dari display:flex/grid milik komponen (form RSVP, kolom jumlah tamu, dll.). */
+[hidden]{display:none!important}
 button{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--ink);outline-offset:3px}
 
@@ -59,7 +64,8 @@ body.opened .decor.sprig{opacity:.3}
 .env-stage{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(14px,3vh,26px);padding:24px 16px}
 .env-kicker{margin:0;font:12px/1.4 var(--f-cap);letter-spacing:.32em;text-transform:uppercase;color:var(--ink-2);text-align:center}
 .env-hint{margin:0;font:italic 16px/1.4 var(--f-serif);color:var(--ink-2);text-align:center}
-.env{--ew:min(80vw,350px,calc((var(--vh) - 190px) * .75));position:relative;width:var(--ew);height:calc(var(--ew) * 1.33);perspective:1300px;container-type:size}
+/* Ukuran dari tinggi halaman (.scene minimal 500px), supaya di HP landscape amplop tidak mengecil. */
+.env{--ew:min(80vw,350px,calc((max(var(--vh),500px) - 190px) * .75));position:relative;width:var(--ew);height:calc(var(--ew) * 1.33);perspective:1300px;container-type:size}
 .env > *{position:absolute}
 .env-shade{inset:2% 1% -1%;border-radius:6px;box-shadow:0 22px 34px -14px #3b322b80,0 4px 10px #3b322b26}
 .env-inner{inset:0;border-radius:5px;background:var(--liner) center/20px 20px,#e7dbc8;box-shadow:inset 0 0 0 5px #ece4d6}
@@ -136,7 +142,6 @@ body.opened .decor.sprig{opacity:.3}
 .env-stage.leave .env-proxies{transform:translateY(-60%) scale(1.1);opacity:0}
 .env-stage.leave .env-kicker,.env-stage.leave .env-hint{opacity:0;transition:opacity .4s}
 .env-stage.fade{opacity:0;transition:opacity .45s ease}
-.env-stage[hidden]{display:none}
 
 /* ---------- Tumpukan kartu ---------- */
 .deck-wrap{position:absolute;inset:0;z-index:3;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:48px minmax(0,1fr) auto;visibility:hidden;opacity:0}
@@ -168,19 +173,26 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
   filter:drop-shadow(0 1px 1px #3b322b24) drop-shadow(0 12px 16px #3b322b29)}
 /* Bayangan lembut yang menjauh saat kartu terangkat */
 .lift{position:absolute;left:6%;right:6%;bottom:-6%;height:30%;border-radius:50%;background:radial-gradient(closest-side,#3b322b5c,#3b322b00);opacity:0;pointer-events:none}
-.paper{position:absolute;inset:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#cfc4b3 transparent;
+/* .paper memegang latar, bentuk (mask/clip-path), dan bingkai; isinya digulir di .scroll supaya bingkai,
+   perforasi, dan lubang label tidak ikut ter-scroll. */
+.paper{position:absolute;inset:0;overflow:hidden;
   background:var(--grain),linear-gradient(170deg,var(--p1,var(--ivory-2)),var(--p2,var(--ivory)));display:flex;flex-direction:column;padding:34px 24px 26px;container-type:inline-size;text-align:center}
+/* touch-action di sini juga: area scroll mengaktifkan lagi geser horizontal bawaan browser, sehingga geser kartu
+   di HP batal (pointercancel). Masuk 14px ke padding kertas supaya isi saat diam tidak bergeser, dan tepi atas/bawah
+   memudar lembut; selama masih ada isi di bawah, tepi bawah memudar lebih panjang (--fb). */
+.scroll{flex:1;min-height:0;display:flex;flex-direction:column;overflow:auto;overscroll-behavior:contain;touch-action:pan-y;
+  scrollbar-width:thin;scrollbar-color:#cfc4b3 transparent;margin-block:-14px;padding-block:14px;
+  -webkit-mask:linear-gradient(#0000,#000 14px,#000 calc(100% - var(--fb,14px)),#0000);mask:linear-gradient(#0000,#000 14px,#000 calc(100% - var(--fb,14px)),#0000)}
 .in{margin-block:auto;display:flex;flex-direction:column;align-items:center}
-/* Tanda gulir: muncul bila isi kartu lebih panjang dari kartunya. Selembar kertas yang memudar menempel di tepi
-   bawah (sticky); panah "Gulir" hilang setelah kartu digulir, dan semuanya hilang di ujung isi. */
-.more{position:sticky;bottom:0;flex:none;height:72px;margin-top:-72px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:16px;pointer-events:none;
-  background:var(--grain),var(--p2,var(--ivory));-webkit-mask:linear-gradient(#0000,#000 62%);mask:linear-gradient(#0000,#000 62%);opacity:0;transition:opacity .3s}
-.more span{display:inline-flex;align-items:center;gap:6px;padding:5px 10px 5px 13px;border-radius:20px;background:var(--ivory-2);box-shadow:inset 0 0 0 1px #9a8a7680;font:11px/1.2 var(--f-cap);letter-spacing:.2em;text-transform:uppercase;color:var(--ink-2);transition:opacity .3s}
+/* Tanda gulir: pil "Gulir" di tepi bawah kertas selama isi masih berlanjut; hilang setelah kartu digulir. */
+.more{position:absolute;left:50%;bottom:14px;translate:-50% 0;z-index:1;display:inline-flex;align-items:center;gap:6px;padding:5px 10px 5px 13px;border-radius:20px;background:var(--ivory-2);box-shadow:inset 0 0 0 1px #9a8a7680;
+  font:11px/1.2 var(--f-cap);letter-spacing:.2em;text-transform:uppercase;color:var(--ink-2);pointer-events:none;opacity:0;transition:opacity .3s}
 .more svg{width:12px;height:12px}
-.js .more span svg{animation:nudge 1.8s ease-in-out infinite}
+.js .more svg{animation:nudge 1.8s ease-in-out infinite}
 @keyframes nudge{50%{translate:0 2px}}
+.paper.more-on .scroll{--fb:64px}
 .paper.more-on .more{opacity:1}
-.paper.scrolled .more span{opacity:0}
+.paper.more-on.scrolled .more{opacity:0}
 .kicker{margin:0;font:11px/1.5 var(--f-cap);letter-spacing:.3em;text-transform:uppercase;color:var(--ink-2)}
 .title{margin:.35em 0 0;font:400 clamp(28px,9cqw,38px)/1.1 var(--f-serif);color:var(--ink)}
 .title em{color:var(--gold)}
@@ -269,6 +281,11 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
 /* Instagram contoh sebagai teks biasa: tautan ke instagram.com bisa membuka akun milik orang lain. */
 .ig{display:inline-flex;align-items:center;gap:5px;margin-top:6px;font:13px/1.4 var(--f-serif);color:var(--ink-2)}
 .ig svg{width:14px;height:14px}
+/* Handle Instagram kedua mempelai sejajar di bawah, walau nama/orang tua salah satunya lebih panjang. */
+.pair>.person{align-self:stretch}
+.person figcaption{flex:1;display:flex;flex-direction:column}
+.person .pparents{margin-bottom:6px}
+.person .ig{align-self:center;margin-top:auto}
 .c-couple .lead{margin-top:6px}
 
 /* 4 · Foto: map kertas oat dengan takik ibu jari, berisi cetakan foto */
@@ -349,17 +366,18 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
 .wish p{margin:4px 0 0;font:16px/1.5 var(--f-serif);color:var(--ink)}
 .wish small{display:block;margin-top:4px;font:11px/1.4 var(--f-cap);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2)}
 
-/* 8 · Tanda Kasih: kartu sisipan kecil dengan sudut terlipat */
-.c-gift{height:calc(var(--ch) * .84);margin-top:calc(var(--ch) * -.42)}
+/* 8 · Tanda Kasih: kartu sisipan dengan sudut terlipat (setinggi kartu lain, supaya kartu di belakangnya tidak mengintip) */
 .c-gift .paper{--p1:#ebe2d4;--p2:#e2d7c6;clip-path:polygon(0 0,calc(100% - 38px) 0,100% 38px,100% 100%,0 100%);padding:30px 22px}
 .fold{position:absolute;right:0;top:0;width:38px;height:38px;z-index:1;background:linear-gradient(225deg,transparent 50%,#cfc2ae 50%,#f1e9dc 100%);filter:drop-shadow(-2px 2px 2px #3b322b33);pointer-events:none}
 .acct{width:100%;margin-top:14px;padding:14px 16px;background:#fbf8f2b3;box-shadow:inset 0 0 0 1px #9a8a7666;text-align:left;display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 12px}
-.acct small{grid-column:1;font:11px/1.4 var(--f-cap);letter-spacing:.2em;text-transform:uppercase;color:var(--ink-2)}
-.acct b{grid-column:1;font:400 22px/1.2 var(--f-cap);letter-spacing:.08em;color:var(--ink)}
-.acct span{grid-column:1;font:italic 15px/1.4 var(--f-serif);color:var(--ink-2)}
-.acct .copy{grid-column:2;grid-row:1/span 3}
+/* Tombol Salin di baris label, supaya nomor mendapat lebar penuh dan tidak patah baris. */
+.acct small{grid-row:1;align-self:center;font:11px/1.4 var(--f-cap);letter-spacing:.2em;text-transform:uppercase;color:var(--ink-2)}
+.acct .copy{grid-column:2;grid-row:1}
+.acct b,.acct span{grid-column:1/-1}
+.acct b{font:400 clamp(18px,6.6cqw,22px)/1.2 var(--f-cap);letter-spacing:.08em;color:var(--ink);white-space:nowrap}
+.acct span{font:italic 15px/1.4 var(--f-serif);color:var(--ink-2)}
 .copy{min-height:40px;padding:6px 14px;border:1px solid #3b322b80;background:transparent;border-radius:2px;font:11px/1 var(--f-cap);letter-spacing:.16em;text-transform:uppercase;color:var(--ink);cursor:pointer}
-.acct.addr3 b{font:500 17px/1.35 var(--f-serif);letter-spacing:0}
+.acct.addr3 b{font:500 17px/1.35 var(--f-serif);letter-spacing:0;white-space:normal}
 
 /* 9 · Penutup: kartu catatan dengan tepi bawah kertas buatan tangan (deckle) */
 .c-note .paper{--p1:#fbf8f2;--p2:#f3ece1;padding-bottom:36px;
@@ -393,7 +411,6 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
 
 /* ---------- Lightbox ---------- */
 .lb{position:fixed;inset:0;z-index:20;background:#2a221dec;display:grid;place-items:center;touch-action:none}
-.lb[hidden]{display:none}
 .lb figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:10px;padding:56px 12px 20px}
 .lb img{max-width:min(94vw,900px);max-height:calc(var(--vh) - 130px);object-fit:contain;background:#fbf8f2;padding:8px;box-shadow:0 10px 30px #0006}
 .lb figcaption{font:400 26px/1.2 var(--f-script);color:#f6f1e9}
@@ -447,10 +464,9 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
   .opt{min-height:36px}
   .c-tag .paper{padding-top:62px}
   .field textarea{height:70px}
-  .c-gift{height:var(--ch);margin-top:calc(var(--ch) / -2)}
   .c-gift .paper{padding:24px 20px}
   .acct{margin-top:8px;padding:10px 14px}
-  .acct b{font-size:20px}
+  .copy{min-height:32px;padding:4px 12px}
   .c-note .paper{padding-bottom:30px}
   .c-note .closing{font-size:17px;line-height:1.5}
   .c-note .kicker{margin-top:14px}
@@ -461,11 +477,11 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
 }
 /* Tablet & desktop: amplop lebih besar supaya tidak tenggelam di tengah taplak */
 @media (min-width:600px){
-  .env{--ew:min(440px,calc((var(--vh) - 190px) * .75))}
+  .env{--ew:min(440px,calc((max(var(--vh),500px) - 190px) * .75))}
 }
 /* Desktop: meja lebih lebar, kartu tetangga mengintip di kiri-kanan */
 @media (min-width:900px){
-  .env{--ew:min(480px,calc((var(--vh) - 190px) * .75))}
+  .env{--ew:min(480px,calc((max(var(--vh),500px) - 190px) * .75))}
   .top{padding:10px 24px 0}
   .decor.sprig{width:340px;left:2vw;top:4vh}
   .decor.ribbon{width:520px;right:2vw;bottom:2vh}
@@ -592,7 +608,7 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
     <div class="deck" id="deck">
       <!-- 1 · Undangan -->
       <article class="card c-invite" id="k-1" role="tabpanel" aria-labelledby="t-1">
-        <div class="paper"><div class="in">
+        <div class="paper"><div class="scroll"><div class="in">
           <div class="mono" aria-hidden="true">
             <svg viewBox="0 0 74 74" fill="none" stroke="currentColor" stroke-width=".9"><circle cx="37" cy="37" r="34"/><circle cx="37" cy="37" r="30.5" stroke-dasharray="1 3"/><path d="M37 3v5M37 66v5" stroke-width="1.2"/></svg>
             <span>L&amp;B</span>
@@ -605,7 +621,7 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
           <p class="when"><span>Sabtu</span><b>12 · 12 · 2026</b><span>Denpasar, Bali</span></p>
           <blockquote class="quote">“Di antara sekian banyak jalan, kami dipertemukan pada satu tujuan: pulang ke hati yang sama.”</blockquote>
           <p class="swipe-hint" aria-hidden="true">Geser untuk kartu berikutnya →</p>
-        </div></div>
+        </div></div></div>
         <div class="vellum" id="vellum">
           <div class="v-print" aria-hidden="true"><span class="v-names">Laras <i>&amp;</i> Bima</span><span class="v-date">12 · 12 · 2026</span></div>
           <button class="band" id="band" type="button" aria-label="Buka lapisan vellum undangan"><span class="band-for">Untuk</span><span class="band-name guest">Tamu Undangan</span><span class="band-tap">ketuk pita untuk membuka</span></button>
@@ -615,7 +631,7 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
 
       <!-- 2 · Acara -->
       <article class="card c-details" id="k-2" role="tabpanel" aria-labelledby="t-2">
-        <div class="paper"><div class="in">
+        <div class="paper"><div class="scroll"><div class="in">
           <p class="kicker">Simpan tanggalnya</p>
           <h2 class="title">Rangkaian <em>Acara</em></h2>
           <p class="date-line" id="dateLine"></p>
@@ -624,12 +640,12 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
           <div class="ev-sep" aria-hidden="true"><svg viewBox="0 0 120 20"><use href="#s-sprig"/></svg></div>
           <div class="ev" id="ev-resepsi"></div>
           <a class="btn" id="calBtn" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="1"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>Simpan ke kalender</a>
-        </div></div>
+        </div></div></div>
       </article>
 
       <!-- 3 · Mempelai -->
       <article class="card c-couple" id="k-3" role="tabpanel" aria-labelledby="t-3">
-        <div class="paper"><div class="in">
+        <div class="paper"><div class="scroll"><div class="in">
           <p class="kicker">Mempelai</p>
           <h2 class="title">Kami <em>berdua</em></h2>
           <div class="pair">
@@ -645,12 +661,12 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
                 <span class="ig"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor"/></svg>@bima.contoh</span></figcaption>
             </figure>
           </div>
-        </div></div>
+        </div></div></div>
       </article>
 
       <!-- 4 · Foto -->
       <article class="card c-prints" id="k-4" role="tabpanel" aria-labelledby="t-4">
-        <div class="paper"><div class="in">
+        <div class="paper"><div class="scroll"><div class="in">
           <p class="kicker">Foto</p>
           <h2 class="title">Potret <em>kami</em></h2>
           <div class="prints" id="prints">
@@ -662,12 +678,12 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
             <button class="print" type="button" style="--t:2deg" data-i="5"><img src="../foto/galeri-6.jpg" alt="" style="object-position:50% 50%" loading="lazy" decoding="async"><span>Satu arah</span></button>
           </div>
           <p class="note">Ketuk foto untuk memperbesar.</p>
-        </div></div>
+        </div></div></div>
       </article>
 
       <!-- 5 · Balasan (RSVP) -->
       <article class="card c-reply" id="k-5" role="tabpanel" aria-labelledby="t-5">
-        <div class="paper"><div class="in">
+        <div class="paper"><div class="scroll"><div class="in">
           <div class="reply-head">
             <div><p class="kicker">Kartu balasan</p><h2 class="title">Konfirmasi <em>kehadiran</em></h2></div>
             <div class="stampbox" id="stampbox" aria-hidden="true">Tempel<br>perangko
@@ -694,7 +710,7 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
             <button class="btn line" type="button" id="replyEdit">Ubah jawaban</button>
             <p class="note">Preview: data tersimpan di perangkat ini saja.</p>
           </div>
-        </div></div>
+        </div></div></div>
       </article>
 
       <!-- 6 · Ucapan -->
@@ -707,7 +723,7 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
           <rect x="61" y="45.5" width="10" height="9" rx="3.5" fill="#dcc8a2" stroke="#bda57c" stroke-width=".6"/>
         </svg>
         <svg class="tag-charm" viewBox="0 0 24 44" aria-hidden="true"><path d="M12 0v14" stroke="#8d7044" stroke-width="1" stroke-dasharray="1.6 1"/><circle cx="12" cy="17" r="3" fill="none" stroke="url(#g-brass)" stroke-width="1.5"/><path d="M8.5 21.5h7l-1 3h-5z" fill="url(#g-brass)"/><circle cx="12" cy="32" r="8" fill="#f4eee4"/><circle cx="12" cy="32" r="8" fill="url(#g-pearl)"/></svg>
-        <div class="paper"><div class="in">
+        <div class="paper"><div class="scroll"><div class="in">
           <p class="kicker">Doa &amp; ucapan</p>
           <h2 class="title">Untuk <em>kami</em></h2>
           <form class="form" id="wishForm" novalidate>
@@ -718,36 +734,36 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
             <p class="note">Preview: data tersimpan di perangkat ini saja.</p>
           </form>
           <button class="link to-wishes" type="button" id="toWishes">Baca ucapan tamu <span id="wcountBtn"></span> <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M2 6h8M7 3l3 3-3 3"/></svg></button>
-        </div></div>
+        </div></div></div>
       </article>
 
       <!-- 7 · Doa tamu -->
       <article class="card c-book" id="k-7" role="tabpanel" aria-labelledby="t-7">
         <span class="tape" aria-hidden="true"></span>
-        <div class="paper"><div class="in">
+        <div class="paper"><div class="scroll"><div class="in">
           <p class="kicker">Buku ucapan</p>
           <h2 class="title" id="h-7" tabindex="-1">Kiriman <em>doa</em></h2>
           <p class="wcount" id="wcount"></p>
           <div class="wlist" id="wlist"></div>
-        </div></div>
+        </div></div></div>
       </article>
 
       <!-- 8 · Tanda Kasih -->
       <article class="card c-gift" id="k-8" role="tabpanel" aria-labelledby="t-8">
-        <div class="paper"><div class="in">
+        <div class="paper"><div class="scroll"><div class="in">
           <p class="kicker">Amplop digital</p>
           <h2 class="title">Tanda <em>kasih</em></h2>
           <p class="lead">Doa restu Anda sudah lebih dari cukup. Namun bila ingin memberi tanda kasih, Anda dapat mengirimkannya melalui:</p>
-          <div class="acct"><small>Bank Contoh</small><b>1234 5678 90</b><span>a.n. Larasati Pramesti</span><button class="copy" type="button" data-copy="1234567890" data-msg="Nomor rekening disalin">Salin</button></div>
-          <div class="acct"><small>Dompet Digital</small><b>0812 3456 7890</b><span>a.n. Bima Arya Nugraha</span><button class="copy" type="button" data-copy="081234567890" data-msg="Nomor dompet digital disalin">Salin</button></div>
-          <div class="acct addr3"><small>Kirim kado</small><b>Jl. Contoh Raya No. 1, Denpasar, Bali</b><span>a.n. Larasati Pramesti</span><button class="copy" type="button" data-copy="Larasati Pramesti, Jl. Contoh Raya No. 1, Denpasar, Bali" data-msg="Alamat disalin">Salin</button></div>
-        </div></div>
+          <div class="acct"><small>Bank Contoh</small><b>1234 5678 90</b><span>a.n. Larasati Pramesti</span><button class="copy" type="button" data-copy="1234567890" data-msg="Nomor rekening disalin" aria-label="Salin nomor rekening Bank Contoh">Salin</button></div>
+          <div class="acct"><small>Dompet Digital</small><b>0812 3456 7890</b><span>a.n. Bima Arya Nugraha</span><button class="copy" type="button" data-copy="081234567890" data-msg="Nomor dompet digital disalin" aria-label="Salin nomor dompet digital">Salin</button></div>
+          <div class="acct addr3"><small>Kirim kado</small><b>Jl. Contoh Raya No. 1, Denpasar, Bali</b><span>a.n. Larasati Pramesti</span><button class="copy" type="button" data-copy="Larasati Pramesti, Jl. Contoh Raya No. 1, Denpasar, Bali" data-msg="Alamat disalin" aria-label="Salin alamat kirim kado">Salin</button></div>
+        </div></div></div>
         <span class="fold" aria-hidden="true"></span>
       </article>
 
       <!-- 9 · Penutup -->
       <article class="card c-note" id="k-9" role="tabpanel" aria-labelledby="t-9">
-        <div class="paper"><div class="in">
+        <div class="paper"><div class="scroll"><div class="in">
           <div class="rule" aria-hidden="true"><svg viewBox="0 0 120 20"><use href="#s-sprig"/></svg></div>
           <p class="closing">Merupakan suatu kebahagiaan dan kehormatan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu.</p>
           <p class="kicker">Terima kasih</p>
@@ -759,7 +775,7 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
             <a href="../">Lengkung Sage</a><a href="../parallax-sway/">Parallax &amp; Sway</a><a href="../garis-editorial/">Garis Editorial</a><a href="../truntum-terakota/">Truntum Terakota</a><a href="../edisi-monokrom/">Edisi Monokrom</a><a href="../biru-kabut/">Biru Kabut</a>
           </div>
           <p class="small">Nama, alamat, dan rekening adalah data contoh. Foto contoh dibuat dengan AI.</p>
-        </div></div>
+        </div></div></div>
       </article>
     </div>
 
@@ -887,30 +903,25 @@ cards.forEach((c) => {
 function sizeCards() {
   const h = deck.clientHeight, w = deck.clientWidth;
   if (!h) return;
-  const ch = Math.min(700, h - 20);
+  const ch = Math.min(700, h - 20), ratio = parseFloat(getComputedStyle(deck).getPropertyValue("--ratio")) || 0.68;
   deck.style.setProperty("--ch", `${ch}px`);
-  deck.style.setProperty("--cw", `${Math.min(w - 32, ch * 0.68, 440)}px`);
+  deck.style.setProperty("--cw", `${Math.min(w - 32, ch * ratio, 440)}px`);
 }
 sizeCards();
 new ResizeObserver(sizeCards).observe(deck);
-// Tanda gulir (.more) di tiap kartu: tampil selama masih ada isi di bawah, panahnya hilang setelah digulir.
+// Tanda gulir di tiap kartu (.more-on di .paper): tampil selama masih ada isi di bawah, pilnya hilang setelah digulir.
 const ICON_DOWN = '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4.5l3 3 3-3"/></svg>';
-const cue = (p) => {
-  p.classList.toggle("more-on", p.scrollHeight - p.clientHeight - p.scrollTop > 24);
-  p.classList.toggle("scrolled", p.scrollTop > 8);
+const cue = (sc) => {
+  sc.parentElement.classList.toggle("more-on", sc.scrollHeight - sc.clientHeight - sc.scrollTop > 24);
+  sc.parentElement.classList.toggle("scrolled", sc.scrollTop > 8);
 };
 {
-  const ro = new ResizeObserver((es) => es.forEach((e) => {
-    const p = e.target.closest(".paper");
-    // Sticky berhenti di tepi isi (di dalam padding); geser sejauh padding bawah supaya menempel di tepi kertas.
-    p.lastElementChild.style.bottom = `-${getComputedStyle(p).paddingBottom}`;
-    cue(p);
-  }));
-  $$(".paper", deck).forEach((p) => {
-    p.insertAdjacentHTML("beforeend", `<div class="more" aria-hidden="true"><span>Gulir ${ICON_DOWN}</span></div>`);
-    p.addEventListener("scroll", () => cue(p), { passive: true });
-    ro.observe(p);
-    ro.observe($(".in", p));
+  const ro = new ResizeObserver((es) => es.forEach((e) => cue(e.target.closest(".scroll"))));
+  $$(".scroll", deck).forEach((sc) => {
+    sc.insertAdjacentHTML("afterend", `<span class="more" aria-hidden="true">Gulir ${ICON_DOWN}</span>`);
+    sc.addEventListener("scroll", () => cue(sc), { passive: true });
+    ro.observe(sc);
+    ro.observe($(".in", sc));
   });
 }
 let cur = 0, dragging = false;
@@ -973,6 +984,8 @@ WIDE.addEventListener("change", () => cards.forEach((c, i) => apply(c, pose(i - 
 function go(i, { focusTab = false, dx = 0 } = {}) {
   i = Math.max(0, Math.min(cards.length - 1, i));
   const from = cur;
+  // Fokus di dalam kartu lama akan hilang saat kartu itu menjadi inert; dalam hal itu fokus dipindah ke tab kartu baru.
+  const lost = cards[from].contains(document.activeElement);
   cur = i;
   cards.forEach((c, j) => {
     const on = j === cur;
@@ -990,7 +1003,7 @@ function go(i, { focusTab = false, dx = 0 } = {}) {
   $("#countName").textContent = NAMES[cur];
   const strip = $("#tabs"), tab = tabs[cur];
   strip.scrollTo({ left: tab.offsetLeft - (strip.clientWidth - tab.offsetWidth) / 2 });
-  if (focusTab) tab.focus();
+  if (focusTab || (lost && i !== from)) tab.focus();
   move(from, dx);
   Tilt.target(cards[cur]);
   if (i !== from) {
@@ -1040,7 +1053,7 @@ deck.addEventListener("click", (e) => {
   let sx = 0, sy = 0, dx = 0, id = null, card = null;
   deck.addEventListener("pointerdown", (e) => {
     card = e.target.closest(".card.on");
-    if (!card || e.button > 0 || e.target.closest("input, textarea, select, label, a, button")) return (card = null);
+    if (!card || e.button > 0 || e.target.closest("input, textarea, select, label")) return (card = null);
     sx = e.clientX; sy = e.clientY; dx = 0; id = e.pointerId; dragging = false;
   });
   deck.addEventListener("pointermove", (e) => {
@@ -1063,8 +1076,7 @@ deck.addEventListener("click", (e) => {
     const c = card; card = null;
     if (!dragging) return;
     c.style.removeProperty("--dx"); c.style.removeProperty("--dr");
-    // Tahan klik setelah menggeser supaya foto/tautan tidak ikut terbuka.
-    c.addEventListener("click", (ev) => ev.stopPropagation(), { capture: true, once: true });
+    // dragging baru kembali false setelah klik dari gerakan yang sama lewat (lihat penahan klik di bawah).
     setTimeout(() => (dragging = false), 0);
     const to = dx < -60 ? cur + 1 : dx > 60 ? cur - 1 : cur;
     if (to !== cur && cards[to]) return go(to, { dx });
@@ -1073,6 +1085,11 @@ deck.addEventListener("click", (e) => {
   };
   deck.addEventListener("pointerup", end);
   deck.addEventListener("pointercancel", end);
+  // Klik yang lahir dari gerakan geser (mouse) ditahan supaya foto/tautan tidak ikut terbuka. Penahan ini hanya aktif
+  // selama dragging: di layar sentuh geseran tidak menghasilkan klik, jadi ketukan berikutnya tidak ikut termakan.
+  deck.addEventListener("click", (e) => {
+    if (dragging) { e.stopPropagation(); e.preventDefault(); }
+  }, true);
 }
 
 /* ---------- Kemiringan kartu aktif: kursor di desktop, sensor di HP ---------- */
@@ -1260,7 +1277,11 @@ $$(".copy").forEach((b) => b.addEventListener("click", async () => {
 }));
 
 /* ---------- Kartu balasan (RSVP) ---------- */
-const stampDate = (t) => new Intl.DateTimeFormat("id-ID", { day: "2-digit", month: "2-digit", year: "numeric" }).format(new Date(t)).replace(/\//g, "·");
+// Disusun manual supaya seragam dengan tanggal lain di tema ini ("12 · 12 · 2026"); format id-ID berbeda antarbrowser.
+const stampDate = (t) => {
+  const d = new Date(t), p = (n) => String(n).padStart(2, "0");
+  return `${p(d.getDate())} · ${p(d.getMonth() + 1)} · ${d.getFullYear()}`;
+};
 function showReply(r) {
   const form = $("#rsvp"), done = $("#replied");
   form.hidden = !!r;
@@ -1328,7 +1349,7 @@ function renderWishes() {
     toast("Ucapan sudah terikat. Terima kasih!");
   });
   const showWishes = () => {
-    $("#k-7 .paper").scrollTop = 0;
+    $("#k-7 .scroll").scrollTop = 0;
     go(cards.indexOf($("#k-7")));
     $("#h-7").focus({ preventScroll: true });
   };
