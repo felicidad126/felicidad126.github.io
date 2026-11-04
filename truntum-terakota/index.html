@@ -22,6 +22,7 @@
      dan terus bersemi. Pada pernikahan adat Jawa, kain truntum lazim dikenakan orang tua mempelai, sebagai lambang
      "menuntun" kedua mempelai menuju hidup baru. Di tema ini truntum hanya dipakai sebagai aksen garis, bukan latar penuh. -->
 <style>
+html{-webkit-tap-highlight-color:transparent}
 /* Palet "Truntum Terakota": terakota & bata tua dicetak tinta putih hangat, dengan pasir lempung sebagai latar kedua.
    Teks di terakota memakai --ink / --ink-2; teks di latar pasir memakai --brown / --brown-2 / --tera (semua ≥ AA). */
 :root{
@@ -963,9 +964,13 @@ const Lightbox = (() => {
     lb.classList.add("open");
     // Halaman di belakang foto tidak ikut tergulir (scroll mouse/trackpad).
     root.style.overflow = "hidden";
+    if (!lbHist) { history.pushState({ lb: 1 }, ""); lbHist = true; }
     $(".x", lb).focus();
   }
-  function close() { lb.classList.remove("open"); root.style.overflow = ""; lastFocus?.focus?.(); }
+  function close() { lb.classList.remove("open"); root.style.overflow = ""; lastFocus?.focus?.(); if (lbHist) { lbHist = false; history.back(); } }
+  // Tombol Back (Android/browser) menutup foto dulu, bukan meninggalkan undangan.
+  let lbHist = false;
+  addEventListener("popstate", () => { if (lbHist) { lbHist = false; close(); } });
   $(".x", lb).onclick = close;
   $(".prev", lb).onclick = () => show(i - 1);
   $(".next", lb).onclick = () => show(i + 1);

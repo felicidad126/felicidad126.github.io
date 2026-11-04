@@ -1226,8 +1226,11 @@ $$(".print").forEach((b, i) => {
     img.alt = PHOTOS[at].alt;
     $("#lbCap").textContent = PHOTOS[at].cap;
   };
-  const open = (i, from) => { opener = from; show(i); lb.hidden = false; $("#lbX").focus(); };
-  const close = () => { lb.hidden = true; img.removeAttribute("src"); opener?.focus(); };
+  const open = (i, from) => { opener = from; show(i); lb.hidden = false; if (!lbHist) { history.pushState({ lb: 1 }, ""); lbHist = true; } $("#lbX").focus(); };
+  const close = () => { lb.hidden = true; img.removeAttribute("src"); opener?.focus(); if (lbHist) { lbHist = false; history.back(); } };
+  // Tombol Back (Android/browser) menutup foto dulu, bukan meninggalkan undangan.
+  let lbHist = false;
+  addEventListener("popstate", () => { if (lbHist) { lbHist = false; close(); } });
   $("#prints").addEventListener("click", (e) => {
     const b = e.target.closest(".print");
     if (b) open(+b.dataset.i, b);

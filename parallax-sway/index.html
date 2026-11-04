@@ -16,6 +16,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&family=Pinyon+Script&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="../foto/cover.jpg">
 <style>
+html{-webkit-tap-highlight-color:transparent}
 /* Palet "Nila Senja": indigo malam, krem kertas, emas hangat, aksen mawar.
    Teks emas: --gold di latar gelap, --gold-2 untuk huruf tulis besar, --gold-3 untuk teks kecil di latar terang (WCAG). */
 :root{
@@ -986,9 +987,13 @@ const Lightbox = (() => {
     const n = LB_ITEMS.findIndex((x) => x.src.endsWith(src.split("/").pop()));
     show(Math.max(0, n));
     lb.classList.add("open");
+    if (!lbHist) { history.pushState({ lb: 1 }, ""); lbHist = true; }
     $(".x", lb).focus();
   }
-  function close() { lb.classList.remove("open"); lastFocus?.focus?.(); }
+  function close() { lb.classList.remove("open"); lastFocus?.focus?.(); if (lbHist) { lbHist = false; history.back(); } }
+  // Tombol Back (Android/browser) menutup foto dulu, bukan meninggalkan undangan.
+  let lbHist = false;
+  addEventListener("popstate", () => { if (lbHist) { lbHist = false; close(); } });
   $(".x", lb).onclick = close;
   $(".prev", lb).onclick = () => show(i - 1);
   $(".next", lb).onclick = () => show(i + 1);
