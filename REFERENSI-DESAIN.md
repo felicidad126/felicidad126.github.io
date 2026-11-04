@@ -166,7 +166,7 @@ Sumber:
 
 ## 7. Desain yang dibuat dari referensi ini
 
-Empat tema baru, masing-masing dibuat dari nol (tiga tema lama tidak diubah):
+Lima tema baru, masing-masing dibuat dari nol (tiga tema lama tidak diubah):
 
 | Tema | Konsep | Referensi yang dipakai | Palet |
 |---|---|---|---|
@@ -174,6 +174,7 @@ Empat tema baru, masing-masing dibuat dari nol (tiga tema lama tidak diubah):
 | [**Edisi Monokrom**](edisi-monokrom/) | Lookbook fashion sinematik: foto hitam-putih yang perlahan berwarna, tipografi Bodoni besar | Tipografi editorial, Joy (split-screen), Riley & Grey, Bliss & Bone (hitam-putih, marmer, flora) | Hitam-putih + aksen marmer |
 | [**Amplop Linen**](amplop-linen/) | Amplop bersegel lilin, lalu sembilan kartu die-cut yang digeser | Greenvelope/Paperless Post, vellum, die-cut, kertas bertekstur | Quiet luxury netral |
 | [**Biru Kabut**](biru-kabut/) | Pagi berkabut yang romantis: foto muncul dari kabut, panel kaca buram, ranting hydrangea | Riset Binus/ITB dan teknologi.id (modern simpel, tipografi elegan), lapisan transparan ala vellum | Biru pastel + abu |
+| [**Riviera Kobalt**](riviera-kobalt/) | Beach club Riviera Italia di Bali: ubin majolika lukisan tangan, ranting lemon, kanopi bergaris, potret di piring keramik | Riset tren 2027 (bagian 9): The Knot (beach club Italia, ilustrasi tangan), biru kobalt, palet Italia Paperlust | Kobalt + putih + lemon |
 
 Semua tema baru punya motion yang menyesuaikan konsepnya dan tetap menghormati `prefers-reduced-motion` (`?motion=full` memaksa animasi penuh).
 
@@ -197,3 +198,35 @@ Ide yang belum dipakai:
   [The Open Graph protocol](https://ogp.me/)
 - **Kecepatan muat di jaringan seluler:**
   [web.dev – Web Vitals](https://web.dev/articles/vitals)
+
+---
+
+## 9. Riset lanjutan: tren 2027 (November 2026)
+
+Riset tambahan untuk tema kedelapan, Riviera Kobalt. Sebagian besar sumber adalah penerbit dan vendor pernikahan, dan data The Knot berasal dari pasangan di Amerika Serikat, jadi angkanya dibaca sebagai arah tren, bukan ukuran pasar Indonesia.
+
+**Temuan utama**
+
+- **Beach club Italia sedang naik daun.** Laporan tren 2027 The Knot (rilis 28 September 2026, data 1,7 juta pasangan) mencatat pencarian pernikahan bergaya "Beach Club" pesisir Italia naik 315% dan rangkaian undangan bertema Italia naik 167%. Laporan yang sama menyebut tren "The Silver (Ag)e": perak dan nuansa dingin mulai menggantikan emas.
+  [Business Wire – The Knot 2027 Wedding Trends Report](https://secure.businesswire.com/news/home/20260928121826/en/The-Knot-2027-Wedding-Trends-Report-Couples-Embrace-Italian-Beach-Clubs-The-Silver-Age-and-Maximizing-Every-Moment) · [The Knot – Trends](https://www.theknot.com/trends) · [Axios – tren pernikahan 2027](https://www.axios.com/2026/10/18/wedding-trends-2027)
+- **Undangan 2027: ilustrasi tangan dan sentuhan personal.** Ilustrasi tangan menjadi pilihan dekorasi utama, diikuti huruf tulisan tangan, rangkaian undangan yang sangat personal, motif coquette (pita), serta detail mirip kaca patri dan pola tapestri.
+  [The Knot – top wedding invite trends](https://www.theknot.com/content/top-wedding-invite-trends) · [Who What Wear – wedding design trends 2027](https://www.whowhatwear.com/living/wedding/wedding-design-trends-2027)
+- **Warna: berani dan lebih dari satu.** Pasangan 2027 memakai beberapa warna "showpiece" berani dalam satu palet. Biru kobalt disebut warna sorotan 2026, kuning hangat melampaui butter yellow ke arah lemon, dan Pantone 2026 adalah Cloud Dancer (putih gading yang lapang).
+  [The Wed – warna 2026](https://thewed.com/magazine/the-top-5-colors-forecasted-for-2026-weddings) · [Love Inc. – warna 2026](https://loveincmag.com/the-top-wedding-colors-forecasted-for-2026/) · [Loverly – tren warna](https://loverly.com/planning/ideas/top-wedding-color-trends) · [Bridebook – tren 2027](https://bridebook.com/uk/article/wedding-trends) · [Wezoree – Cloud Dancer 2026](https://wezoree.com/inspiration/cloud-dancer-2026-pantone-s-trendy-wedding-color-of-the-year)
+- **Indonesia.** Bridestory mengangkat tema 2026 "Petal Dreamscape" dengan warna Charming Champagne, dan dari survei mereka terhadap 5.000 calon pengantin, 91% memakai undangan dan buku tamu digital. Popbela (mengutip The Wed) menyebut biru kobalt, cokelat tua, dan burgundy, serta tema tropical wedding.
+  [Suara.com – Petal Dreamscapes](https://www.suara.com/lifestyle/2026/01/22/083254/petal-dreamscapes-intip-tema-pernikahan-paling-romantis-dan-dreamy-untuk-tahun-2026?page=all) · [Popbela – tren pernikahan 2026](https://www.popbela.com/relationship/married/tren-pernikahan-tahun-2026-00-jclkf-ymjdps)
+- **Palet Italia untuk undangan.** Paperlust menyarankan biru kobalt, putih, kuning cerah, dan hijau lembut; motif majolika (keramik Italia selatan dan Sisilia) berpola geometris dan bunga biru-putih; dan ranting lemon sebagai ilustrasi penuh atau bingkai tipis.
+  [Paperlust – undangan Italia, Mediterania, dan Tuscan](https://paperlust.co/blog/?p=17742)
+- **Situs pernikahan.** Salah satu contoh yang dipuji menampilkan kisah pasangan sebagai linimasa interaktif yang tumbuh seiring scroll.
+  [Namecheap – contoh situs pernikahan](https://namecheap.com/guru-guides/wedding-website-examples)
+
+**Penerapan di Riviera Kobalt**
+
+| Temuan | Wujud di desain |
+|---|---|
+| Beach club Italia, acara di Bali | Kanopi beach club bergaris kobalt-putih bertepi scallop di sampul, garis ombak |
+| Ilustrasi tangan, majolika, ranting lemon | Ubin majolika dan ranting lemon yang digambar seperti lukisan kuas (SVG) |
+| Rangkaian undangan yang personal | Potret mempelai di dalam piring keramik, acara sebagai kartu menu beach club, RSVP sebagai kartu "Reservasi" |
+| Beberapa warna berani | Kobalt, putih gading, kuning lemon, dan hijau daun dalam satu palet |
+| Huruf tulisan tangan | Nama mempelai memakai huruf tulisan tangan |
+| Linimasa yang tumbuh saat scroll | Kisah 2019 · 2023 · 2026 digambar sebagai garis pantai yang tergambar mengikuti scroll |
