@@ -34,8 +34,8 @@
   /* butiran tanah liat: bintik gelap + bintik terang (SVG turbulence, tanpa file gambar) */
   --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.18 0 0 0 0 0.07 0 0 0 0 0.03 0.55 0 0 0 -0.22'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E"),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 0.95 0 0 0 0 0.88 -0.5 0 0 0 0.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
   --grain-soft:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.18 0 0 0 0 0.07 0 0 0 0 0.03 0.45 0 0 0 -0.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E"),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 0.95 0 0 0 0 0.88 -0.4 0 0 0 0.16'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
-  /* pita pinggiran truntum (pengulangan bunga + bintang di antara dua garis) */
-  --band-ink:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='26' viewBox='0 0 44 26'%3E%3Cg opacity='.72'%3E%3Cpath d='M0 .5h44M0 25.5h44' stroke='%23f6ecdf' stroke-width='1' fill='none'/%3E%3Cg transform='translate(11 13) scale(.62)'%3E%3Cg fill='none' stroke='%23f6ecdf' stroke-width='.9'%3E%3Cellipse cy='-5.2' rx='1.55' ry='2.7' transform='rotate(0)'/%3E%3Cellipse cy='-5.2' rx='1.55' ry='2.7' transform='rotate(45)'/%3E%3Cellipse cy='-5.2' rx='1.55' ry='2.7' transform='rotate(90)'/%3E%3Cellipse cy='-5.2' rx='1.55' ry='2.7' transform='rotate(135)'/%3E%3Cellipse cy='-5.2' rx='1.55' ry='2.7' transform='rotate(180)'/%3E%3Cellipse cy='-5.2' rx='1.55' ry='2.7' transform='rotate(225)'/%3E%3Cellipse cy='-5.2' rx='1.55' ry='2.7' transform='rotate(270)'/%3E%3Cellipse cy='-5.2' rx='1.55' ry='2.7' transform='rotate(315)'/%3E%3C/g%3E%3Cg fill='%23f6ecdf'%3E%3Ccircle r='1.5'/%3E%3Ccircle cx='3.67' cy='-8.87' r='.75'/%3E%3Ccircle cx='8.87' cy='-3.67' r='.75'/%3E%3Ccircle cx='8.87' cy='3.67' r='.75'/%3E%3Ccircle cx='3.67' cy='8.87' r='.75'/%3E%3Ccircle cx='-3.67' cy='8.87' r='.75'/%3E%3Ccircle cx='-8.87' cy='3.67' r='.75'/%3E%3Ccircle cx='-8.87' cy='-3.67' r='.75'/%3E%3Ccircle cx='-3.67' cy='-8.87' r='.75'/%3E%3C/g%3E%3C/g%3E%3Cg transform='translate(33 13) scale(.55)'%3E%3Cg fill='%23f6ecdf'%3E%3Ccircle r='1.7'/%3E%3Ccircle cx='0' cy='-5.6' r='1.05'/%3E%3Ccircle cx='4.85' cy='-2.8' r='1.05'/%3E%3Ccircle cx='4.85' cy='2.8' r='1.05'/%3E%3Ccircle cx='0' cy='5.6' r='1.05'/%3E%3Ccircle cx='-4.85' cy='2.8' r='1.05'/%3E%3Ccircle cx='-4.85' cy='-2.8' r='1.05'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  /* pita pinggiran truntum (pengulangan bunga besar + bunga titik di antara dua garis) */
+  --band-ink:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='26' viewBox='0 0 44 26'%3E%3Cg opacity='.72'%3E%3Cpath d='M0 .5h44M0 25.5h44' stroke='%23f6ecdf' stroke-width='1' fill='none'/%3E%3Cg transform='translate(11 13) scale(.62)'%3E%3Cg fill='none' stroke='%23f6ecdf' stroke-width='.9'%3E%3Cellipse cy='-4.4' rx='2.5' ry='3.3' transform='rotate(0)'/%3E%3Cellipse cy='-4.4' rx='2.5' ry='3.3' transform='rotate(72)'/%3E%3Cellipse cy='-4.4' rx='2.5' ry='3.3' transform='rotate(144)'/%3E%3Cellipse cy='-4.4' rx='2.5' ry='3.3' transform='rotate(216)'/%3E%3Cellipse cy='-4.4' rx='2.5' ry='3.3' transform='rotate(288)'/%3E%3C/g%3E%3Cg fill='%23f6ecdf'%3E%3Ccircle r='1.5'/%3E%3Ccircle cx='5.05' cy='-6.96' r='.75'/%3E%3Ccircle cx='8.18' cy='2.66' r='.75'/%3E%3Ccircle cx='0' cy='8.6' r='.75'/%3E%3Ccircle cx='-8.18' cy='2.66' r='.75'/%3E%3Ccircle cx='-5.05' cy='-6.96' r='.75'/%3E%3C/g%3E%3C/g%3E%3Cg transform='translate(33 13) scale(.55)'%3E%3Cg fill='%23f6ecdf'%3E%3Ccircle r='1.6'/%3E%3Ccircle cx='0' cy='-3.6' r='1.75'/%3E%3Ccircle cx='3.42' cy='-1.11' r='1.75'/%3E%3Ccircle cx='2.12' cy='2.91' r='1.75'/%3E%3Ccircle cx='-2.12' cy='2.91' r='1.75'/%3E%3Ccircle cx='-3.42' cy='-1.11' r='1.75'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -85,7 +85,7 @@ a{color:inherit}
 .band{position:relative;height:26px;overflow:hidden;background:var(--tera)}
 .band::before{content:"";position:absolute;inset:0 -44px 0 0;background:var(--band-ink) center/44px 26px repeat-x}
 .band.on-bata{background-color:var(--bata)}
-/* Taburan truntum seperti bintang (lihat catatan motif di <head>); berkelip pelan bila gerak diizinkan. */
+/* Taburan bunga truntum kecil (lihat catatan motif di <head>); berkelip pelan bila gerak diizinkan. */
 .sky{position:absolute;inset:0;pointer-events:none;overflow:hidden}
 .sky svg{position:absolute;translate:-50% -50%;opacity:var(--o);color:var(--ink)}
 .motion .sky svg{animation:tw var(--t) ease-in-out var(--dl) infinite}
@@ -303,7 +303,7 @@ footer a{color:var(--ink)}
 
 /* ---------- gerak (hanya di bawah html.motion; tanpa itu semua tampil diam) ----------
    Pemicu: .in dari pengamat gulir, atau .play pada sampul / panel desktop. */
-/* Bunga truntum mekar: titik pusat muncul, kedelapan kelopak tumbuh dari pusat bergiliran, titik isen menyebar, bunga sedikit berputar. */
+/* Bunga truntum mekar: titik pusat muncul, kelima kelopak tumbuh dari pusat bergiliran, titik isen menyebar, bunga sedikit berputar. */
 .bloom .pt,.bloom .ct,.bloom .sd{transform-box:view-box;transform-origin:0 0}
 .motion .bloom{transform:rotate(-70deg);transition:transform 1.2s cubic-bezier(.2,.7,.2,1) var(--bd,.1s)}
 .motion .bloom .pt,.motion .bloom .ct{transform:scale(0)}
@@ -315,7 +315,7 @@ footer a{color:var(--ink)}
 /* Garis bingkai tumbuh dari keempat bunga sudut menuju tengah sisi (tiap kuadran mask membesar 0 → 51%). */
 .motion .frame::before{-webkit-mask-size:0 0,0 0,0 0,0 0;mask-size:0 0,0 0,0 0,0 0;transition:-webkit-mask-size 1.4s cubic-bezier(.6,0,.2,1) var(--ld,.35s),mask-size 1.4s cubic-bezier(.6,0,.2,1) var(--ld,.35s)}
 .motion :is(.frame.in,.play .frame)::before{-webkit-mask-size:51% 51%,51% 51%,51% 51%,51% 51%;mask-size:51% 51%,51% 51%,51% 51%,51% 51%}
-/* Pembatas: garis memanjang keluar dari bunga di tengah, bintang kecil di kiri-kanannya muncul. */
+/* Pembatas: garis memanjang keluar dari bunga di tengah, bunga titik di kiri-kanannya muncul. */
 .motion .divider i{transform:scaleX(0);transition:transform 1s cubic-bezier(.6,0,.2,1) calc(var(--bd,.1s) + .25s)}
 .motion .divider i:first-child{transform-origin:100% 50%}
 .motion .divider i:last-child{transform-origin:0 50%}
@@ -414,9 +414,10 @@ footer a{color:var(--ink)}
 </head>
 <body class="locked">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
-  <!-- tr: bunga truntum (8 kelopak + titik isen); tr-s: truntum kecil berupa bintang titik -->
-  <symbol id="tr" viewBox="-12 -12 24 24"><g fill="none" stroke="currentColor"><ellipse cy="-5.2" rx="1.55" ry="2.7" transform="rotate(0)" vector-effect="non-scaling-stroke"/><ellipse cy="-5.2" rx="1.55" ry="2.7" transform="rotate(45)" vector-effect="non-scaling-stroke"/><ellipse cy="-5.2" rx="1.55" ry="2.7" transform="rotate(90)" vector-effect="non-scaling-stroke"/><ellipse cy="-5.2" rx="1.55" ry="2.7" transform="rotate(135)" vector-effect="non-scaling-stroke"/><ellipse cy="-5.2" rx="1.55" ry="2.7" transform="rotate(180)" vector-effect="non-scaling-stroke"/><ellipse cy="-5.2" rx="1.55" ry="2.7" transform="rotate(225)" vector-effect="non-scaling-stroke"/><ellipse cy="-5.2" rx="1.55" ry="2.7" transform="rotate(270)" vector-effect="non-scaling-stroke"/><ellipse cy="-5.2" rx="1.55" ry="2.7" transform="rotate(315)" vector-effect="non-scaling-stroke"/></g><g fill="currentColor"><circle r="1.5"/><circle cx="3.67" cy="-8.87" r=".75"/><circle cx="8.87" cy="-3.67" r=".75"/><circle cx="8.87" cy="3.67" r=".75"/><circle cx="3.67" cy="8.87" r=".75"/><circle cx="-3.67" cy="8.87" r=".75"/><circle cx="-8.87" cy="3.67" r=".75"/><circle cx="-8.87" cy="-3.67" r=".75"/><circle cx="-3.67" cy="-8.87" r=".75"/></g></symbol>
-  <symbol id="tr-s" viewBox="-12 -12 24 24"><g fill="currentColor"><circle r="1.7"/><circle cx="0" cy="-5.6" r="1.05"/><circle cx="4.85" cy="-2.8" r="1.05"/><circle cx="4.85" cy="2.8" r="1.05"/><circle cx="0" cy="5.6" r="1.05"/><circle cx="-4.85" cy="2.8" r="1.05"/><circle cx="-4.85" cy="-2.8" r="1.05"/></g></symbol>
+  <!-- tr: bunga truntum (5 kelopak membulat + titik isen); tr-s: truntum kecil berupa bunga titik lima kelopak.
+       Sengaja tanpa bentuk bintang. -->
+  <symbol id="tr" viewBox="-12 -12 24 24"><g fill="none" stroke="currentColor"><ellipse cy="-4.4" rx="2.5" ry="3.3" transform="rotate(0)" vector-effect="non-scaling-stroke"/><ellipse cy="-4.4" rx="2.5" ry="3.3" transform="rotate(72)" vector-effect="non-scaling-stroke"/><ellipse cy="-4.4" rx="2.5" ry="3.3" transform="rotate(144)" vector-effect="non-scaling-stroke"/><ellipse cy="-4.4" rx="2.5" ry="3.3" transform="rotate(216)" vector-effect="non-scaling-stroke"/><ellipse cy="-4.4" rx="2.5" ry="3.3" transform="rotate(288)" vector-effect="non-scaling-stroke"/></g><g fill="currentColor"><circle r="1.5"/><circle cx="5.05" cy="-6.96" r=".75"/><circle cx="8.18" cy="2.66" r=".75"/><circle cx="0" cy="8.6" r=".75"/><circle cx="-8.18" cy="2.66" r=".75"/><circle cx="-5.05" cy="-6.96" r=".75"/></g></symbol>
+  <symbol id="tr-s" viewBox="-12 -12 24 24"><g fill="currentColor"><circle r="1.6"/><circle cx="0" cy="-3.6" r="1.75"/><circle cx="3.42" cy="-1.11" r="1.75"/><circle cx="2.12" cy="2.91" r="1.75"/><circle cx="-2.12" cy="2.91" r="1.75"/><circle cx="-3.42" cy="-1.11" r="1.75"/></g></symbol>
 </svg>
 
 <!-- Sampul -->
@@ -646,16 +647,16 @@ if (guest) { $("#guest").textContent = guest; $("#rName").value = guest; $("#wNa
 /* ---------- ornamen truntum ---------- */
 const use = (id, cls = "") => `<svg${cls ? ` class="${cls}"` : ""} aria-hidden="true" focusable="false"><use href="#${id}"/></svg>`;
 // Bunga truntum inline (bentuknya sama dengan #tr) supaya tiap kelopak & titik isen bisa mekar sendiri-sendiri.
-const SEEDS = [[3.67, -8.87], [8.87, -3.67], [8.87, 3.67], [3.67, 8.87], [-3.67, 8.87], [-8.87, 3.67], [-8.87, -3.67], [-3.67, -8.87]];
+const SEEDS = [[5.05, -6.96], [8.18, 2.66], [0, 8.6], [-8.18, 2.66], [-5.05, -6.96]];
 const bloom = (cls) => `<svg class="bloom ${cls}" viewBox="-12 -12 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor">${
-  SEEDS.map((_, i) => `<g transform="rotate(${i * 45})"><ellipse class="pt" style="--i:${i}" cy="-5.2" rx="1.55" ry="2.7" vector-effect="non-scaling-stroke"/></g>`).join("")
+  SEEDS.map((_, i) => `<g transform="rotate(${i * 72})"><ellipse class="pt" style="--i:${i}" cy="-4.4" rx="2.5" ry="3.3" vector-effect="non-scaling-stroke"/></g>`).join("")
 }</g><g fill="currentColor"><circle class="ct" r="1.5"/>${SEEDS.map(([x, y], i) => `<circle class="sd" style="--i:${i}" cx="${x}" cy="${y}" r=".75"/>`).join("")}</g></svg>`;
 // Pembatas: garis – truntum kecil – bunga truntum – truntum kecil – garis
 $$(".divider").forEach((d) => (d.innerHTML = `<i></i>${use("tr-s")}${bloom("b")}${use("tr-s")}<i></i>`));
 // Bunga di keempat sudut bingkai
 $$(".frame").forEach((f) => f.insertAdjacentHTML("beforeend", ["tl", "tr", "bl", "br"].map((p) => bloom(`kn ${p}`)).join("")));
-// Taburan seperti bintang: posisi dari seed (sama tiap kali dibuka), di pita atas dan tepi kiri/kanan.
-// Bintang yang tetap jatuh di atas teks atau foto disembunyikan clearSky(). [jumlah, seed]
+// Taburan bunga kecil: posisi dari seed (sama tiap kali dibuka), di pita atas dan tepi kiri/kanan.
+// Bunga yang tetap jatuh di atas teks atau foto disembunyikan clearSky(). [jumlah, seed]
 const SKY = { gate: [30, 7], stage: [30, 11] };
 const rng = (seed) => () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646;
 for (const sky of $$("[data-sky]")) {
@@ -768,7 +769,7 @@ function fitLine(el, ratio = 0.6) {
 }
 // Nama tamu ikut dikecilkan (paling kecil 70%) sebelum turun baris, supaya tombol sampul tetap terlihat di layar pendek.
 const fitNames = () => { $$(".gate .names, .stage .names, .hero .names, .person h3, .closing .names").forEach((el) => fitLine(el)); fitLine($("#guest"), 0.7); };
-// Bintang taburan yang menimpa teks, foto (termasuk bunga sudutnya), atau tombol disembunyikan. Letak teks
+// Bunga taburan yang menimpa teks, foto (termasuk bunga sudutnya), atau tombol disembunyikan. Letak teks
 // bergantung ukuran layar dan panjang nama, jadi dihitung ulang tiap kali tata letak berubah. Pergeseran
 // animasi masuk (.gi) dikurangkan supaya yang diukur posisi akhirnya.
 function clearSky() {
@@ -780,9 +781,9 @@ function clearSky() {
       const r = settled(el, box);
       return box.width ? { l: r.l - pad, r: r.r + pad, t: r.t - pad, b: r.b + pad } : null;
     }).filter(Boolean);
-    for (const star of sky.querySelectorAll(":scope > svg")) {
-      const s = star.getBoundingClientRect();
-      star.style.visibility = keep.some((k) => s.left < k.r && k.l < s.right && s.top < k.b && k.t < s.bottom) ? "hidden" : "";
+    for (const fl of sky.querySelectorAll(":scope > svg")) {
+      const s = fl.getBoundingClientRect();
+      fl.style.visibility = keep.some((k) => s.left < k.r && k.l < s.right && s.top < k.b && k.t < s.bottom) ? "hidden" : "";
     }
     // Bunga gugur melintas setinggi layar: lajurnya digeser ke tepi bila jangkauan ayunan + putarannya
     // mengenai teks/foto, dan disembunyikan bila celah di tepi terlalu sempit (layar sempit, nama panjang).
