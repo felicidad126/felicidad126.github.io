@@ -129,7 +129,7 @@ section{position:relative;overflow:hidden}
 .hero .names{font:400 46px/1.1 var(--script);color:#fff;margin:26px 0 0;align-self:stretch;text-wrap:balance}
 .hero .names i{font:italic 400 .62em/1 var(--serif);color:var(--gold);margin:0 .1em}
 .sky{position:absolute;inset:0;pointer-events:none}
-.sky i{position:absolute;width:2px;height:2px;border-radius:50%;background:#fff;opacity:.7;animation:twinkle var(--t,4s) ease-in-out infinite var(--dl,0s)}
+.sky i{position:absolute;width:2px;height:2px;border-radius:50%;background:#f1d9a6;opacity:.7;animation:twinkle var(--t,4s) ease-in-out infinite var(--dl,0s)}
 @keyframes twinkle{50%{opacity:.15}}
 
 /* ayat */
@@ -583,9 +583,10 @@ function jasmine(len) {
   const petals = [0, 72, 144, 216, 288].map((r) => `<ellipse cx="12" cy="${fy - 5}" rx="3" ry="5.4" fill="#fffaf0" transform="rotate(${r} 12 ${fy})"/>`).join("");
   return `<svg width="24" height="${len + 6}" viewBox="0 0 24 ${len + 6}"><path d="M12 0V${len - 10}" stroke="#c9a463" stroke-width=".8"/>${buds}${petals}<circle cx="12" cy="${fy}" r="2" fill="#e3b75c"/></svg>`;
 }
-function star(len, size = 12) {
+function pearl(len, size = 10) {
+  // untaian mutiara: dua manik emas di tali, lalu tetes mutiara dengan kilau kecil
   const s = size, y = len;
-  return `<svg width="${s * 2}" height="${len + s}" viewBox="0 0 ${s * 2} ${len + s}"><path d="M${s} 0V${y - s * 0.6}" stroke="#d6b06b" stroke-width=".8" opacity=".8"/><circle cx="${s}" cy="${y}" r="${s * 0.9}" fill="#f5d896" opacity=".16"/><path d="M${s} ${y - s}Q${s + s * 0.18} ${y - s * 0.18} ${s * 2} ${y}Q${s + s * 0.18} ${y + s * 0.18} ${s} ${y + s}Q${s - s * 0.18} ${y + s * 0.18} 0 ${y}Q${s - s * 0.18} ${y - s * 0.18} ${s} ${y - s}Z" fill="#e8c780"/></svg>`;
+  return `<svg width="${s * 2}" height="${len + s * 1.6}" viewBox="0 0 ${s * 2} ${len + s * 1.6}"><path d="M${s} 0V${y - s * 0.5}" stroke="#d6b06b" stroke-width=".8" opacity=".8"/><circle cx="${s}" cy="${y}" r="${s * 0.9}" fill="#f5d896" opacity=".16"/><circle cx="${s}" cy="${y - s * 1.25}" r="${s * 0.16}" fill="#e3b75c"/><circle cx="${s}" cy="${y - s * 0.8}" r="${s * 0.2}" fill="#e3b75c"/><path d="M${s} ${y - s * 0.55}C${s + s * 0.55} ${y - s * 0.1} ${s + s * 0.62} ${y + s * 0.55} ${s} ${y + s * 0.6}C${s - s * 0.62} ${y + s * 0.55} ${s - s * 0.55} ${y - s * 0.1} ${s} ${y - s * 0.55}Z" fill="#fbf4e6" stroke="#d9c3a0" stroke-width=".6"/><circle cx="${s - s * 0.18}" cy="${y}" r="${s * 0.12}" fill="#fff" opacity=".9"/></svg>`;
 }
 function moon(len) {
   return `<svg width="34" height="${len + 34}" viewBox="0 0 34 ${len + 34}"><path d="M17 0V${len}" stroke="#d6b06b" stroke-width=".8" opacity=".8"/><path d="M24 ${len + 3}a14 14 0 1 0 0 26a11 11 0 1 1 0-26z" fill="#e8c780"/></svg>`;
@@ -598,13 +599,13 @@ function bloom(len) {
 }
 // [jenis, posisi kiri %, panjang tali, ukuran]
 const HANGER_SETS = {
-  gate: [["jasmine", 6, 150], ["star", 15, 90, 10], ["jasmine", 24, 230], ["moon", 34, 120], ["jasmine", 44, 180], ["star", 55, 60, 8], ["jasmine", 64, 260], ["bloom", 74, 110], ["jasmine", 84, 170], ["star", 93, 120, 11]],
-  stage: [["jasmine", 8, 200], ["star", 20, 120, 12], ["jasmine", 32, 280], ["bloom", 46, 140], ["jasmine", 62, 220], ["moon", 76, 90], ["jasmine", 88, 300]],
-  hero: [["jasmine", 6, 96], ["star", 17, 60, 9], ["jasmine", 27, 110], ["moon", 50, 56], ["jasmine", 73, 104], ["star", 83, 74, 10], ["jasmine", 94, 90]],
-  card: [["star", 30, 30, 8], ["jasmine", 50, 44], ["star", 70, 30, 8]],
-  closing: [["jasmine", 10, 140], ["star", 24, 90, 10], ["bloom", 76, 100], ["jasmine", 90, 180]],
+  gate: [["jasmine", 6, 150], ["pearl", 15, 90, 10], ["jasmine", 24, 230], ["moon", 34, 120], ["jasmine", 44, 180], ["pearl", 55, 60, 8], ["jasmine", 64, 260], ["bloom", 74, 110], ["jasmine", 84, 170], ["pearl", 93, 120, 11]],
+  stage: [["jasmine", 8, 200], ["pearl", 20, 120, 12], ["jasmine", 32, 280], ["bloom", 46, 140], ["jasmine", 62, 220], ["moon", 76, 90], ["jasmine", 88, 300]],
+  hero: [["jasmine", 6, 96], ["pearl", 17, 60, 9], ["jasmine", 27, 110], ["moon", 50, 56], ["jasmine", 73, 104], ["pearl", 83, 74, 10], ["jasmine", 94, 90]],
+  card: [["pearl", 30, 30, 8], ["jasmine", 50, 44], ["pearl", 70, 30, 8]],
+  closing: [["jasmine", 10, 140], ["pearl", 24, 90, 10], ["bloom", 76, 100], ["jasmine", 90, 180]],
 };
-const MAKERS = { jasmine, star, moon, bloom };
+const MAKERS = { jasmine, pearl, moon, bloom };
 for (const box of $$("[data-hangers]")) {
   box.innerHTML = HANGER_SETS[box.dataset.hangers].map(([k, x, len, size]) => {
     const svg = MAKERS[k](len, size);
