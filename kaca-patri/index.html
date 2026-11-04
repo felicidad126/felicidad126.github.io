@@ -13,7 +13,7 @@
 <meta property="og:image" content="https://felicidad126.github.io/foto/cover.jpg">
 <!-- Kaca Patri: cahaya pagi yang jatuh melalui kaca berwarna jendela orsi (jendela kayu berkisi khas Persia era Safawi–Qajar,
      seperti di Masjid Nasir al-Mulk, Shiraz). Dinding plester gading, kisi kayu walnut, kaca hijau tua, merah beri, biru teal,
-     kunyit, dan lilac. Jendela, kisi bintang delapan (khatam), dan pantulan cahayanya dibangun sebagai SVG.
+     kunyit, dan lilac. Jendela, kisi bulatan dan belah ketupat, dan pantulan cahayanya dibangun sebagai SVG.
      Data mempelai, alamat, dan rekening adalah data contoh. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,8 +25,8 @@
   document.documentElement.classList.add(full ? "motion" : "calm");
 })();
 
-/* Jendela orsi dan kaca patri. Kisi bawah memakai pola bintang-dan-salib: bintang delapan (dua bujur sangkar bertumpuk) di tiap sel,
-   ruang di antaranya membentuk salib. Tiap keping kaca diberi sedikit beda warna (acak dengan benih tetap), jadi terlihat ditiup
+/* Jendela orsi dan kaca patri. Kisi bawah memakai pola bulatan dan belah ketupat: tiap sel berisi bulatan kaca bercincin, dan
+   pertemuan kisi diisi keping belah ketupat (sengaja tanpa bentuk bintang atau salib). Tiap keping kaca diberi sedikit beda warna (acak dengan benih tetap), jadi terlihat ditiup
    tangan tapi sama di setiap kunjungan. Pantulan cahaya di dinding adalah kisi yang sama, dimiringkan dan dikaburkan. */
 window.KP = (() => {
   const f = (v) => Math.round(v * 10) / 10;
@@ -40,33 +40,25 @@ window.KP = (() => {
   const tone = (r, pair) => mix(pair[r() < .5 ? 0 : 1], (r() - .5) * .14);
   const path = (pts) => "M" + pts.map((p) => f(p[0]) + "," + f(p[1])).join("L") + "Z";
   const pane = (pts, fill, d, cls = "pn") => `<path class="${cls}" pathLength="1" d="${path(pts)}" fill="${fill}" style="--d:${d}s"/>`;
-  // Bintang delapan: 16 titik, ujung luar s/2, ujung dalam 0,7654 kalinya.
-  const star = (cx, cy, s) => Array.from({ length: 16 }, (_, k) => {
-    const a = k * Math.PI / 8, rr = k % 2 ? s * .3827 : s / 2;
-    return [cx + rr * Math.cos(a), cy + rr * Math.sin(a)];
+  // Bulatan: lingkaran sebagai poligon 28 titik, supaya bisa memakai pane() dan animasi garis yang sama.
+  const disc = (cx, cy, rad, n = 28) => Array.from({ length: n }, (_, k) => {
+    const a = k * 2 * Math.PI / n;
+    return [cx + rad * Math.cos(a), cy + rad * Math.sin(a)];
   });
-  // Salib di sudut sel: rangkaian tepi dari empat bintang di sekelilingnya, diurutkan menurut sudut.
-  const cross = (X, Y, s) => {
-    const pts = [], seen = new Set();
-    for (const [sx, sy] of [[-1, -1], [1, -1], [1, 1], [-1, 1]]) {
-      const cx = X + sx * s / 2, cy = Y + sy * s / 2, dx = -sx, dy = -sy;
-      pts.push([cx + dx * .5 * s, cy], [cx + dx * .3536 * s, cy + dy * .1464 * s], [cx + dx * .3536 * s, cy + dy * .3536 * s], [cx + dx * .1464 * s, cy + dy * .3536 * s], [cx, cy + dy * .5 * s]);
-    }
-    return pts.filter((p) => { const k = f(p[0]) + "," + f(p[1]); if (seen.has(k)) return false; seen.add(k); return true; })
-      .sort((a, b) => Math.atan2(a[1] - Y, a[0] - X) - Math.atan2(b[1] - Y, b[0] - X));
-  };
+  // Belah ketupat di pertemuan kisi, cukup kecil supaya tidak menyentuh bulatan di sekelilingnya.
+  const lozenge = (X, Y, d) => [[X, Y - d], [X + d, Y], [X, Y + d], [X - d, Y]];
   function lattice({ cols, rows, s, ox = 0, oy = 0, skip, r, delay, cls }) {
     let out = "";
     for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
       if (skip && i >= skip[0] && i < skip[2] && j >= skip[1] && j < skip[3]) continue;
-      const cx = ox + (i + .5) * s, cy = oy + (j + .5) * s, v = star(cx, cy, s), d = delay(cx, cy);
-      for (let k = 0; k < 8; k++) out += pane([v[(2 * k + 15) % 16], v[2 * k], v[2 * k + 1]], tone(r, k % 2 ? PAL.berry : PAL.green), d, cls);
-      out += pane(v.filter((_, k) => k % 2), tone(r, [PAL.saff, PAL.clear, PAL.lilac][(i + 2 * j) % 3]), d, cls);
+      const cx = ox + (i + .5) * s, cy = oy + (j + .5) * s, d = delay(cx, cy);
+      out += pane(disc(cx, cy, s * .42), tone(r, (i + j) % 2 ? PAL.berry : PAL.green), d, cls);
+      out += pane(disc(cx, cy, s * .27, 22), tone(r, [PAL.saff, PAL.clear, PAL.lilac][(i + 2 * j) % 3]), d, cls);
     }
     for (let j = 0; j <= rows; j++) for (let i = 0; i <= cols; i++) {
       if (skip && i > skip[0] && i < skip[2] && j > skip[1] && j < skip[3]) continue;
       const X = ox + i * s, Y = oy + j * s;
-      out += pane(cross(X, Y, s), tone(r, (i + j) % 2 ? PAL.sapph : PAL.teal), delay(X, Y), cls);
+      out += pane(lozenge(X, Y, s * .3), tone(r, (i + j) % 2 ? PAL.sapph : PAL.teal), delay(X, Y), cls);
     }
     return out;
   }
@@ -164,11 +156,11 @@ window.KP = (() => {
     for (let i = 0; i < 8; i++) g += put([...arc(.3, Math.PI * i / 8, Math.PI * (i + 1) / 8), ...arc(.64, Math.PI * (i + 1) / 8, Math.PI * i / 8)], i % 2 ? PAL.sapph : PAL.berry);
     for (let i = 0; i < 14; i++) g += put([...arc(.64, Math.PI * i / 14, Math.PI * (i + 1) / 14, 3), ...arc(1, Math.PI * (i + 1) / 14, Math.PI * i / 14, 3)], [PAL.clear, PAL.green, PAL.saff, PAL.lilac][Math.min(i, 13 - i) % 4]);
     for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
-      const v = star((i + .5) * s, ry + 8 + (j + .5) * s, s);
-      for (let k = 0; k < 8; k++) g += put([v[(2 * k + 15) % 16], v[2 * k], v[2 * k + 1]], k % 2 ? PAL.berry : PAL.green, .78);
-      g += put(v.filter((_, k) => k % 2), [PAL.saff, PAL.clear, PAL.lilac][(i + 2 * j) % 3]);
+      const cx = (i + .5) * s, cy = ry + 8 + (j + .5) * s;
+      g += put(disc(cx, cy, s * .42), (i + j) % 2 ? PAL.berry : PAL.green, .9);
+      g += put(disc(cx, cy, s * .27, 22), [PAL.saff, PAL.clear, PAL.lilac][(i + 2 * j) % 3]);
     }
-    for (let j = 0; j <= rows; j++) for (let i = 0; i <= cols; i++) if (i % cols && j % rows) g += put(cross(i * s, ry + 8 + j * s, s), (i + j) % 2 ? PAL.sapph : PAL.teal, .8);
+    for (let j = 0; j <= rows; j++) for (let i = 0; i <= cols; i++) if (i % cols && j % rows) g += put(lozenge(i * s, ry + 8 + j * s, s * .3), (i + j) % 2 ? PAL.sapph : PAL.teal, .8);
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 260"><defs><filter id="b" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="${blur}"/></filter></defs>`
       + `<g filter="url(#b)"><g transform="translate(210 24) skewX(${skew}) scale(1 ${sy}) translate(${-rx} 0)"><path d="M0,${ry}A${rx},${ry} 0 0 1 ${bw},${ry}V${ry + 8 + bh}H0Z" fill="#f9dc9c" fill-opacity=".6"/>${g}</g></g></svg>`;
     return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
@@ -343,13 +335,13 @@ html.calm .rv:not(.in){opacity:0}
 /* Kisah */
 .chs{list-style:none;margin:0;padding:0;display:grid;gap:clamp(48px,8vw,64px)}
 .ch{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px}
-.star{position:relative;width:min(64vw,250px);height:min(64vw,250px);margin:0 0 14px;flex:none}
-.star img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;clip-path:polygon(50% 0%,64.65% 14.64%,85.36% 14.64%,85.36% 35.35%,100% 50%,85.36% 64.65%,85.36% 85.36%,64.65% 85.36%,50% 100%,35.35% 85.36%,14.64% 85.36%,14.64% 64.65%,0% 50%,14.64% 35.35%,14.64% 14.64%,35.35% 14.64%);transition:clip-path 1.6s var(--ease),transform 1.6s var(--ease)}
-html.motion .ch:not(.in) .star img{clip-path:polygon(50% 46%,51% 49%,51% 49%,51% 49%,54% 50%,51% 51%,51% 51%,51% 51%,50% 54%,49% 51%,49% 51%,49% 51%,46% 50%,49% 49%,49% 49%,49% 49%);transform:scale(1.15)}
-.star svg{position:absolute;inset:-3%;width:106%;height:106%;overflow:visible}
-.star .o{fill:none;stroke:var(--walnut);stroke-width:2.6;stroke-linejoin:round}
-.star .i{fill:none;stroke:var(--saff);stroke-width:.9;stroke-linejoin:round;opacity:.9}
-.star .dot{fill:var(--berry)}
+.medal{position:relative;width:min(64vw,250px);height:min(64vw,250px);margin:0 0 14px;flex:none}
+.medal img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;clip-path:circle(44% at 50% 50%);transition:clip-path 1.6s var(--ease),transform 1.6s var(--ease)}
+html.motion .ch:not(.in) .medal img{clip-path:circle(3% at 50% 50%);transform:scale(1.15)}
+.medal svg{position:absolute;inset:-3%;width:106%;height:106%;overflow:visible}
+.medal .o{fill:none;stroke:var(--walnut);stroke-width:2.6}
+.medal .i{fill:none;stroke:var(--saff);stroke-width:.9;opacity:.9}
+.medal .dot{fill:var(--berry)}
 .yr{font:italic 400 clamp(40px,9vw,52px)/1 var(--f-d);color:var(--teal)}
 .ch h3{font-size:clamp(22px,5vw,26px);color:var(--berry)}
 .ch p.t{color:var(--ink-2);max-width:22em}
@@ -587,17 +579,17 @@ html.lb-open{overflow:hidden}
       <header class="hd"><p class="kick rv">Kisah Kami</p><h2 id="h-story" class="rv" style="--rd:.1s">Tujuh Tahun, <em>Tiga Babak</em></h2></header>
       <ol class="chs">
         <li class="ch rv">
-          <figure class="star"><img src="../foto/galeri-1.jpg" alt="Laras dan Bima di jalan setapak berpohon kelapa" loading="lazy" style="object-position:50% 62%"></figure>
+          <figure class="medal"><img src="../foto/galeri-1.jpg" alt="Laras dan Bima di jalan setapak berpohon kelapa" loading="lazy" style="object-position:50% 62%"></figure>
           <p class="yr">2019</p><h3>Bertemu</h3>
           <p class="t">Sebuah acara kampus mempertemukan dua orang yang sama-sama datang terlambat. Kursi yang tersisa hanya dua, bersebelahan di barisan paling belakang.</p>
         </li>
         <li class="ch rv">
-          <figure class="star"><img src="../foto/galeri-3.jpg" alt="Laras dan Bima berpiknik di padang rumput" loading="lazy" style="object-position:50% 58%"></figure>
+          <figure class="medal"><img src="../foto/galeri-3.jpg" alt="Laras dan Bima berpiknik di padang rumput" loading="lazy" style="object-position:50% 58%"></figure>
           <p class="yr">2023</p><h3>Bersama</h3>
           <p class="t">Dari obrolan singkat menjadi kebiasaan; dari kebiasaan menjadi rumah. Kami belajar menunggu, belajar mengalah, dan belajar pulang.</p>
         </li>
         <li class="ch rv">
-          <figure class="star"><img src="../foto/galeri-4.jpg" alt="Tangan Laras dan Bima dengan cincin di atas buket mawar putih" loading="lazy" style="object-position:50% 40%"></figure>
+          <figure class="medal"><img src="../foto/galeri-4.jpg" alt="Tangan Laras dan Bima dengan cincin di atas buket mawar putih" loading="lazy" style="object-position:50% 40%"></figure>
           <p class="yr">2026</p><h3>Selamanya</h3>
           <p class="t">Lamaran sederhana di hadapan keluarga, lalu kami memilih satu tanggal: Sabtu, 12 Desember 2026.</p>
         </li>
@@ -801,10 +793,12 @@ if (GUEST) {
 $$("[data-win]").forEach(KP.win);
 $$("[data-fan]").forEach(KP.fanMini);
 $$("[data-band]").forEach(KP.band);
-// Bingkai bintang delapan untuk foto kisah: garis kayu, garis kunyit di dalam, dan titik di tiap ujung.
-const OCT = "50,3 63.77,16.76 83.23,16.77 83.24,36.23 97,50 83.24,63.77 83.23,83.23 63.77,83.24 50,97 36.23,83.24 16.77,83.23 16.76,63.77 3,50 16.76,36.23 16.77,16.77 36.23,16.76";
-const OCT_I = "50,9 62.01,21.01 78.99,21.01 78.99,37.99 91,50 78.99,62.01 78.99,78.99 62.01,78.99 50,91 37.99,78.99 21.01,78.99 21.01,62.01 9,50 21.01,37.99 21.01,21.01 37.99,21.01";
-$$(".star").forEach((el) => el.insertAdjacentHTML("beforeend", `<svg viewBox="0 0 100 100" aria-hidden="true" focusable="false"><polygon class="o" points="${OCT}"/><polygon class="i" points="${OCT_I}"/>${OCT.split(" ").filter((_, i) => i % 2 === 0).map((p) => { const [x, y] = p.split(","); return `<circle class="dot" cx="${x}" cy="${y}" r="1.6"/>`; }).join("")}</svg>`));
+// Medali bulat untuk foto kisah: garis kayu, garis kunyit di dalam, dan untaian titik di antaranya.
+const BEADS = Array.from({ length: 24 }, (_, k) => {
+  const a = k * Math.PI / 12;
+  return `<circle class="dot" cx="${KP.f(50 + 45.5 * Math.cos(a))}" cy="${KP.f(50 + 45.5 * Math.sin(a))}" r="1.1"/>`;
+}).join("");
+$$(".medal").forEach((el) => el.insertAdjacentHTML("beforeend", `<svg viewBox="0 0 100 100" aria-hidden="true" focusable="false"><circle class="o" cx="50" cy="50" r="48"/><circle class="i" cx="50" cy="50" r="43"/>${BEADS}</svg>`));
 
 /* ---------- Muncul saat masuk layar (.in) ---------- */
 const reveal = new IntersectionObserver((es) => es.forEach((e) => {
