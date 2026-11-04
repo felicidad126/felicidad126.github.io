@@ -166,7 +166,7 @@ Sumber:
 
 ## 7. Desain yang dibuat dari referensi ini
 
-Lima tema baru, masing-masing dibuat dari nol (tiga tema lama tidak diubah):
+Enam tema baru, masing-masing dibuat dari nol (tiga tema lama tidak diubah):
 
 | Tema | Konsep | Referensi yang dipakai | Palet |
 |---|---|---|---|
@@ -175,6 +175,7 @@ Lima tema baru, masing-masing dibuat dari nol (tiga tema lama tidak diubah):
 | [**Amplop Linen**](amplop-linen/) | Amplop bersegel lilin, lalu sembilan kartu die-cut yang digeser | Greenvelope/Paperless Post, vellum, die-cut, kertas bertekstur | Quiet luxury netral |
 | [**Biru Kabut**](biru-kabut/) | Pagi berkabut yang romantis: foto muncul dari kabut, panel kaca buram, ranting hydrangea | Riset Binus/ITB dan teknologi.id (modern simpel, tipografi elegan), lapisan transparan ala vellum | Biru pastel + abu |
 | [**Riviera Kobalt**](riviera-kobalt/) | Beach club Riviera Italia di Bali: ubin majolika lukisan tangan, ranting lemon, kanopi bergaris, potret di piring keramik | Riset tren 2027 (bagian 9): The Knot (beach club Italia, ilustrasi tangan), biru kobalt, palet Italia Paperlust | Kobalt + putih + lemon |
+| [**Kaca Patri**](kaca-patri/) | Cahaya pagi menembus jendela orsi: kisi kayu, kaca berwarna permata, pantulan cahaya yang bergerak | Riset lanjutan (bagian 10): detail kaca patri (The Knot 2027), hijau tua dan warna permata, jendela orsi Persia | Hijau tua + merah berry + safir + kunyit + lilac |
 
 Semua tema baru punya motion yang menyesuaikan konsepnya dan tetap menghormati `prefers-reduced-motion` (`?motion=full` memaksa animasi penuh).
 
@@ -230,3 +231,28 @@ Riset tambahan untuk tema kedelapan, Riviera Kobalt. Sebagian besar sumber adala
 | Beberapa warna berani | Kobalt, putih gading, kuning lemon, dan hijau daun dalam satu palet |
 | Huruf tulisan tangan | Nama mempelai memakai huruf tulisan tangan |
 | Linimasa yang tumbuh saat scroll | Kisah 2019 · 2023 · 2026 digambar sebagai garis pantai yang tergambar mengikuti scroll |
+
+---
+
+## 10. Riset lanjutan: kaca patri dan warna permata (November 2026)
+
+Riset tambahan untuk tema kesembilan, Kaca Patri. Seperti bagian 9, sebagian besar sumber adalah penerbit dan vendor pernikahan, jadi dibaca sebagai arah tren.
+
+**Temuan utama**
+
+- **Detail bergaya kaca patri.** The Knot memperkirakan detail mirip kaca patri, pola tapestri, dan motif dari karya seni akan muncul di rangkaian undangan 2027. Gaya kaca patri dengan garis tepi emas di sekitar bunga juga sudah dijual sebagai desain undangan, jadi motif ini sudah dikenal, bukan sekadar wacana.
+  [The Knot – top wedding invite trends](https://www.theknot.com/content/top-wedding-invite-trends) · [Zazzle – contoh undangan bergaya kaca patri](https://www.zazzle.com/256649665263668138)
+- **Warna permata dan beberapa warna berani sekaligus.** WGSN dan Coloro menyebut Deep Green sebagai warna kunci musim gugur/dingin 2027/28, dan lilac lembut muncul sebagai aksen 2027. Daftar warna 2027 The Wed memakai merah berry, sementara The Knot memasangkan burgundy dengan aksen tajam dan menyebut pasangan 2027 memakai beberapa warna "showpiece" dalam satu palet. Sumber 2026 menyebut zamrud, safir, kecubung, dan teal.
+  [Kennedy Blue – warna 2027](https://www.kennedyblue.com/blogs/weddings/2027-bridesmaid-dress-colors) · [The Wed – warna 2027](https://thewed.com/magazine/2027-wedding-color-trends) · [The Knot – crazy wedding color combos](https://www.theknot.com/content/crazy-wedding-color-combos-that-work) · [Atawa – tren 2027](https://www.atawa.com/en-ch/advices/topics-wedding-trends) · [Paperlust – jewel-tone wedding](https://paperlust.co/blog/?p=17798)
+- **Jendela orsi Persia.** Orsi adalah jendela kayu berkisi dengan kaca berwarna dari era Safawi dan Qajar. Berbeda dengan kaca patri bergambar di gereja, orsi berfungsi sebagai sumber cahaya. Di Masjid Nasir al-Mulk, Shiraz, matahari pagi yang rendah menembus kaca berwarna di ruang salat barat dan menebarkan warna-warni di lantai, paling indah di musim gugur dan dingin sebelum sekitar pukul 10 pagi.
+  [Wikipedia – Nasir-ol-Molk Mosque](https://en.wikipedia.org/wiki/Nasir-ol-Molk_Mosque) · [My Modern Met – Nasir al-Mulk](https://mymodernmet.com/nasir-al-mulk-mosque/) · [Muslim Heritage – Mosque of Whirling Colours](https://muslimheritage.com/mosque-of-whirling-colours-a-mixture-of-architecture-and-art-in-nasir-al-mulk-mosque-in-shiraz-iran/) · [Maverick Bird – Nasir al-Molk](https://maverickbird.com/outside-india/nasir-al-molk-mosque-the-pink-mosque-of-shiraz/)
+
+**Penerapan di Kaca Patri**
+
+| Temuan | Wujud di desain |
+|---|---|
+| Detail bergaya kaca patri | Jendela orsi (kisi kayu dan kaca berwarna) sebagai pusat sampul dan ornamen pembatas |
+| Beberapa warna permata berani | Hijau tua, merah berry, safir/teal, kunyit, dan lilac di atas dinding plester gading |
+| Orsi sebagai sumber cahaya | Pantulan cahaya berwarna yang jatuh di halaman dan bergeser saat scroll, seperti matahari pagi yang bergerak |
+| Nuansa islami pasangan contoh | Ayat QS Ar-Rum 21 ditampilkan dalam huruf Arab beserta terjemahannya; tidak menggambarkan bangunan masjid |
+

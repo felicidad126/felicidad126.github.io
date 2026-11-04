@@ -121,4 +121,19 @@ Font DM Serif Display, Yellowtail, dan DM Sans dimuat dari Google Fonts, berlise
 
 ---
 
-Kelima tema terakhir dibuat dari nol berdasarkan [`REFERENSI-DESAIN.md`](REFERENSI-DESAIN.md). Semuanya memakai foto dari folder `foto/` yang sama; nama, tanggal, alamat, dan rekening adalah data contoh. RSVP dan ucapan hanya tersimpan di perangkat pengunjung.
+# Kaca Patri — Preview Undangan Digital
+
+Tema kesembilan, di subfolder [`kaca-patri/`](kaca-patri/): **cahaya pagi yang menembus jendela orsi**, jendela kayu berkisi dengan kaca berwarna permata khas Persia. Dinding plester gading, kisi kayu walnut, dan kaca hijau tua, merah berry, safir, kunyit, serta lilac; pantulan cahaya berwarna jatuh di halaman. Urutannya: sampul berjendela orsi, salam, QS Ar-Rum 21 dalam huruf Arab beserta terjemahannya, mempelai di jendela kecil, kisah kami (2019 · 2023 · 2026) dalam medali bulat, simpan tanggal, acara, galeri, RSVP, ucapan, amplop digital, dan penutup. Konsepnya berasal dari riset di bagian 10 [`REFERENSI-DESAIN.md`](REFERENSI-DESAIN.md).
+
+- Motion: saat dimuat, kaca menyala satu per satu dari bawah seperti matahari terbit; saat dibuka, daun jendela terangkat seperti jendela geser dan cahaya pagi memenuhi layar; kisi tergambar lalu terisi warna, potret tersingkap dari balik kaca, dan pantulan cahaya bergeser mengikuti scroll.
+- Musik: petikan ala santur di atas dengung lembut, dirender di browser saat halaman dimuat.
+
+- Lihat: https://felicidad126.github.io/kaca-patri/
+- Dengan nama tamu: https://felicidad126.github.io/kaca-patri/?to=Nama%20Tamu
+- Animasi penuh (abaikan setting reduced-motion): https://felicidad126.github.io/kaca-patri/?motion=full
+
+Font Playfair Display, Spectral, dan Amiri dimuat dari Google Fonts, berlisensi SIL Open Font License 1.1.
+
+---
+
+Keenam tema terakhir dibuat dari nol berdasarkan [`REFERENSI-DESAIN.md`](REFERENSI-DESAIN.md). Semuanya memakai foto dari folder `foto/` yang sama; nama, tanggal, alamat, dan rekening adalah data contoh. RSVP dan ucapan hanya tersimpan di perangkat pengunjung.
