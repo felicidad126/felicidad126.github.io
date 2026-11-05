@@ -166,7 +166,7 @@ Sumber:
 
 ## 7. Desain yang dibuat dari referensi ini
 
-Enam tema baru, masing-masing dibuat dari nol (tiga tema lama tidak diubah):
+Tujuh tema baru, masing-masing dibuat dari nol (tiga tema lama tidak diubah):
 
 | Tema | Konsep | Referensi yang dipakai | Palet |
 |---|---|---|---|
@@ -176,6 +176,7 @@ Enam tema baru, masing-masing dibuat dari nol (tiga tema lama tidak diubah):
 | [**Biru Kabut**](biru-kabut/) | Pagi berkabut yang romantis: foto muncul dari kabut, panel kaca buram, ranting hydrangea | Riset Binus/ITB dan teknologi.id (modern simpel, tipografi elegan), lapisan transparan ala vellum | Biru pastel + abu |
 | [**Riviera Kobalt**](riviera-kobalt/) | Beach club Riviera Italia di Bali: ubin majolika lukisan tangan, ranting lemon, kanopi bergaris, potret di piring keramik | Riset tren 2027 (bagian 9): The Knot (beach club Italia, ilustrasi tangan), biru kobalt, palet Italia Paperlust | Kobalt + putih + lemon |
 | [**Kaca Patri**](kaca-patri/) | Cahaya pagi menembus jendela orsi: kisi kayu, kaca berwarna permata, pantulan cahaya yang bergerak | Riset lanjutan (bagian 10): detail kaca patri (The Knot 2027), hijau tua dan warna permata, jendela orsi Persia | Hijau tua + merah berry + safir + kunyit + lilac |
+| [**Kelopak Mimpi**](kelopak-mimpi/) | Taman kelopak abstrak yang melayang di bawah cahaya kubah: kelopak tembus pandang berkilau sampanye, komposisi asimetris | Riset lanjutan (bagian 11): Petal Dreamscape dan Charming Champagne dari Bridestory 2026, tekstur bunga kering | Blush, mauve, lilac, peach + sampanye |
 
 Semua tema baru punya motion yang menyesuaikan konsepnya dan tetap menghormati `prefers-reduced-motion` (`?motion=full` memaksa animasi penuh).
 
@@ -255,4 +256,34 @@ Riset tambahan untuk tema kesembilan, Kaca Patri. Seperti bagian 9, sebagian bes
 | Beberapa warna permata berani | Hijau tua, merah berry, safir/teal, kunyit, dan lilac di atas dinding plester gading |
 | Orsi sebagai sumber cahaya | Pantulan cahaya berwarna yang jatuh di halaman dan bergeser saat scroll, seperti matahari pagi yang bergerak |
 | Nuansa islami pasangan contoh | Ayat QS Ar-Rum 21 ditampilkan dalam huruf Arab beserta terjemahannya; tidak menggambarkan bangunan masjid |
+
+---
+
+## 11. Riset lanjutan: Petal Dreamscape (November 2026)
+
+Riset tambahan untuk tema kesepuluh, Kelopak Mimpi. Arah ini dipilih karena berasal dari tren pernikahan Indonesia sendiri, bukan dari data pasangan Amerika seperti sebagian besar bagian 9 dan 10.
+
+**Temuan utama**
+
+- **Petal Dreamscape (Bridestory 2026).** Tema tren pernikahan 2026 dari Bridestory terinspirasi bentuk bunga yang abstrak dan kelopak bunga. Suasananya digambarkan seperti berada di dunia mimpi, dengan kelopak, cahaya lembut, dan kesan intim. Unsur bunga dipadukan dengan pendekatan modern, palet muted dan powdery, tekstur metalik, serta komposisi dekorasi yang tidak konvensional.
+  [Popbela – Bridestory kenalkan Petal Dreamscape](https://www.popbela.com/relationship/married/bridestory-kenalkan-tren-pernikahan-baru-bertema-petal-dreamscape-00-jclkf-40l3rw) · [Suara.com – Petal Dreamscapes](https://www.suara.com/lifestyle/2026/01/22/083254/petal-dreamscapes-intip-tema-pernikahan-paling-romantis-dan-dreamy-untuk-tahun-2026?page=all) · [Medcom – konsep Petal Dreamscapes](https://www.medcom.id/gaya/family/VNxA9Z1b-terpapar-dalam-pesona-syifa-hadju-ini-konsep-petal-dreamscapes-yang-bakal-tren-di-2026)
+- **Charming Champagne.** Warna pendamping tema ini: emas hangat dengan sentuhan putih gading, yang melambangkan kematangan cinta dan kebahagiaan yang halus.
+  [Medcom – konsep Petal Dreamscapes](https://www.medcom.id/gaya/family/VNxA9Z1b-terpapar-dalam-pesona-syifa-hadju-ini-konsep-petal-dreamscapes-yang-bakal-tren-di-2026)
+- **Taman bunga imajinatif dan dekorasi berteknologi.** Bridestory Fair 2026 mengangkat taman bunga imajinatif, dan Bridestory Market menampilkan dekorasi berbasis teknologi seperti dinding video LED dan kubah skylight.
+  [Antara – Bridestory Fair 2026](https://www.antaranews.com/berita/5606556/bridestory-fair-2026-angkat-tren-pernikahan-dengan-tema-taman-bunga) · [RRI – Bridestory Fair 2026](https://rri.co.id/en/lifestyle/2489688/bridestory-fair-2026-debuts-imaginative-floral-wedding-trends) · [Popbela – tren di Bridestory Market 2026](https://www.popbela.com/relationship/married/tren-pernikahan-di-bridestory-market-2026-00-jclkf-3hy80q)
+- **Tekstur bunga kering.** Estetika pressed flower digambarkan sebagai bunga pipih yang halus dan agak tembus pandang, dengan palet hangat dan muted. Unsur ini muncul di daftar tren undangan 2026 sebagai tekstur, bukan ilustrasi penuh.
+  [Paperlust – tren undangan 2026](https://paperlust.co/blog/?p=11540) · [Margo & Bees – editorial minimalism vs botanical maximalism](https://blog.margoandbees.com/?p=41359)
+- **Catatan:** laporan tren 2027 The Knot juga menyebut "The Silver (Ag)e" (perak menggantikan emas). Arah ini belum dipakai, dan bisa menjadi tema berikutnya.
+  [Business Wire – The Knot 2027 Wedding Trends Report](https://secure.businesswire.com/news/home/20260928121826/en/The-Knot-2027-Wedding-Trends-Report-Couples-Embrace-Italian-Beach-Clubs-The-Silver-Age-and-Maximizing-Every-Moment)
+
+**Penerapan di Kelopak Mimpi**
+
+| Temuan | Wujud di desain |
+|---|---|
+| Kelopak dan bentuk bunga abstrak | Kelopak besar berbentuk organik yang tembus pandang dan saling bertumpuk, bukan ilustrasi bunga yang realistis |
+| Suasana mimpi dan cahaya lembut | Cahaya kubah dari atas, kelopak melayang pelan, dan transisi pembuka berupa kelopak yang mekar ke luar |
+| Palet muted dan powdery, tekstur metalik | Blush, mauve, lilac, dan peach dengan kilau sampanye di tepi kelopak |
+| Charming Champagne | Sampanye sebagai warna aksen utama: garis, tombol, dan kilau |
+| Komposisi tidak konvensional | Gugus kelopak asimetris yang menembus tepi bingkai, foto dalam bingkai berbentuk kelopak |
+| Tanpa motif bintang | Titik dan bulatan cahaya sebagai pengganti kilau, karena motif bintang sensitif di Indonesia |
 
