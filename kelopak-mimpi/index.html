@@ -17,7 +17,7 @@
      bentuk bintang. Data mempelai, alamat, dan rekening adalah data contoh. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Amiri&family=Ephesis&family=Italiana&family=Urbanist:wght@300..600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Ephesis&family=Italiana&family=Urbanist:wght@300..600&display=swap" rel="stylesheet">
 <script>
 // Kelas gerak dipasang sebelum halaman dilukis supaya keadaan awal animasi tidak berkedip. ?motion=full memaksa animasi untuk demo.
 (() => {
@@ -31,7 +31,7 @@ html{-webkit-tap-highlight-color:transparent}
   --ivory:#fbf6ef;--paper:#fffaf4;--blush:#ecd3cf;--blush-bg:#f6e7e3;--lilac:#d9cde3;--lilac-bg:#efe6f0;--peach:#f2d6c2;
   --mauve:#b98c9a;--mauve-d:#8a5466;--champ:#c8a46a;--champ-l:#e8d3a6;--champ-d:#7a5c2e;
   --ink:#4a3340;--ink-2:#6e5562;--plum:#4a3340;--plum-2:#5e3d4f;
-  --f-d:"Italiana","Didot",Georgia,serif;--f-t:"Urbanist",system-ui,sans-serif;--f-s:"Ephesis","Segoe Script",cursive;--f-a:"Amiri","Noto Naskh Arabic","Traditional Arabic",serif;
+  --f-d:"Italiana","Didot",Georgia,serif;--f-t:"Urbanist",system-ui,sans-serif;--f-s:"Ephesis","Segoe Script",cursive;
   --ease:cubic-bezier(.2,.7,.1,1);
   /* Satuan kelopak: s=100 kira-kira 230px di HP dan 400px di desktop lebar. */
   --pu:clamp(1.5px,.3vw + 1.1px,4px);
@@ -52,6 +52,10 @@ a{color:inherit}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 .kick{font:600 12px/1.4 var(--f-t);letter-spacing:.32em;text-transform:uppercase;color:var(--mauve-d)}
 .amp,h2 em{font-family:var(--f-s);font-style:normal;color:var(--mauve-d)}
+/* Spasi bawaan Ephesis sangat sempit, sehingga dua kata tampak menempel ("WarahmatullahiWabarakatuh"). */
+h2 em,.salam h2 small,.wass{word-spacing:.16em}
+/* Angka penting (jam, hitung mundur, rekening, jumlah ucapan) memakai Urbanist, bukan Italiana: angka Italiana bergaya lama, 1 mirip I dan 0 mirip O. */
+.ev-time,.peb b,.gift .val,.wcount b{font-variant-numeric:lining-nums tabular-nums}
 .btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:12px 28px;border:0;border-radius:999px;background:var(--plum);color:var(--ivory);font:600 13px/1.2 var(--f-t);letter-spacing:.2em;text-transform:uppercase;text-decoration:none;cursor:pointer;box-shadow:0 14px 28px -16px rgba(74,51,64,.7),inset 0 0 0 1px rgba(232,211,166,.5);transition:transform .4s var(--ease),box-shadow .4s var(--ease)}
 .btn:hover{transform:translateY(-2px)}
 .btn:active{transform:translateY(1px) scale(.98)}
@@ -132,6 +136,9 @@ html.motion .ph.rv:not(.in){opacity:.001}
 .g-names{font-size:clamp(44px,min(15vw,8.2svh),76px);color:var(--ink);letter-spacing:.01em;white-space:nowrap}
 .g-names .amp{font-size:.82em;padding:0 .08em;color:var(--champ-d)}
 .g-date{font:500 clamp(14px,2.1svh,16px)/1.4 var(--f-t);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
+/* Di HP tanggal dan tempat selalu dua baris, supaya tidak patah di tengah ("·" atau "Bali" tertinggal sendirian). */
+.g-date span{display:block}
+.g-date .g-sep{display:none}
 .g-ph{grid-area:ph;height:100%;min-height:0;width:100%;display:flex;justify-content:center;align-items:center}
 .ph-wrap{position:relative;height:min(100%,560px);aspect-ratio:.8;max-width:calc(100vw - 72px)}
 .ph-wrap > .ph{position:absolute;inset:0}
@@ -147,6 +154,7 @@ html.motion .ph.rv:not(.in){opacity:.001}
   .g-foot{align-self:start;align-items:flex-start}
   .g-to{align-items:flex-start}
   .g-names{font-size:clamp(40px,min(7.6vw,15svh),118px);white-space:normal;line-height:1}
+  .g-date span,.g-date .g-sep{display:inline}
   .ph-wrap{height:min(calc(100svh - 72px),780px);aspect-ratio:.78}
 }
 html.motion .g-head > *,html.motion .g-foot > *{animation:rise 1.2s var(--ease) both}
@@ -182,16 +190,11 @@ html.motion .rv:not(.in):not(.ph){opacity:0;transform:translateY(18px)}
 html.calm .rv:not(.in){opacity:0}
 
 /* Salam */
-.salam{text-align:center;background:var(--paper) var(--tex)}
+/* Salam memakai gradasi lilac–blush supaya tidak menyatu dengan bagian Mempelai dan Kisah yang berlatar krem. */
+.salam{text-align:center;background:linear-gradient(180deg,var(--lilac-bg),var(--blush-bg))}
 .salam .wrap{max-width:640px;display:flex;flex-direction:column;align-items:center;gap:18px}
 .salam h2 small{display:block;margin-top:8px;font:400 clamp(26px,5.4vw,34px)/1.2 var(--f-s);color:var(--mauve-d)}
 .salam p{color:var(--ink-2)}
-
-/* Ayat */
-.ayat{text-align:center;background:linear-gradient(180deg,var(--lilac-bg),var(--blush-bg))}
-.ayat .wrap{max-width:760px;display:flex;flex-direction:column;align-items:center;gap:20px}
-.ar{font:400 clamp(24px,5.4vw,36px)/2.1 var(--f-a);color:var(--plum);direction:rtl}
-.ayat blockquote{margin:0;font:400 clamp(21px,4.4vw,28px)/1.5 var(--f-d);color:var(--ink)}
 
 /* Mempelai */
 .couple{background:var(--ivory) var(--tex)}
@@ -243,7 +246,7 @@ html.calm .rv:not(.in){opacity:0}
 .peb:nth-child(2){border-radius:56% 44% 52% 48% / 46% 54% 46% 54%}
 .peb:nth-child(3){border-radius:44% 56% 56% 44% / 52% 48% 52% 48%}
 .peb:nth-child(4){border-radius:52% 48% 46% 54% / 44% 56% 44% 56%}
-.peb b{position:relative;display:grid;font:400 clamp(30px,7.4vw,44px)/1 var(--f-d);color:var(--champ-l);font-variant-numeric:tabular-nums}
+.peb b{position:relative;display:grid;font:300 clamp(28px,7vw,40px)/1 var(--f-t);color:var(--champ-l)}
 .peb b > span{grid-area:1/1}
 .peb small{font:600 11px/1.4 var(--f-t);letter-spacing:.24em;text-transform:uppercase;color:#f3e5ea;margin-top:6px}
 .count-msg{font:400 clamp(24px,5vw,32px)/1.3 var(--f-d)}
@@ -261,7 +264,7 @@ html.calm .rv:not(.in){opacity:0}
 .ev > *:not(.petals){position:relative;z-index:1}
 .ev h3{font-size:clamp(32px,6.6vw,42px);margin:6px 0 8px}
 .ev-date{color:var(--ink-2)}
-.ev-time{font:400 clamp(26px,5.6vw,32px)/1.3 var(--f-d);color:var(--champ-d);margin:4px 0 10px}
+.ev-time{font:300 clamp(24px,5.2vw,29px)/1.3 var(--f-t);letter-spacing:.03em;color:var(--champ-d);margin:4px 0 10px}
 .ev-time small{font:600 12px/1 var(--f-t);letter-spacing:.2em}
 .ev-venue{font-weight:600}
 .ev-addr{color:var(--ink-2);margin-bottom:20px}
@@ -314,7 +317,7 @@ form .btn{align-self:stretch;margin-top:4px}
 .wish-grid{display:grid;gap:30px;max-width:1040px;margin:0 auto}
 @media (min-width:900px){.wish-grid{grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);align-items:start}.wish-grid .card{margin:0}}
 .wcount{font:600 12px/1.4 var(--f-t);letter-spacing:.24em;text-transform:uppercase;color:var(--ink-2);margin-bottom:12px}
-.wcount b{display:inline-grid;font:400 26px/1 var(--f-d);letter-spacing:0;color:var(--champ-d);margin-right:6px;vertical-align:-3px}
+.wcount b{display:inline-grid;font:400 24px/1 var(--f-t);letter-spacing:0;color:var(--champ-d);margin-right:6px;vertical-align:-3px}
 .wcount b > span{grid-area:1/1}
 .wl{list-style:none;margin:0;padding:0;display:grid;gap:12px}
 .wish{position:relative;padding:16px 18px 16px 34px;background:#fffdf9;border-radius:18px 40px 18px 40px;box-shadow:0 14px 30px -24px rgba(74,51,64,.5)}
@@ -331,8 +334,8 @@ form .btn{align-self:stretch;margin-top:4px}
 @media (min-width:820px){.gifts{grid-template-columns:repeat(3,1fr)}}
 .gift{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;padding:34px 22px 28px;background:var(--paper);border-radius:26px 70px 26px 70px;box-shadow:0 24px 48px -36px rgba(74,51,64,.5)}
 .gift::before{content:"";width:22px;height:22px;border-radius:50%;margin-bottom:6px;background:radial-gradient(circle at 36% 34%,#fffaf0,var(--champ-l) 45%,var(--champ) 100%);box-shadow:0 0 0 6px rgba(232,211,166,.25)}
-.gift .val{font:400 clamp(24px,5.4vw,30px)/1.25 var(--f-d);color:var(--ink);letter-spacing:.03em}
-.gift .val.addr{font-size:clamp(20px,4.4vw,24px)}
+.gift .val{font:400 clamp(22px,5vw,27px)/1.3 var(--f-t);color:var(--ink);letter-spacing:.06em}
+.gift .val.addr{font-size:clamp(18px,4vw,21px);letter-spacing:.01em}
 .gift .nm{color:var(--ink-2);font-size:15px;margin-bottom:10px}
 
 /* Penutup */
@@ -425,7 +428,7 @@ html.lb-open{overflow:hidden}
       </div>
     </div>
     <div class="g-foot">
-      <p class="g-date">Sabtu, 12 Desember 2026 · Denpasar, Bali</p>
+      <p class="g-date"><span>Sabtu, 12 Desember 2026</span> <span class="g-sep" aria-hidden="true">·</span> <span>Denpasar, Bali</span></p>
       <div class="g-to"><p class="g-to-l">Kepada Yth. Bapak/Ibu/Saudara/i</p><p class="g-guest" id="guest">Tamu Undangan</p></div>
       <button class="btn" id="openBtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20c-4.5-2.2-7-5.6-7-9.6C5 7 7.4 4.5 10 4.5c.8 0 1.5.2 2 .6.5-.4 1.2-.6 2-.6 2.6 0 5 2.5 5 5.9 0 4-2.5 7.4-7 9.6z"/><path d="M12 5.1v14.6"/></svg>Buka Undangan</button>
     </div>
@@ -440,16 +443,6 @@ html.lb-open{overflow:hidden}
     <div class="wrap">
       <h2 id="h-salam" class="rv">Assalamu'alaikum<small>Warahmatullahi Wabarakatuh</small></h2>
       <p class="rv" style="--rd:.15s">Dengan memohon rahmat dan ridho Allah SWT, kami bermaksud mengundang Bapak/Ibu/Saudara/i untuk hadir di hari pernikahan kami, dan menjadi bagian dari taman kecil kebahagiaan yang kami rawat bersama.</p>
-    </div>
-  </section>
-
-  <!-- Ayat -->
-  <section class="sec ayat" aria-label="QS Ar-Rum ayat 21">
-    <div class="petals" data-set="ayat" aria-hidden="true"></div>
-    <div class="wrap">
-      <p class="ar rv" lang="ar" dir="rtl">وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُمْ مِنْ أَنْفُسِكُمْ أَزْوَاجًا لِتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُمْ مَوَدَّةً وَرَحْمَةً ۚ إِنَّ فِي ذَٰلِكَ لَآيَاتٍ لِقَوْمٍ يَتَفَكَّرُونَ</p>
-      <blockquote class="rv" style="--rd:.2s">“Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu pasangan hidup dari jenismu sendiri, supaya kamu merasa tenteram kepadanya, dan dijadikan-Nya di antaramu rasa kasih dan sayang.”</blockquote>
-      <p class="kick rv" style="--rd:.3s">QS. Ar-Rum: 21</p>
     </div>
   </section>
 
@@ -663,7 +656,7 @@ html.lb-open{overflow:hidden}
 <footer class="foot">
   <p class="foot-mark">Laras &amp; Bima · 12.12.2026</p>
   <p>Tema <b>Kelopak Mimpi</b> · taman kelopak abstrak di bawah cahaya kubah, palet powdery dan sampanye. Nama, tanggal, alamat, dan rekening adalah data contoh; foto contoh dibuat dengan AI.</p>
-  <p>Font Italiana, Urbanist, Ephesis &amp; Amiri, SIL Open Font License 1.1.</p>
+  <p>Font Italiana, Urbanist &amp; Ephesis, SIL Open Font License 1.1.</p>
 </footer>
 
 <button class="music" id="music" type="button" aria-label="Putar musik" aria-pressed="false" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/><path class="slash" d="M4 4l16 16"/></svg></button>
@@ -709,10 +702,10 @@ const SETS = {
   // Kelopak depan hanya di sisi kiri foto: di HP teks ada di bawah foto, di desktop teks ada di kanannya.
   gateFront: [["a", "blush", 9, 76, 40, -50, 1.3, { e: 1 }], ["b", "peach", -3, 63, 30, -92, 1.2], ["c", "champ", 5, 11, 26, -32, 1.1, { e: 1 }]],
   salam: [["b", "blush", 8, 30, 60, -28, .6], ["a", "lilac", 3, 54, 42, -72, .7, { e: 1 }], ["c", "peach", 94, 68, 56, 140, .6], ["d", "champ", 88, 56, 28, 100, 1, { e: 1 }], ["o", 0, 82, 22, 7, 0, 1], ["o", 0, 16, 82, 6, 0, .9]],
-  ayat: [["c", "lilac", 6, 78, 56, -24, .6], ["a", "peach", 3, 62, 34, -80, .8, { e: 1 }], ["b", "blush", 95, 20, 54, 160, .7], ["o", 0, 18, 16, 8, 0, 1], ["o", 0, 86, 84, 6, 0, .9]],
   couple: [["b", "peach", 95, 8, 56, 208, .6], ["a", "lilac", 5, 44, 52, -50, .7], ["d", "blush", 3, 60, 32, -96, .9, { e: 1 }], ["c", "champ", 96, 78, 36, 128, .8, { e: 1 }], ["o", 0, 50, 4, 8, 0, 1]],
   story: [["a", "blush", 5, 16, 50, -34, .6], ["c", "champ", 96, 38, 36, 140, .8, { e: 1 }], ["b", "lilac", 4, 72, 54, -18, .7], ["d", "peach", 96, 88, 40, 160, .7], ["o", 0, 90, 64, 7, 0, 1]],
-  date: [["a", "mauve", 6, 22, 54, -40, .6, { e: 1 }], ["b", "blush", 95, 74, 58, 152, .7], ["d", "champ", 92, 16, 30, 40, 1, { e: 1 }], ["c", "lilac", 9, 84, 36, -150, .8], ["o", 0, 18, 64, 9, 0, 1], ["o", 0, 80, 34, 7, 0, .8]],
+  // Bulatan cahaya di bagian tanggal dijauhkan dari kotak hitung mundur: di latar gelap, bulatan terang menutupi angka.
+  date: [["a", "mauve", 6, 22, 54, -40, .6, { e: 1 }], ["b", "blush", 95, 74, 58, 152, .7], ["d", "champ", 92, 16, 30, 40, 1, { e: 1 }], ["c", "lilac", 9, 84, 36, -150, .8], ["o", 0, 27, 93, 9, 0, 1], ["o", 0, 80, 34, 7, 0, .8]],
   acara: [["c", "lilac", 95, 8, 50, 200, .6], ["a", "peach", 5, 90, 52, -24, .7], ["d", "champ", 3, 76, 26, -70, 1, { e: 1 }]],
   evA: [["a", "blush", 90, 6, 22, 38, 1, { e: 1 }]],
   evB: [["b", "lilac", 10, 95, 22, -150, 1, { e: 1 }]],
