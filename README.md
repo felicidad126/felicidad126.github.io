@@ -1,6 +1,6 @@
 # Edisi Monokrom — Preview Undangan Digital
 
-Tema ini: **lookbook fashion hitam-putih yang sinematik**, dengan cerita "dari monokrom ke warna". Tipografi Bodoni besar, foto selebar layar bernuansa cetak perak, gambar bunga bergaris tinta, dan sedikit marmer di balik kartu RSVP. Urutannya: sampul, salam, QS Ar-Rum 21, mempelai, kisah kami (2019 · 2023 · 2026), simpan tanggal, acara, lookbook foto, RSVP, ucapan, amplop digital, dan penutup berwarna penuh. Di desktop, dan di HP dalam posisi mendatar, sampul tampil sebagai spread dua halaman.
+Tema ini: **lookbook fashion hitam-putih yang sinematik**, dengan cerita "dari monokrom ke warna". Tipografi Bodoni besar, foto selebar layar bernuansa cetak perak, gambar bunga bergaris tinta, dan sedikit marmer di balik kartu RSVP. Urutannya: sampul, salam, mempelai, kisah kami (2019 · 2023 · 2026), simpan tanggal, acara, lookbook foto, RSVP, ucapan, amplop digital, dan penutup berwarna penuh. Di desktop, dan di HP dalam posisi mendatar, sampul tampil sebagai spread dua halaman.
 
 - Motion: huruf nama naik satu per satu, saat dibuka sampul berganti seperti adegan film (bilah hitam menutup, kartu judul, lalu terbuka), foto tersingkap seperti tirai dan perlahan berwarna saat sampai di tengah layar, angka tanggal menggulung, dan lookbook bergeser ke samping mengikuti scroll di desktop.
 - Foto mulai hitam-putih lalu berwarna; foto penutup dan lightbox tampil berwarna penuh.
@@ -16,7 +16,7 @@ Font Bodoni Moda dan Plus Jakarta Sans dimuat dari Google Fonts, berlisensi SIL 
 
 ## Tentang branch ini
 
-Branch `tema/edisi-monokrom` hanya berisi satu tema ini. Isinya dipisahkan dari `main` (commit `dbbb91f`): tema dipindah ke `index.html` di root, jadi branch ini bisa di-deploy sendiri, misalnya ke Netlify, Vercel, atau Cloudflare Pages. GitHub Pages repo ini tetap menayangkan `main`.
+Branch `tema/edisi-monokrom` hanya berisi satu tema ini. Isinya dipisahkan dari `main` (commit `4d89132`): tema dipindah ke `index.html` di root, jadi branch ini bisa di-deploy sendiri, misalnya ke Netlify, Vercel, atau Cloudflare Pages. GitHub Pages repo ini tetap menayangkan `main`.
 
 - Jalankan lokal: `python3 -m http.server`, lalu buka http://localhost:8000/ (parameter `?to=`, `?open`, dan `?motion=full` tetap berlaku).
 - Tautan "Tema lain" sudah dihapus karena tema lain tidak ada di branch ini.
