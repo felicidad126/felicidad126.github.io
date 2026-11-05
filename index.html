@@ -27,6 +27,7 @@
 })();
 </script>
 <style>
+html{-webkit-tap-highlight-color:transparent}
 :root{
   --paper:#f7f8f9;--mist:#eef2f6;--haze:#e4ecf3;--pastel:#c9d8e6;--dusty:#8ea9c1;--deep:#4d6a87;--slate:#5f6b78;--slate-2:#4f5b68;--ink:#27303a;
   --f-d:"Gilda Display","Times New Roman",serif;--f-s:"Corinthia","Snell Roundhand",cursive;--f-t:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
@@ -134,6 +135,8 @@ html.calm .in .emerge{opacity:1}
 .g-card{width:min(100%,420px);padding:clamp(14px,2.2svh,20px) 20px clamp(16px,2.4svh,22px)}
 .g-to{font-size:13.5px;color:var(--slate-2)}
 .g-guest{font:400 clamp(22px,3.4svh,29px)/1.2 var(--f-d);color:var(--ink);margin:.15em 0 clamp(10px,1.6svh,16px);overflow-wrap:anywhere}
+/* HP mendatar: ranting atas disembunyikan dan kartu kaca dilebarkan, supaya kartu tidak menutupi tanggal. */
+@media (orientation:landscape) and (max-height:500px){.g-top .sprig{display:none}.g-card{width:min(100%,560px)}}
 /* Dua tirai kabut saling tumpang di tengah. Seluruh lapisan (tekstur ikut) dipudarkan dengan mask, jadi tidak ada tepi tegak. */
 .veil i{position:absolute;top:-6%;bottom:-6%;width:88%;opacity:0;z-index:5;pointer-events:none}
 .veil .l{left:-14%;background:var(--fog) 0 0/900px 300px,linear-gradient(90deg,#f6f8fa,#f1f5f8);-webkit-mask-image:linear-gradient(90deg,#000 62%,transparent);mask-image:linear-gradient(90deg,#000 62%,transparent)}
@@ -183,11 +186,6 @@ main{display:block;outline:none}
 .bgp picture,.bgp img{display:block;width:100%;height:100%;object-fit:cover}
 .bgp::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,var(--top) 0%,rgba(238,242,246,.55) 16%,rgba(238,242,246,.12) 32%,rgba(238,242,246,.12) 68%,rgba(238,242,246,.55) 84%,var(--bot) 100%),rgba(201,216,230,.18)}
 .chapter > :not(.bgp){position:relative;z-index:2}
-.verse-ch{--top:var(--paper);--bot:var(--paper)}
-.verse{max-width:560px;padding:clamp(30px,6vw,46px) clamp(24px,6vw,48px) clamp(28px,5vw,40px)}
-.verse .sprig{width:86px;margin-bottom:16px}
-.verse blockquote{font:400 clamp(18px,4.5vw,22px)/1.75 var(--f-d);color:var(--ink)}
-.verse figcaption{margin-top:18px;color:var(--deep)}
 
 /* ---------- Mempelai ---------- */
 .couple-sec{background:linear-gradient(var(--paper),var(--mist))}
@@ -240,7 +238,7 @@ html.motion .portrait.in .ring .st{stroke-dashoffset:0}
 .c{width:clamp(70px,19vw,92px);aspect-ratio:1;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.95);box-shadow:0 16px 34px -24px rgba(39,48,58,.5)}
 .c b{display:grid;font:400 clamp(26px,7vw,34px)/1 var(--f-d);color:var(--ink);font-variant-numeric:lining-nums tabular-nums}
 .c b span{grid-area:1/1}
-.c small{font:500 10px/1 var(--f-t);letter-spacing:.2em;text-transform:uppercase;color:var(--slate-2);margin-top:7px}
+.c small{font:500 11px/1 var(--f-t);letter-spacing:.18em;text-transform:uppercase;color:var(--slate-2);margin-top:7px}
 .count-msg{font:400 22px/1.5 var(--f-d);color:var(--deep);margin-bottom:10px}
 .events{display:grid;gap:20px;margin:42px auto 34px;max-width:980px}
 @media (min-width:900px){.events{grid-template-columns:1fr 1fr;gap:28px}}
@@ -337,6 +335,7 @@ fieldset.f{border:0;margin:0;padding:0;min-width:0}
 
 .foot{position:relative;background:var(--mist);padding:34px 20px calc(84px + env(safe-area-inset-bottom));text-align:center;font-size:13px;line-height:1.75;color:var(--slate-2)}
 .foot p{max-width:720px;margin:0 auto 6px}
+.foot a{color:var(--deep)}
 
 /* ---------- Musik, toast, lightbox ---------- */
 /* Tombol musik gelap seperti tombol lain, supaya tidak terbaca sebagai bagian dari kartu kaca di belakangnya. */
@@ -353,9 +352,9 @@ html.calm:not(.force) .music.on::before{animation:none;opacity:0}
 @keyframes ripple{from{transform:scale(1);opacity:.9}to{transform:scale(1.6);opacity:0}}
 .toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));z-index:90;transform:translate(-50%,16px);opacity:0;pointer-events:none;padding:12px 20px;border-radius:999px;background:rgba(39,48,58,.92);color:var(--paper);font-size:14px;transition:opacity .35s,transform .35s var(--ease);max-width:calc(100vw - 32px)}
 .toast.show{opacity:1;transform:translate(-50%,0)}
-.lb{border:0;padding:0;margin:0;width:100vw;height:100dvh;max-width:none;max-height:none;background:rgba(30,38,46,.9);color:var(--paper);overflow:hidden}
+.lb{border:0;padding:0;margin:0;touch-action:pan-y;width:100vw;height:100dvh;max-width:none;max-height:none;background:rgba(30,38,46,.9);color:var(--paper);overflow:hidden}
 .lb::backdrop{background:rgba(30,38,46,.5)}
-.lb figure{height:100%;display:grid;place-items:center;padding:64px 14px 84px}
+.lb figure{height:100%;display:grid;grid-template:minmax(0,1fr)/minmax(0,1fr);place-items:center;padding:64px 14px 84px}
 .lb img{max-width:100%;max-height:100%;object-fit:contain;border-radius:12px;box-shadow:0 30px 80px -30px #000;touch-action:pan-y}
 .lb figcaption{position:absolute;left:16px;right:16px;bottom:max(20px,env(safe-area-inset-bottom));text-align:center;font-size:15px;line-height:1.5}
 .lb figcaption small{display:block;font-size:12px;letter-spacing:.2em;opacity:.75}
@@ -402,16 +401,6 @@ html.lb-open{overflow:hidden}
       <h2 class="kick rv" id="h-salam">Assalamu’alaikum Warahmatullahi Wabarakatuh</h2>
       <p class="lead rv" style="--d:.15">Dengan memohon rahmat dan ridho Allah SWT, kami bermaksud mengundang Bapak/Ibu/Saudara/i untuk hadir di hari pernikahan kami.</p>
     </div>
-  </section>
-
-  <!-- Ayat -->
-  <section class="chapter verse-ch" aria-label="QS Ar-Rum ayat 21">
-    <div class="bgp" data-io aria-hidden="true"><picture><source media="(min-width: 900px)" srcset="foto/hd/galeri-6.jpg"><img class="emerge" src="foto/hd/galeri-1.jpg" alt="" loading="lazy" decoding="async"></picture></div>
-    <figure class="glass verse rv">
-      <span class="sprig" data-sprig="small" aria-hidden="true"></span>
-      <blockquote>“Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu pasangan hidup dari jenismu sendiri, supaya kamu merasa tenteram kepadanya, dan dijadikan-Nya di antaramu rasa kasih dan sayang.”</blockquote>
-      <figcaption class="kick">QS Ar-Rum : 21</figcaption>
-    </figure>
   </section>
 
   <!-- Mempelai -->
@@ -855,9 +844,13 @@ items.forEach((b, i) => b.addEventListener("click", () => {
   show(i);
   html.classList.add("lb-open");
   lb.showModal();
+  if (!lbHist) { history.pushState({ lb: 1 }, ""); lbHist = true; }
   if (FULL) lb.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 380, easing: "ease" });
 }));
-lb.addEventListener("close", () => { html.classList.remove("lb-open"); items[opener].focus(); });
+lb.addEventListener("close", () => { html.classList.remove("lb-open"); items[opener].focus(); if (lbHist) { lbHist = false; history.back(); } });
+// Tombol Back (Android/browser) menutup foto dulu, bukan meninggalkan undangan.
+let lbHist = false;
+addEventListener("popstate", () => { if (lbHist) { lbHist = false; lb.close(); } });
 $("#lbX").addEventListener("click", () => lb.close());
 $("#lbPrev").addEventListener("click", () => show(cur - 1, -1));
 $("#lbNext").addEventListener("click", () => show(cur + 1, 1));
@@ -868,6 +861,7 @@ lb.addEventListener("keydown", (e) => {
 // Geser kiri/kanan untuk pindah foto.
 let sx = null;
 lb.addEventListener("pointerdown", (e) => { sx = e.clientX; });
+lb.addEventListener("pointercancel", () => { sx = null; });
 lb.addEventListener("pointerup", (e) => {
   if (sx === null) return;
   const dx = e.clientX - sx;
