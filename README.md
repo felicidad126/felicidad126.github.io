@@ -136,4 +136,19 @@ Font Playfair Display, Spectral, dan Amiri dimuat dari Google Fonts, berlisensi 
 
 ---
 
-Keenam tema terakhir dibuat dari nol berdasarkan [`REFERENSI-DESAIN.md`](REFERENSI-DESAIN.md). Semuanya memakai foto dari folder `foto/` yang sama; nama, tanggal, alamat, dan rekening adalah data contoh. RSVP dan ucapan hanya tersimpan di perangkat pengunjung.
+# Kelopak Mimpi — Preview Undangan Digital
+
+Tema kesepuluh, di subfolder [`kelopak-mimpi/`](kelopak-mimpi/): **taman kelopak abstrak yang melayang di bawah cahaya kubah**, dari tren pernikahan Indonesia 2026 "Petal Dreamscape" dan warna Charming Champagne (Bridestory). Kelopak besar yang tembus pandang dengan kilau sampanye, palet blush, mauve, lilac, dan peach, foto dalam bingkai berbentuk kelopak, dan komposisi asimetris. Urutannya: sampul, salam, QS Ar-Rum 21 dalam huruf Arab beserta terjemahannya, mempelai, kisah kami (2019 · 2023 · 2026), simpan tanggal, acara, galeri, RSVP, ucapan, amplop digital, dan penutup. Konsepnya berasal dari riset di bagian 11 [`REFERENSI-DESAIN.md`](REFERENSI-DESAIN.md).
+
+- Motion: kelopak mekar satu per satu saat dimuat dan cahaya kubah berdenyut pelan; saat dibuka, kuncup tujuh kelopak tumbuh di tengah lalu mekar ke luar; kelopak melayang dan bergeser mengikuti scroll, kursor, atau kemiringan HP; foto muncul dari jendela berbentuk kelopak.
+- Musik: harpa dan celesta di atas pad hangat, dirender di browser saat halaman dimuat.
+
+- Lihat: https://felicidad126.github.io/kelopak-mimpi/
+- Dengan nama tamu: https://felicidad126.github.io/kelopak-mimpi/?to=Nama%20Tamu
+- Animasi penuh (abaikan setting reduced-motion): https://felicidad126.github.io/kelopak-mimpi/?motion=full
+
+Font Italiana, Urbanist, Ephesis, dan Amiri (khusus ayat) dimuat dari Google Fonts, berlisensi SIL Open Font License 1.1.
+
+---
+
+Ketujuh tema terakhir dibuat dari nol berdasarkan [`REFERENSI-DESAIN.md`](REFERENSI-DESAIN.md). Semuanya memakai foto dari folder `foto/` yang sama; nama, tanggal, alamat, dan rekening adalah data contoh. RSVP dan ucapan hanya tersimpan di perangkat pengunjung.
