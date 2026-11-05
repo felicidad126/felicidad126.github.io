@@ -182,7 +182,7 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
 /* touch-action di sini juga: area scroll mengaktifkan lagi geser horizontal bawaan browser, sehingga geser kartu
    di HP batal (pointercancel). Masuk 14px ke padding kertas supaya isi saat diam tidak bergeser, dan tepi atas/bawah
    memudar lembut; selama masih ada isi di bawah, tepi bawah memudar lebih panjang (--fb). */
-.scroll{flex:1;min-height:0;display:flex;flex-direction:column;overflow:auto;overscroll-behavior:contain;touch-action:pan-y;
+.scroll{flex:1;min-height:0;display:flex;flex-direction:column;overflow:auto;overflow-x:hidden;overscroll-behavior:contain;touch-action:pan-y;
   scrollbar-width:thin;scrollbar-color:#cfc4b3 transparent;margin-block:-14px;padding-block:14px;
   -webkit-mask:linear-gradient(#0000,#000 14px,#000 calc(100% - var(--fb,14px)),#0000);mask:linear-gradient(#0000,#000 14px,#000 calc(100% - var(--fb,14px)),#0000)}
 .in{margin-block:auto;display:flex;flex-direction:column;align-items:center}
@@ -1226,8 +1226,11 @@ $$(".print").forEach((b, i) => {
     img.alt = PHOTOS[at].alt;
     $("#lbCap").textContent = PHOTOS[at].cap;
   };
-  const open = (i, from) => { opener = from; show(i); lb.hidden = false; $("#lbX").focus(); };
-  const close = () => { lb.hidden = true; img.removeAttribute("src"); opener?.focus(); };
+  const open = (i, from) => { opener = from; show(i); lb.hidden = false; if (!lbHist) { history.pushState({ lb: 1 }, ""); lbHist = true; } $("#lbX").focus(); };
+  const close = () => { lb.hidden = true; img.removeAttribute("src"); opener?.focus(); if (lbHist) { lbHist = false; history.back(); } };
+  // Tombol Back (Android/browser) menutup foto dulu, bukan meninggalkan undangan.
+  let lbHist = false;
+  addEventListener("popstate", () => { if (lbHist) { lbHist = false; close(); } });
   $("#prints").addEventListener("click", (e) => {
     const b = e.target.closest(".print");
     if (b) open(+b.dataset.i, b);
