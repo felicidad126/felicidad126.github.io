@@ -109,9 +109,6 @@ section{position:relative;overflow:hidden}
 .night .title em{color:var(--gold)}
 .lead{font:400 19px/1.65 var(--serif);color:var(--muted);margin:18px auto 0;max-width:380px}
 .night .lead{color:var(--on-night-2)}
-.rule{display:flex;align-items:center;justify-content:center;gap:12px;margin:22px auto;color:var(--gold)}
-.rule::before,.rule::after{content:"";height:1px;width:56px;background:currentColor;opacity:.6}
-.rule svg{width:14px;height:14px}
 
 /* reveal */
 .js .rv{opacity:0;transform:translate3d(0,34px,0);transition:opacity 1s cubic-bezier(.2,.7,.2,1) var(--d,0s),transform 1.1s cubic-bezier(.2,.7,.2,1) var(--d,0s)}
@@ -132,12 +129,6 @@ section{position:relative;overflow:hidden}
 .sky{position:absolute;inset:0;pointer-events:none}
 .sky i{position:absolute;width:2px;height:2px;border-radius:50%;background:#f1d9a6;opacity:.7;animation:twinkle var(--t,4s) ease-in-out infinite var(--dl,0s)}
 @keyframes twinkle{50%{opacity:.15}}
-
-/* ayat */
-.verse{padding:110px 34px;text-align:center}
-.verse .moon{position:absolute;width:150px;height:150px;right:-30px;top:40px;border-radius:50%;box-shadow:-22px 10px 0 0 #f3e1b8;opacity:.18}
-.verse blockquote{margin:22px 0 0;font:italic 400 22px/1.7 var(--serif);color:var(--on-night)}
-.verse cite{display:block;margin-top:20px;font:500 12px/1 var(--sans);letter-spacing:.32em;color:var(--gold);font-style:normal}
 
 /* mempelai */
 .couple{padding-top:90px}
@@ -353,15 +344,6 @@ footer a{color:var(--gold)}
       <div class="kicker rv">Bismillahirrahmanirrahim</div>
       <div class="arch rv" data-rv="zoom" style="--d:.15s"><div class="ph"><img src="../foto/galeri-5.jpg" alt="Laras dan Bima di pelaminan" data-speed="0.14" style="object-position:50% 30%"></div></div>
       <h2 class="names rv" style="--d:.25s">Laras <i>&amp;</i> Bima</h2>
-    </section>
-
-    <!-- Ayat -->
-    <section class="verse night" style="background:var(--night-2)">
-      <div class="moon" data-speed="-0.25"></div>
-      <div class="sky" data-stars="22" data-speed="-0.08"></div>
-      <div class="rule rv"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0l2.6 9.4L24 12l-9.4 2.6L12 24l-2.6-9.4L0 12l9.4-2.6z"/></svg></div>
-      <blockquote class="rv" style="--d:.1s">“Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu pasangan hidup dari jenismu sendiri, supaya kamu merasa tenteram kepadanya, dan dijadikan-Nya di antaramu rasa kasih dan sayang.”</blockquote>
-      <cite class="rv" style="--d:.2s">QS. AR-RUM : 21</cite>
     </section>
 
     <!-- Mempelai -->

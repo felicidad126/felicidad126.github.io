@@ -255,7 +255,7 @@ Riset tambahan untuk tema kesembilan, Kaca Patri. Seperti bagian 9, sebagian bes
 | Detail bergaya kaca patri | Jendela orsi (kisi kayu dan kaca berwarna) sebagai pusat sampul dan ornamen pembatas |
 | Beberapa warna permata berani | Hijau tua, merah berry, safir/teal, kunyit, dan lilac di atas dinding plester gading |
 | Orsi sebagai sumber cahaya | Pantulan cahaya berwarna yang jatuh di halaman dan bergeser saat scroll, seperti matahari pagi yang bergerak |
-| Nuansa islami pasangan contoh | Ayat QS Ar-Rum 21 ditampilkan dalam huruf Arab beserta terjemahannya; tidak menggambarkan bangunan masjid |
+| Masjid Nasir al-Mulk sebagai rujukan cahaya | Hanya permainan cahaya dan warnanya yang diambil; tidak menggambarkan bangunan masjid |
 
 ---
 

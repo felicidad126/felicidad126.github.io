@@ -59,7 +59,7 @@ Font Fraunces dan Manrope dimuat dari Google Fonts, berlisensi SIL Open Font Lic
 
 # Edisi Monokrom — Preview Undangan Digital
 
-Tema kelima, di subfolder [`edisi-monokrom/`](edisi-monokrom/): **lookbook fashion hitam-putih yang sinematik**, dengan cerita "dari monokrom ke warna". Tipografi Bodoni besar, foto selebar layar bernuansa cetak perak, gambar bunga bergaris tinta, dan sedikit marmer di balik kartu RSVP. Urutannya: sampul, salam, QS Ar-Rum 21, mempelai, kisah kami (2019 · 2023 · 2026), simpan tanggal, acara, lookbook foto, RSVP, ucapan, amplop digital, dan penutup berwarna penuh. Di desktop, dan di HP dalam posisi mendatar, sampul tampil sebagai spread dua halaman.
+Tema kelima, di subfolder [`edisi-monokrom/`](edisi-monokrom/): **lookbook fashion hitam-putih yang sinematik**, dengan cerita "dari monokrom ke warna". Tipografi Bodoni besar, foto selebar layar bernuansa cetak perak, gambar bunga bergaris tinta, dan sedikit marmer di balik kartu RSVP. Urutannya: sampul, salam, mempelai, kisah kami (2019 · 2023 · 2026), simpan tanggal, acara, lookbook foto, RSVP, ucapan, amplop digital, dan penutup berwarna penuh. Di desktop, dan di HP dalam posisi mendatar, sampul tampil sebagai spread dua halaman.
 
 - Motion: huruf nama naik satu per satu, saat dibuka sampul berganti seperti adegan film (bilah hitam menutup, kartu judul, lalu terbuka), foto tersingkap seperti tirai dan perlahan berwarna saat sampai di tengah layar, angka tanggal menggulung, dan lookbook bergeser ke samping mengikuti scroll di desktop.
 - Foto mulai hitam-putih lalu berwarna; foto penutup dan lightbox tampil berwarna penuh.
@@ -93,7 +93,7 @@ Font Parisienne, EB Garamond, dan Marcellus dimuat dari Google Fonts, berlisensi
 
 # Biru Kabut — Preview Undangan Digital
 
-Tema ketujuh, di subfolder [`biru-kabut/`](biru-kabut/): **pagi berkabut yang lembut dan romantis** dengan palet biru pastel dan abu. Foto muncul dari balik kabut, isi undangan berada di atas panel kaca buram, dan setiap bagian dihiasi ranting hydrangea biru bergaris halus. Komposisinya simetris dan lapang: salam, ayat QS Ar-Rum 21, mempelai dalam bingkai oval, kisah kami, acara, galeri, RSVP, ucapan, amplop digital, dan penutup.
+Tema ketujuh, di subfolder [`biru-kabut/`](biru-kabut/): **pagi berkabut yang lembut dan romantis** dengan palet biru pastel dan abu. Foto muncul dari balik kabut, isi undangan berada di atas panel kaca buram, dan setiap bagian dihiasi ranting hydrangea biru bergaris halus. Komposisinya simetris dan lapang: salam, mempelai dalam bingkai oval, kisah kami, acara, galeri, RSVP, ucapan, amplop digital, dan penutup.
 
 - Motion: lapisan kabut melayang pelan di sampul dan di antara bagian; saat "Buka Undangan" ditekan, kabut menutup lalu tersibak ke samping. Foto bergerak dari buram ke tajam saat muncul, ranting hydrangea tergambar lalu mekar, digit hitung mundur berganti lembut.
 - Musik: piano dan pad lembut yang dirender di browser (tanpa file audio).
@@ -123,7 +123,7 @@ Font DM Serif Display, Yellowtail, dan DM Sans dimuat dari Google Fonts, berlise
 
 # Kaca Patri — Preview Undangan Digital
 
-Tema kesembilan, di subfolder [`kaca-patri/`](kaca-patri/): **cahaya pagi yang menembus jendela orsi**, jendela kayu berkisi dengan kaca berwarna permata khas Persia. Dinding plester gading, kisi kayu walnut, dan kaca hijau tua, merah berry, safir, kunyit, serta lilac; pantulan cahaya berwarna jatuh di halaman. Urutannya: sampul berjendela orsi, salam, QS Ar-Rum 21 dalam huruf Arab beserta terjemahannya, mempelai di jendela kecil, kisah kami (2019 · 2023 · 2026) dalam medali bulat, simpan tanggal, acara, galeri, RSVP, ucapan, amplop digital, dan penutup. Konsepnya berasal dari riset di bagian 10 [`REFERENSI-DESAIN.md`](REFERENSI-DESAIN.md).
+Tema kesembilan, di subfolder [`kaca-patri/`](kaca-patri/): **cahaya pagi yang menembus jendela orsi**, jendela kayu berkisi dengan kaca berwarna permata khas Persia. Dinding plester gading, kisi kayu walnut, dan kaca hijau tua, merah berry, safir, kunyit, serta lilac; pantulan cahaya berwarna jatuh di halaman. Urutannya: sampul berjendela orsi, salam, mempelai di jendela kecil, kisah kami (2019 · 2023 · 2026) dalam medali bulat, simpan tanggal, acara, galeri, RSVP, ucapan, amplop digital, dan penutup. Konsepnya berasal dari riset di bagian 10 [`REFERENSI-DESAIN.md`](REFERENSI-DESAIN.md).
 
 - Motion: saat dimuat, kaca menyala satu per satu dari bawah seperti matahari terbit; saat dibuka, daun jendela terangkat seperti jendela geser dan cahaya pagi memenuhi layar; kisi tergambar lalu terisi warna, potret tersingkap dari balik kaca, dan pantulan cahaya bergeser mengikuti scroll.
 - Musik: petikan ala santur di atas dengung lembut, dirender di browser saat halaman dimuat.
@@ -132,13 +132,13 @@ Tema kesembilan, di subfolder [`kaca-patri/`](kaca-patri/): **cahaya pagi yang m
 - Dengan nama tamu: https://felicidad126.github.io/kaca-patri/?to=Nama%20Tamu
 - Animasi penuh (abaikan setting reduced-motion): https://felicidad126.github.io/kaca-patri/?motion=full
 
-Font Playfair Display, Spectral, dan Amiri dimuat dari Google Fonts, berlisensi SIL Open Font License 1.1.
+Font Playfair Display dan Spectral dimuat dari Google Fonts, berlisensi SIL Open Font License 1.1.
 
 ---
 
 # Kelopak Mimpi — Preview Undangan Digital
 
-Tema kesepuluh, di subfolder [`kelopak-mimpi/`](kelopak-mimpi/): **taman kelopak abstrak yang melayang di bawah cahaya kubah**, dari tren pernikahan Indonesia 2026 "Petal Dreamscape" dan warna Charming Champagne (Bridestory). Kelopak besar yang tembus pandang dengan kilau sampanye, palet blush, mauve, lilac, dan peach, foto dalam bingkai berbentuk kelopak, dan komposisi asimetris. Urutannya: sampul, salam, QS Ar-Rum 21 dalam huruf Arab beserta terjemahannya, mempelai, kisah kami (2019 · 2023 · 2026), simpan tanggal, acara, galeri, RSVP, ucapan, amplop digital, dan penutup. Konsepnya berasal dari riset di bagian 11 [`REFERENSI-DESAIN.md`](REFERENSI-DESAIN.md).
+Tema kesepuluh, di subfolder [`kelopak-mimpi/`](kelopak-mimpi/): **taman kelopak abstrak yang melayang di bawah cahaya kubah**, dari tren pernikahan Indonesia 2026 "Petal Dreamscape" dan warna Charming Champagne (Bridestory). Kelopak besar yang tembus pandang dengan kilau sampanye, palet blush, mauve, lilac, dan peach, foto dalam bingkai berbentuk kelopak, dan komposisi asimetris. Urutannya: sampul, salam, mempelai, kisah kami (2019 · 2023 · 2026), simpan tanggal, acara, galeri, RSVP, ucapan, amplop digital, dan penutup. Konsepnya berasal dari riset di bagian 11 [`REFERENSI-DESAIN.md`](REFERENSI-DESAIN.md).
 
 - Motion: kelopak mekar satu per satu saat dimuat dan cahaya kubah berdenyut pelan; saat dibuka, kuncup tujuh kelopak tumbuh di tengah lalu mekar ke luar; kelopak melayang dan bergeser mengikuti scroll, kursor, atau kemiringan HP; foto muncul dari jendela berbentuk kelopak.
 - Musik: harpa dan celesta di atas pad hangat, dirender di browser saat halaman dimuat.
@@ -147,7 +147,7 @@ Tema kesepuluh, di subfolder [`kelopak-mimpi/`](kelopak-mimpi/): **taman kelopak
 - Dengan nama tamu: https://felicidad126.github.io/kelopak-mimpi/?to=Nama%20Tamu
 - Animasi penuh (abaikan setting reduced-motion): https://felicidad126.github.io/kelopak-mimpi/?motion=full
 
-Font Italiana, Urbanist, Ephesis, dan Amiri (khusus ayat) dimuat dari Google Fonts, berlisensi SIL Open Font License 1.1.
+Font Italiana, Urbanist, dan Ephesis dimuat dari Google Fonts, berlisensi SIL Open Font License 1.1.
 
 ---
 
