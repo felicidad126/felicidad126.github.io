@@ -15,7 +15,7 @@ Font Playfair Display dan Spectral dimuat dari Google Fonts, berlisensi SIL Open
 
 ## Tentang branch ini
 
-Branch `tema/kaca-patri` hanya berisi satu tema ini. Isinya dipisahkan dari `main` (commit `4d89132`): tema dipindah ke `index.html` di root, jadi branch ini bisa di-deploy sendiri, misalnya ke Netlify, Vercel, atau Cloudflare Pages. GitHub Pages repo ini tetap menayangkan `main`.
+Branch `tema/kaca-patri` hanya berisi satu tema ini. Isinya dipisahkan dari `main` (commit `c09a7e6`): tema dipindah ke `index.html` di root, jadi branch ini bisa di-deploy sendiri, misalnya ke Netlify, Vercel, atau Cloudflare Pages. GitHub Pages repo ini tetap menayangkan `main`.
 
 - Jalankan lokal: `python3 -m http.server`, lalu buka http://localhost:8000/ (parameter `?to=`, `?open`, dan `?motion=full` tetap berlaku).
 - Tautan "Tema lain" sudah dihapus karena tema lain tidak ada di branch ini.
