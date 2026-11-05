@@ -145,6 +145,17 @@ a{color:inherit}
   .gate .divider{margin:8px auto 6px}
   #openBtn{margin-top:12px}
 }
+/* HP mendatar: foto di kiri dan teks di kanan, supaya tombol Buka Undangan terlihat tanpa perlu menggulir sampul. */
+@media (orientation:landscape) and (max-height:500px){
+  .gate-in{display:grid;grid-template-columns:auto minmax(0,440px);grid-auto-flow:row dense;column-gap:6vw;align-content:center;justify-content:center;justify-items:center;padding:max(14px,env(safe-area-inset-top)) max(24px,env(safe-area-inset-right)) max(14px,env(safe-area-inset-bottom)) max(24px,env(safe-area-inset-left))}
+  .gate-in > *{grid-column:2}
+  .gate .frame{grid-column:1;grid-row:1 / span 6;align-self:center;margin:0}
+  .gate .ph{--ph:calc(100svh - 64px)}
+  .gate .names{font-size:clamp(36px,11vh,52px);margin-top:6px}
+  .gate .date{margin-top:6px}
+  .gate .divider{margin:8px auto 6px}
+  #openBtn{margin-top:10px}
+}
 
 /* ---------- kerangka: satu kolom; di desktop ada panel tetap di kiri ---------- */
 main{max-width:var(--col);margin:0 auto;outline:none;background:var(--tera)}

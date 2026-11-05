@@ -157,6 +157,10 @@ html.motion .ph.rv:not(.in){opacity:.001}
   .g-date span,.g-date .g-sep{display:inline}
   .ph-wrap{height:min(calc(100svh - 72px),780px);aspect-ratio:.78}
 }
+/* HP mendatar: baris kepala dan kaki mengikuti isinya dan ditengahkan; dua baris 1fr membuat tombol terpotong di layar setinggi 340px. */
+@media (orientation:landscape) and (max-height:500px) and (min-width:640px){
+  .g-in{grid-template-rows:auto auto;align-content:center;row-gap:12px;padding-top:max(14px,env(safe-area-inset-top));padding-bottom:max(14px,env(safe-area-inset-bottom))}
+}
 html.motion .g-head > *,html.motion .g-foot > *{animation:rise 1.2s var(--ease) both}
 html.motion .g-kick{animation-delay:.6s!important}
 html.motion .g-date{animation-delay:1.7s!important}

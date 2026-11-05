@@ -72,6 +72,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 .btn.ghost:hover{background:var(--ink);color:var(--paper)}
 .btn.sm{min-height:42px;padding:0 20px;font-size:11px}
 .lnk{display:inline-flex;gap:8px;align-items:center;font:500 12px/1 var(--sans);letter-spacing:.22em;text-transform:uppercase;text-decoration:none;padding-bottom:6px;border-bottom:1px solid currentColor}
+/* Area sentuh tautan peta diperluas tanpa mengubah tampilannya. */
+.lnk{position:relative}.lnk::after{content:"";position:absolute;inset:-12px -8px}
 
 /* ---------- Foto: monokrom perak, berwarna saat sampai di tengah layar ---------- */
 .ph{position:relative;overflow:hidden;margin:0;background:var(--paper-3)}
@@ -270,13 +272,17 @@ button,input,select,textarea{font:inherit;color:inherit}
 .lk-bar{display:none}
 /* Desktop: strip foto tertahan di layar dan bergeser ke samping mengikuti gulir. */
 .lookbook.pinned .lk-pin{position:relative}
-.lookbook.pinned .lk-sticky{position:sticky;top:0;height:100vh;overflow:hidden;display:flex;align-items:center}
+.lookbook.pinned .lk-sticky{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;display:flex;align-items:center}
 .lookbook.pinned .lk-track{width:max-content;overflow:visible;scroll-snap-type:none;padding:0 var(--gut) 0 calc(var(--gut) + min(420px,34vw));--lh:min(64vh,580px);will-change:transform}
 .lookbook.pinned .lk-intro{position:absolute;left:var(--gut);top:50%;transform:translateY(-50%);width:min(380px,30vw);margin:0;padding:0}
 .lookbook.pinned .lk-intro .title{font-size:clamp(44px,4.6vw,68px)}
 .lookbook.pinned .lk-bar{display:block;position:absolute;left:var(--gut);right:var(--gut);bottom:clamp(24px,5vh,48px);height:1px;background:var(--line)}
 .lookbook.pinned .lk-bar i{position:absolute;inset:0;background:var(--ink);transform-origin:left;transform:scaleX(0)}
 @media (min-width:900px){
+  .lookbook:not(.pinned) .lk-track{flex-wrap:wrap;justify-content:center;overflow:visible;--lh:300px}
+}
+/* Mouse di jendela sempit: deretan geser tanpa scrollbar sulit dipakai, jadi foto disusun ke bawah seperti di layar lebar. */
+@media (hover:hover) and (pointer:fine){
   .lookbook:not(.pinned) .lk-track{flex-wrap:wrap;justify-content:center;overflow:visible;--lh:300px}
 }
 

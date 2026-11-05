@@ -91,7 +91,8 @@ main>section>*{position:relative;z-index:1}
 .gate .to{margin-top:20px;font-size:15px;color:var(--peri)}
 .gate .guest{font:500 30px/1.2 var(--serif);color:var(--gold);margin:2px 0 22px;max-width:340px}
 @media (max-height:860px){.stack{width:min(250px,62vw)}.gate .lede{margin-bottom:20px}}
-@media (max-height:720px){.stack{width:min(210px,56vw)}.gate .when{margin-top:18px;font-size:22px}.gate .guest{margin-bottom:14px}}
+@media (max-height:780px){.stack{width:min(222px,57vw)}}
+@media (max-height:720px){.stack{width:min(200px,54vw)}.gate .lede{margin-bottom:14px}.gate .when{margin-top:18px;font-size:22px}.gate .guest{margin-bottom:14px}}
 /* HP: sampul bisa digulir bila isinya lebih tinggi dari layar; ::before/::after menengahkan isi tanpa memotong bagian atas */
 @media (max-width:1023px){
   .gate{justify-content:flex-start;overflow:hidden auto;overscroll-behavior:contain}
@@ -103,6 +104,15 @@ main>section>*{position:relative;z-index:1}
   .gate .when{margin-top:14px;font-size:21px}
   .gate .to{margin-top:12px}
   .gate .guest{font-size:min(30px,8.4vw);margin-bottom:14px}
+}
+/* HP mendatar: polaroid di kiri dan teks di kanan seperti di desktop; ukuran polaroid mengikuti tinggi layar
+   supaya fotonya tidak terpotong. */
+@media (orientation:landscape) and (max-height:500px) and (max-width:1023px){
+  .gate{display:grid;grid-template-columns:auto minmax(240px,400px);grid-template-areas:"stack side";column-gap:6vw;align-content:center;justify-content:center;overflow:hidden auto}
+  .gate .stack{grid-area:stack;align-self:center;width:calc((100vh - 70px) / 1.55);width:calc((100svh - 70px) / 1.55)}
+  .gate .side{grid-area:side;align-self:center}
+  .gate .when{margin-top:0}
+  .gate .guest{max-width:400px}
 }
 /* urutan pembuka 1400 ms */
 .gate.opening{pointer-events:none}
@@ -363,7 +373,7 @@ main{position:relative;max-width:var(--col);margin:0 auto;background:var(--navy)
 @media (min-width:1024px){
   .shell{display:grid;grid-template-columns:1fr var(--col)}
   main{margin:0;max-width:none}
-  .stage{display:flex;position:sticky;top:0;height:100vh;background:var(--deep);flex-direction:column;align-items:center;justify-content:center;text-align:center;overflow:hidden}
+  .stage{display:flex;position:sticky;top:0;height:100vh;height:100svh;background:var(--deep);flex-direction:column;align-items:center;justify-content:center;text-align:center;overflow:hidden}
   .stage .stack{width:min(340px,30vw)}
   .stage .polaroid .ph{position:relative}
   .stage .polaroid .ph img{position:absolute;inset:0;transition:opacity 1.2s var(--soft),scale 2.4s var(--ease)}

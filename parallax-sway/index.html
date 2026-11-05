@@ -73,6 +73,22 @@ a{color:inherit}
 .gate .date{font:500 19px/1.4 var(--serif);letter-spacing:.18em;color:var(--on-night)}
 .gate .to{margin:22px auto 18px;max-width:340px;font:400 13px/1.5 var(--sans);color:var(--on-night-2)}
 .gate .to b{display:block;margin-top:6px;font:500 24px/1.3 var(--serif);color:#fff;letter-spacing:.02em}
+/* HP mendatar: isi sampul dirapatkan dan untaian diperpendek, supaya "The Wedding of" tidak terpotong
+   dan tanggal serta nama tamu tidak tertutup untaian. */
+@media (orientation:landscape) and (max-height:460px){
+  .gate-hangers .hang{scale:.5}
+  .gate-body{padding-bottom:max(22px,env(safe-area-inset-bottom))}
+  .gate .names{font-size:clamp(38px,12vh,52px);margin:2px 0 0}
+  .gate .date{font-size:15px}
+  .gate .to{margin:8px auto 10px;max-width:600px}
+  .gate .to b{font-size:20px;margin-top:2px}
+  .gate .btn{padding-top:12px;padding-bottom:12px}
+}
+@media (orientation:landscape) and (max-height:460px) and (max-width:899px){
+  .gate-photo{inset:-8% -5% -4% -5%}
+  .gate-photo .ph img{object-position:50% 66%}
+  .gate-shade{background:linear-gradient(180deg,#151a3540 0%,#151a3566 30%,#151a35c2 58%,#151a35 88%)}
+}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border:0;border-radius:999px;cursor:pointer;text-decoration:none;font:500 13px/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;padding:16px 28px;transition:transform .3s,background .3s,box-shadow .3s}
 .btn svg{width:17px;height:17px;flex:none}
 .btn-gold{background:linear-gradient(135deg,#e6c47f,#c39a52);color:var(--ink);box-shadow:0 10px 30px #d6b06b40}
@@ -142,6 +158,8 @@ section{position:relative;overflow:hidden}
 .person .full{font:500 15px/1.4 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--gold-3);margin-top:4px}
 .person .par{font:400 18px/1.55 var(--serif);color:var(--muted);margin:10px auto 0;max-width:320px}
 .person .ig{display:inline-flex;align-items:center;gap:6px;margin-top:12px;font:500 12px/1 var(--sans);letter-spacing:.08em;color:var(--night-2);text-decoration:none;border-bottom:1px solid var(--gold-soft);padding-bottom:4px}
+/* Area sentuh tautan Instagram diperluas tanpa mengubah tampilannya. */
+.person .ig{position:relative}.person .ig::after{content:"";position:absolute;inset:-10px -8px}
 .person .ig svg{width:14px;height:14px}
 .amp{font:italic 400 72px/1 var(--serif);color:var(--gold);text-align:center;margin:10px 0 30px}
 
@@ -166,7 +184,7 @@ section{position:relative;overflow:hidden}
 .cd b{display:block;font:500 34px/1 var(--serif);color:#fff}
 .cd.over{display:block}
 .cd.over p{margin:0 auto;max-width:340px;font:italic 400 22px/1.5 var(--serif);color:var(--on-night)}
-.cd small{display:block;margin-top:8px;font:500 10px/1 var(--sans);letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}
+.cd small{display:block;margin-top:8px;font:500 11px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
 .card{position:relative;margin-top:26px;padding:40px 26px 32px;border-radius:200px 200px 22px 22px;background:var(--paper);color:var(--text);text-align:center;box-shadow:0 30px 60px -30px #000c}
 .card::before{content:"";position:absolute;inset:10px;border:1px solid var(--gold-soft);border-radius:190px 190px 16px 16px;pointer-events:none}
 .card h3{font:400 52px/1.1 var(--script);color:var(--night-2);margin:30px 0 0}
@@ -224,7 +242,7 @@ section{position:relative;overflow:hidden}
 .wishes{max-height:420px;overflow:auto;margin-top:22px;padding-right:4px;text-align:left;overscroll-behavior:contain}
 .wish{padding:16px 0;border-top:1px solid var(--line)}
 .wish b{font:600 19px/1.3 var(--serif);color:var(--night-2)}
-.wish .badge{display:inline-block;margin-left:8px;padding:3px 9px;border-radius:999px;background:var(--cream);font:500 10px/1.4 var(--sans);letter-spacing:.08em;color:var(--gold-3);vertical-align:2px}
+.wish .badge{display:inline-block;margin-left:8px;padding:3px 9px;border-radius:999px;background:var(--cream);font:500 11px/1.4 var(--sans);letter-spacing:.06em;color:var(--gold-3);vertical-align:2px}
 .wish p{margin:4px 0 0;font:400 17px/1.55 var(--serif);color:var(--text)}
 .wish small{display:block;margin-top:4px;font-size:12px;color:var(--muted)}
 .count{font:500 12px/1 var(--sans);letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-top:26px;text-align:left}
@@ -284,7 +302,7 @@ footer a{color:var(--gold)}
 @media (min-width:900px){
   .shell{display:grid;grid-template-columns:1fr var(--col)}
   main{margin:0;max-width:none}
-  .stage{display:block;position:sticky;top:0;height:100vh;overflow:hidden;background:var(--night);color:#fff}
+  .stage{display:block;position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:var(--night);color:#fff}
   .stage .ph{position:absolute;inset:0;opacity:0;transition:opacity 1.4s ease}
   .stage .ph.on{opacity:1}
   .stage .ph img{top:-8%;height:116%;animation:kb 24s ease-in-out infinite alternate}
