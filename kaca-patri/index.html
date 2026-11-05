@@ -193,10 +193,13 @@ body.locked{overflow:hidden;height:100svh}
 img{display:block;max-width:100%}
 [hidden]{display:none!important}
 h1,h2,h3{font-family:var(--f-d);font-weight:400;margin:0;line-height:1.15;text-wrap:balance}
-p{margin:0}
+p{margin:0;text-wrap:pretty}
 a{color:inherit}
 :focus-visible{outline:2px solid var(--berry);outline-offset:3px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+/* Lewati sampul: tersembunyi sampai difokus dengan keyboard. */
+.skip{position:absolute;z-index:3;top:max(12px,env(safe-area-inset-top));left:max(12px,env(safe-area-inset-left));padding:10px 18px;border:0;border-radius:999px;background:var(--walnut-d);color:var(--ivory);font:500 13px/1.2 var(--f-t);letter-spacing:.12em;cursor:pointer}
+.skip:not(:focus){width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 .kick{font:500 12px/1.4 var(--f-t);letter-spacing:.3em;text-transform:uppercase;color:var(--berry)}
 .btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:12px 28px;border:0;border-radius:999px;background:var(--green);color:var(--ivory);font:500 13px/1.2 var(--f-t);letter-spacing:.22em;text-transform:uppercase;text-decoration:none;cursor:pointer;box-shadow:0 14px 26px -16px rgba(31,77,58,.75),inset 0 0 0 1px rgba(240,196,106,.35)}
 .btn svg{width:18px;height:18px;flex:none}
@@ -243,16 +246,21 @@ html.motion .light::before{animation:shimmer 16s ease-in-out infinite alternate}
 
 /* ---------- Sampul ---------- */
 .gate{position:fixed;inset:0;z-index:50;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;background:radial-gradient(90% 60% at 50% 30%,#fbf5ea,rgba(251,245,234,0) 70%),var(--plaster) var(--tex)}
-.g-in{position:relative;z-index:1;min-height:100%;display:grid;grid-template-areas:"head" "win" "foot";grid-template-rows:auto minmax(170px,1fr) auto;justify-items:center;align-items:center;row-gap:clamp(10px,2svh,22px);padding:max(18px,env(safe-area-inset-top)) 18px max(20px,env(safe-area-inset-bottom));text-align:center}
+/* Pantulan cahaya sampul dipotong di tepi layar supaya tidak membuat sampul bisa digulir. */
+.g-lights{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+/* overflow:hidden memotong hiasan yang menjorok (bayangan jendela, animasi naik); isi tetap tidak terpotong karena tinggi .g-in mengikuti isinya. */
+.g-in{position:relative;z-index:1;min-height:100%;overflow:hidden;display:grid;grid-template-areas:"head" "win" "foot";grid-template-rows:auto minmax(170px,1fr) auto;justify-items:center;align-items:center;row-gap:clamp(10px,2svh,22px);padding:max(18px,env(safe-area-inset-top)) 18px max(20px,env(safe-area-inset-bottom));text-align:center}
 .g-head{grid-area:head;display:flex;flex-direction:column;align-items:inherit;gap:clamp(4px,1svh,10px)}
-.g-names{font-size:clamp(38px,min(12.5vw,7.2svh),66px);font-weight:400;color:var(--ink);letter-spacing:.005em;white-space:nowrap}
+/* Nama boleh turun baris (diseimbangkan oleh text-wrap:balance), jadi nama mempelai yang lebih panjang tidak melebarkan sampul. */
+.g-names{font-size:clamp(38px,min(12.5vw,7.2svh),66px);font-weight:400;color:var(--ink);letter-spacing:.005em;overflow-wrap:break-word;max-width:100%}
 .g-names .amp{font-style:italic;color:var(--berry);font-size:.92em;padding:0 .06em}
 /* Cahaya pagi di belakang jendela (latar sel, jadi tidak pernah menimpa tulisan). */
 .g-win{grid-area:win;height:100%;min-height:0;width:100%;display:flex;justify-content:center;align-items:center;background:radial-gradient(closest-side,rgba(255,251,240,.95),rgba(255,247,228,.5) 55%,rgba(255,247,228,0))}
-.g-win .win{height:min(100%,560px,calc((100vw - 36px) * var(--ari,1.42)))}
+.g-win .win{height:min(100%,860px,calc((100vw - 36px) * var(--ari,1.42)))}
 .g-foot{grid-area:foot;display:flex;flex-direction:column;align-items:inherit;gap:clamp(6px,1.3svh,12px)}
 .g-date{font:400 clamp(16px,2.4svh,19px)/1.35 var(--f-d);color:var(--ink)}
-.g-date i{font-style:italic;color:var(--teal);white-space:nowrap}
+.g-date i{font-style:italic;color:var(--teal)}
+.g-date .nw{white-space:nowrap}
 .g-to{display:flex;flex-direction:column;align-items:inherit;gap:2px}
 .g-to-l{font-size:14px;color:var(--ink)}
 .g-guest{font:500 clamp(22px,3.4svh,29px)/1.2 var(--f-d);color:var(--ink);overflow-wrap:anywhere;max-width:22ch}
@@ -264,7 +272,7 @@ html.motion .light::before{animation:shimmer 16s ease-in-out infinite alternate}
   .g-head{align-self:end;align-items:flex-start}
   .g-foot{align-self:start;align-items:flex-start}
   .g-to{align-items:flex-start}
-  .g-names{font-size:clamp(34px,min(6.4vw,12.5svh),104px);white-space:normal}
+  .g-names{font-size:clamp(34px,min(6.4vw,12.5svh),104px)}
   .g-win .win{height:min(calc(100svh - 44px),860px)}
   .g-l1{--lx:36%;--ly:66%;--lw:clamp(360px,48vw,800px);--lo:.4}
   .g-l2{--lx:76%;--ly:4%;--lw:clamp(220px,22vw,380px);--lo:.34}
@@ -354,7 +362,7 @@ html.motion .ch:not(.in) .medal img{clip-path:circle(3% at 50% 50%);transform:sc
 .tile{position:relative;width:clamp(64px,19vw,96px);padding:16px 0 12px;display:flex;flex-direction:column;align-items:center;gap:6px;border-radius:3px;background:var(--c);box-shadow:inset 0 0 0 2px rgba(58,36,20,.85),inset 0 0 0 4px rgba(240,196,106,.45),0 16px 24px -16px rgba(0,0,0,.6);overflow:hidden}
 .tile::before{content:"";position:absolute;inset:0;background:radial-gradient(80% 70% at 50% 15%,rgba(255,244,214,.35),transparent 70%);pointer-events:none}
 .t1{--c:#1f4d3a}.t2{--c:#1f5f73}.t3{--c:#4d3a7a}.t4{--c:#3a2414}
-.tile b{position:relative;display:grid;font:400 clamp(28px,7.6vw,42px)/1 var(--f-d);color:var(--ivory);font-variant-numeric:tabular-nums}
+.tile b{position:relative;display:grid;font:400 clamp(28px,7.6vw,42px)/1 var(--f-d);color:var(--ivory);font-variant-numeric:lining-nums tabular-nums}
 .tile b span{grid-area:1/1}
 .tile small{position:relative;font:500 11px/1 var(--f-t);letter-spacing:.2em;text-transform:uppercase;color:#f3ead9}
 .count-msg{font:italic 400 24px/1.4 var(--f-d)}
@@ -367,7 +375,7 @@ html.motion .ch:not(.in) .medal img{clip-path:circle(3% at 50% 50%);transform:sc
 .ev .fan-mini{width:150px;margin:0 0 6px}
 .ev h3{font-size:clamp(30px,7vw,38px)}
 .ev-date{color:var(--ink-2)}
-.ev-time{font:400 clamp(24px,5.8vw,30px)/1.3 var(--f-d);color:var(--teal);margin:4px 0}
+.ev-time{font:400 clamp(24px,5.8vw,30px)/1.3 var(--f-d);color:var(--teal);margin:4px 0;font-variant-numeric:lining-nums}
 .ev-time small{font:500 12px/1 var(--f-t);letter-spacing:.2em;color:var(--ink-2)}
 .ev-venue{font-weight:500}
 .ev-addr{color:var(--ink-2);margin-bottom:14px}
@@ -386,7 +394,8 @@ html.motion .gi img{transition:transform 1.4s var(--ease)}
 html.motion .gi:hover img{transform:scale(1.04)}
 .g1{grid-row:span 2}.g4{grid-column:span 2}
 .hint{text-align:center;margin-top:16px;font-size:14px;color:var(--ink-2)}
-@media (min-width:760px){.grid{grid-template-columns:repeat(4,1fr);grid-auto-rows:clamp(170px,19vw,240px);grid-auto-flow:dense;gap:16px}.g1{grid-row:span 2}.g4{grid-column:span 2}}
+/* Desktop: posisi tetap per kelompok kolom (g1 | g2 g3 | g4 lebar, lalu g5 g6), urutannya sama dengan HP, dengan Tab, dan dengan nomor di lightbox. */
+@media (min-width:760px){.grid{grid-template-columns:repeat(4,1fr);grid-auto-rows:clamp(170px,19vw,240px);gap:16px}.g1{grid-area:1/1/3/2}.g2{grid-area:1/2}.g3{grid-area:2/2}.g4{grid-area:1/3/2/5}.g5{grid-area:2/3}.g6{grid-area:2/4}}
 
 /* Kartu formulir */
 .card{position:relative;background:var(--ivory);max-width:560px;margin:0 auto;box-shadow:0 0 0 1px rgba(90,58,34,.3),0 30px 50px -36px rgba(58,36,20,.6);border-radius:2px;overflow:hidden}
@@ -413,7 +422,9 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .rsvp .l-a{--lx:-20%;--ly:30%;--lw:clamp(320px,50vw,760px);--li:var(--l3);--lo:.3}
 
 /* Ucapan */
-.wish-grid{display:grid;gap:26px;max-width:1000px;margin:0 auto}
+/* Satu kolom: formulir dan daftar sama lebar (kartu tidak memakai margin auto, supaya ikut melebar di grid). */
+.wish-grid{display:grid;gap:26px;max-width:560px;margin:0 auto}
+.wish-grid .card{margin:0}
 .wl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
 .wish{position:relative;background:var(--ivory);padding:16px 18px 16px 44px;box-shadow:0 0 0 1px rgba(90,58,34,.2);border-radius:2px}
 .wish::before{content:"";position:absolute;left:16px;top:21px;width:12px;height:12px;transform:rotate(45deg);background:var(--c,var(--teal));box-shadow:0 0 0 2px var(--ivory),0 0 0 3px rgba(58,36,20,.5)}
@@ -423,17 +434,17 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .who span{font-size:13px;color:var(--ink-2);flex:none}
 .wish p{color:var(--ink-2);font-size:16px}
 .wcount{display:flex;align-items:baseline;gap:8px;font:500 12px/1 var(--f-t);letter-spacing:.2em;text-transform:uppercase;color:var(--ink-2);margin-bottom:10px}
-.wcount b{display:grid;font:400 30px/1 var(--f-d);letter-spacing:0;color:var(--berry)}
+.wcount b{display:grid;font:400 30px/1 var(--f-d);letter-spacing:0;color:var(--berry);font-variant-numeric:lining-nums}
 .wcount b span{grid-area:1/1}
 #wMore{align-self:center;margin-top:6px}
-@media (min-width:900px){.wish-grid{grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);align-items:start}.wish-grid .card{margin:0}}
+@media (min-width:900px){.wish-grid{max-width:1000px;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);align-items:start}}
 
 /* Amplop digital */
 .kasih{background:var(--plaster-2) var(--tex)}
 .gifts{list-style:none;margin:0 auto;padding:0;display:grid;gap:16px;max-width:1000px}
 .gift{background:var(--ivory);padding:26px 20px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;box-shadow:0 0 0 1px rgba(90,58,34,.25),0 20px 34px -28px rgba(58,36,20,.6);border-top:5px solid var(--c,var(--green));border-radius:2px}
 .gift:nth-child(2){--c:var(--teal)}.gift:nth-child(3){--c:var(--berry)}
-.gift .val{font:400 clamp(24px,6vw,28px)/1.3 var(--f-d);letter-spacing:.04em}
+.gift .val{font:400 clamp(24px,6vw,28px)/1.3 var(--f-d);letter-spacing:.04em;font-variant-numeric:lining-nums}
 .gift .val.addr{font-size:20px;letter-spacing:0}
 .gift .nm{color:var(--ink-2);margin-bottom:10px}
 @media (min-width:760px){.gifts{grid-template-columns:repeat(3,1fr)}}
@@ -467,10 +478,11 @@ html.calm .music.tuck{transform:none}
 .toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));z-index:70;transform:translate(-50%,16px);opacity:0;background:var(--walnut-d);color:var(--ivory);padding:11px 20px;border-radius:999px;font:500 14px/1.3 var(--f-t);pointer-events:none;transition:opacity .3s,transform .4s var(--ease);max-width:calc(100vw - 32px)}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 html.lb-open{overflow:hidden}
+/* touch-action: geser mendatar ditangani skrip (pindah foto); tanpa ini browser HP mengambil alih gestur dan mengirim pointercancel. */
 .lb{border:0;padding:0;margin:0;touch-action:pan-y;width:100vw;height:100svh;max-width:none;max-height:none;background:rgba(30,18,10,.95);color:var(--ivory)}
 .lb::backdrop{background:rgba(30,18,10,.6)}
 .lb figure{margin:0;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:64px 16px 24px}
-.lb img{max-width:min(100%,1100px);max-height:calc(100svh - 150px);object-fit:contain;box-shadow:0 0 0 6px #f5efe4,0 0 0 7px rgba(240,196,106,.6)}
+.lb img{max-width:min(100%,1100px);max-height:calc(100svh - 150px);object-fit:contain;box-shadow:0 0 0 6px #f5efe4,0 0 0 7px rgba(240,196,106,.6);-webkit-user-drag:none;user-select:none}
 .lb figcaption{text-align:center;font:italic 400 18px/1.4 var(--f-d)}
 .lb figcaption small{display:block;font:500 12px/1.4 var(--f-t);letter-spacing:.2em;opacity:.85;font-style:normal}
 .lb button{position:absolute;width:46px;height:46px;border-radius:50%;border:1px solid rgba(240,196,106,.5);background:rgba(58,36,20,.7);color:var(--ivory);display:grid;place-items:center;cursor:pointer}
@@ -482,12 +494,13 @@ html.lb-open{overflow:hidden}
 </style>
 </head>
 <body class="locked">
-<a class="sr" href="#main">Lewati sampul</a>
-
 <!-- Sampul -->
 <section class="gate" id="gate" aria-labelledby="g-names">
-  <div class="light g-l1" aria-hidden="true"></div>
-  <div class="light g-l2" aria-hidden="true"></div>
+  <button class="skip" id="skipBtn" type="button">Lewati sampul</button>
+  <div class="g-lights" aria-hidden="true">
+    <div class="light g-l1"></div>
+    <div class="light g-l2"></div>
+  </div>
   <div class="g-in">
     <div class="g-head">
       <p class="kick g-kick">Undangan Pernikahan</p>
@@ -499,7 +512,7 @@ html.lb-open{overflow:hidden}
       </div>
     </div>
     <div class="g-foot">
-      <p class="g-date">Sabtu, 12 Desember 2026 · <i>Denpasar, Bali</i></p>
+      <p class="g-date">Sabtu, 12&nbsp;Desember&nbsp;2026 <span class="nw">· <i>Denpasar, Bali</i></span></p>
       <div class="g-to"><p class="g-to-l">Kepada Yth. Bapak/Ibu/Saudara/i</p><p class="g-guest" id="guest">Tamu Undangan</p></div>
       <button class="btn" id="openBtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V11a7 7 0 0 1 14 0v10z"/><path d="M12 4v17M5 14h14"/></svg>Buka Undangan</button>
     </div>
@@ -515,7 +528,7 @@ html.lb-open{overflow:hidden}
     <div class="wrap">
       <div class="fan-mini draw" data-fan="5"></div>
       <h2 id="h-salam" class="rv">Assalamu'alaikum<small>Warahmatullahi Wabarakatuh</small></h2>
-      <p class="rv" style="--rd:.15s">Dengan memohon rahmat dan ridho Allah SWT, kami bermaksud mengundang Bapak/Ibu/Saudara/i untuk hadir di hari pernikahan kami, ketika cahaya pagi pertama jatuh di Denpasar.</p>
+      <p class="rv" style="--rd:.15s">Dengan memohon rahmat dan ridho Allah SWT, kami bermaksud mengundang Bapak/Ibu/Saudara/i untuk hadir di hari pernikahan kami, ketika cahaya pagi jatuh di Denpasar.</p>
     </div>
   </section>
 
@@ -571,7 +584,7 @@ html.lb-open{overflow:hidden}
         <li class="ch rv">
           <figure class="medal"><img src="../foto/galeri-4.jpg" alt="Tangan Laras dan Bima dengan cincin di atas buket mawar putih" loading="lazy" style="object-position:50% 40%"></figure>
           <p class="yr">2026</p><h3>Selamanya</h3>
-          <p class="t">Lamaran sederhana di hadapan keluarga, lalu kami memilih satu tanggal: Sabtu, 12 Desember 2026.</p>
+          <p class="t">Lamaran sederhana di hadapan keluarga, lalu kami memilih satu tanggal: Sabtu, 12&nbsp;Desember&nbsp;2026.</p>
         </li>
       </ol>
     </div>
@@ -739,7 +752,7 @@ html.lb-open{overflow:hidden}
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <dialog class="lb" id="lb" aria-label="Foto">
-  <figure><img id="lbImg" alt=""><figcaption><span id="lbCap"></span><small id="lbNo"></small></figcaption></figure>
+  <figure><img id="lbImg" alt="" draggable="false"><figcaption><span id="lbCap"></span><small id="lbNo"></small></figcaption></figure>
   <button type="button" id="lbX" aria-label="Tutup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
   <button type="button" id="lbPrev" aria-label="Foto sebelumnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
   <button type="button" id="lbNext" aria-label="Foto berikutnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
@@ -805,10 +818,22 @@ if (params.has("open")) {
 } else {
   main.inert = true;
   foot.inert = true;
-  $("#openBtn").addEventListener("click", openInvite, { once: true });
+  $("#openBtn").addEventListener("click", () => openInvite());
+  // Lewati sampul (keyboard / pembaca layar): langsung ke isi, tanpa animasi dan tanpa memutar musik.
+  $("#skipBtn").addEventListener("click", () => openInvite(true));
 }
-function openInvite() {
+let opened = false;
+function openInvite(quick = false) {
+  if (opened) return;
+  opened = true;
   gate.style.pointerEvents = "none";
+  if (quick) {
+    gate.hidden = true;
+    scrollTo(0, 0);
+    unlock();
+    watchAll();
+    return;
+  }
   Music.play();
   if (!FULL) {
     scrollTo(0, 0);
@@ -907,7 +932,7 @@ tick();
     action: "TEMPLATE",
     text: `Pernikahan ${EVENT.bride.name} & ${EVENT.groom.name}`,
     dates: `${z(evs[0].startsAt)}/${z(evs[evs.length - 1].endsAt)}`,
-    details: `Akad ${fmt(EVENT.events.akad.startsAt)} WITA di ${EVENT.events.akad.venue}. Resepsi ${fmt(EVENT.events.resepsi.startsAt)} WITA di ${EVENT.events.resepsi.venue}. ${location.href.split("?")[0]}`,
+    details: `Akad ${fmt(EVENT.events.akad.startsAt)} WITA di ${EVENT.events.akad.venue}, ${EVENT.events.akad.address}.\nResepsi ${fmt(EVENT.events.resepsi.startsAt)} WITA di ${EVENT.events.resepsi.venue}, ${EVENT.events.resepsi.address}.\n${location.href.split(/[?#]/)[0]}`,
     location: evs[evs.length - 1].address,
   });
   $("#calBtn").href = `https://calendar.google.com/calendar/render?${q}`;
