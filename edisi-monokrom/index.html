@@ -161,17 +161,10 @@ button,input,select,textarea{font:inherit;color:inherit}
 .bars .tcard b{font:italic 400 clamp(30px,6vw,56px)/1 var(--serif)}
 .bars .tcard span{font:500 11px/1 var(--sans);letter-spacing:.42em;text-transform:uppercase;opacity:.8}
 
-/* ---------- Salam & ayat ---------- */
+/* ---------- Salam ---------- */
 .salam-h{margin:0;font:400 clamp(30px,5vw,58px)/1.12 var(--serif);color:var(--ink)}
 .salam-h em{display:block;font-style:italic;font-size:.62em;margin-top:.3em}
 .lead{max-width:600px;margin:28px auto 0;font-size:clamp(16px,1.6vw,18px);color:var(--ink-2)}
-.band{padding-bottom:clamp(88px,11vw,156px)}
-.band-ph{height:clamp(320px,72svh,760px)}
-.band-ph .pl{position:absolute;inset:-9% 0;will-change:transform}
-.verse{margin:clamp(56px,7vw,96px) auto 0;max-width:780px}
-.verse p{margin:0;font:italic 400 clamp(22px,3vw,34px)/1.45 var(--serif);color:var(--ink)}
-.verse p::before{content:"“";display:block;font:400 clamp(72px,9vw,120px)/.6 var(--serif);color:var(--paper-3);margin-bottom:.1em}
-.verse cite{display:block;margin-top:24px;font:500 11px/1 var(--sans);font-style:normal;letter-spacing:.32em;text-transform:uppercase;color:var(--grey)}
 
 /* ---------- Mempelai ---------- */
 .person{display:grid;gap:34px;align-items:center}
@@ -411,14 +404,6 @@ textarea.inp{min-height:110px;resize:vertical}
       <span class="lily-slot" data-d=".1"></span>
       <h2 class="salam-h split" id="h-salam">Assalamu'alaikum <em>Warahmatullahi Wabarakatuh</em></h2>
       <p class="lead rv" style="--d:.2s">Dengan memohon rahmat dan ridho Allah SWT, kami bermaksud mengundang Bapak/Ibu/Saudara/i untuk hadir di hari pernikahan kami.</p>
-    </div>
-  </section>
-
-  <!-- ============ Ayat ============ -->
-  <section class="band" aria-label="QS Ar-Rum ayat 21">
-    <figure class="ph band-ph"><span class="pl"><img src="../foto/galeri-6.jpg" srcset="../foto/galeri-6.jpg 1000w, ../foto/hd/galeri-6.jpg 1600w" sizes="100vw" alt="Laras dan Bima berjalan di pematang sawah terasering saat senja" loading="lazy"></span></figure>
-    <div class="wrap narrow center">
-      <blockquote class="verse rv"><p>Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu pasangan hidup dari jenismu sendiri, supaya kamu merasa tenteram kepadanya, dan dijadikan-Nya di antaramu rasa kasih dan sayang.</p><cite>QS. Ar-Rum: 21</cite></blockquote>
     </div>
   </section>
 
@@ -932,8 +917,8 @@ if (params.has("open")) {
   $("#openBtn").addEventListener("click", openInvite);
 }
 
-/* ---------- Gulir: pita ayat bergeser pelan, lookbook bergeser ke samping di desktop ---------- */
-const bandPl = $(".band .pl"), lk = $("#lookbook"), pin = $("#lkPin"), track = $("#lkTrack"), prog = $("#lkProg"), intro = $(".lk-intro");
+/* ---------- Gulir: lookbook bergeser ke samping di desktop ---------- */
+const lk = $("#lookbook"), pin = $("#lkPin"), track = $("#lkTrack"), prog = $("#lkProg"), intro = $(".lk-intro");
 const WIDE = matchMedia("(min-width:900px) and (min-height:560px)");
 let pinned = false, raf = 0;
 function layoutPin() {
@@ -952,10 +937,6 @@ function onScroll() {
   } else {
     track.style.transform = "";
     intro.style.opacity = "";
-  }
-  if (MOTION) {
-    const r = bandPl.parentElement.getBoundingClientRect();
-    if (r.bottom > 0 && r.top < innerHeight) bandPl.style.transform = `translate3d(0,${((r.top + r.height / 2 - innerHeight / 2) * -0.12).toFixed(1)}px,0)`;
   }
 }
 addEventListener("scroll", () => { raf ||= requestAnimationFrame(onScroll); }, { passive: true });

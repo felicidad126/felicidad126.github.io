@@ -17,7 +17,7 @@
      Data mempelai, alamat, dan rekening adalah data contoh. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Spectral:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Spectral:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
 <script>
 // Kelas gerak dipasang sebelum halaman dilukis supaya keadaan awal animasi tidak berkedip. ?motion=full memaksa animasi untuk demo.
 (() => {
@@ -180,7 +180,7 @@ html{-webkit-tap-highlight-color:transparent}
 :root{
   --plaster:#f5efe4;--plaster-2:#eee4d2;--ivory:#fbf6ec;--ink:#2b1d14;--ink-2:#634b38;
   --walnut:#5a3a22;--walnut-d:#3a2414;--green:#1f4d3a;--berry:#8e1f3f;--teal:#1f5f73;--saff:#d99a2b;--saff-l:#f0c46a;--lilac:#b9a5d6;
-  --f-d:"Playfair Display",Georgia,serif;--f-t:"Spectral",Georgia,serif;--f-a:"Amiri","Noto Naskh Arabic","Traditional Arabic",serif;
+  --f-d:"Playfair Display",Georgia,serif;--f-t:"Spectral",Georgia,serif;
   --ease:cubic-bezier(.2,.7,.1,1);
   /* Plester: serat halus, sangat tipis. */
   --tex:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .25 0 0 0 0 .15 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
@@ -304,16 +304,8 @@ html.calm .rv:not(.in){opacity:0}
 .salam h2 small{display:block;margin-top:10px;font:italic 400 clamp(17px,3.6vw,22px)/1.4 var(--f-d);color:var(--teal)}
 .salam p{max-width:32em;color:var(--ink-2)}
 
-/* Ayat */
 /* Bagian berlatar gelap: posisi relatif & terpotong supaya pantulan cahaya tidak keluar dari bagiannya. */
-.ayat,.date{position:relative;overflow:hidden}
-.ayat{background:var(--green);color:var(--ivory);padding:0}
-.ayat .wrap{max-width:860px;padding:clamp(72px,10vw,120px) 20px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:24px}
-.ar{font:400 clamp(25px,5.6vw,38px)/2.15 var(--f-a);color:var(--saff-l);direction:rtl}
-.ayat blockquote{margin:0;max-width:36em;font:italic 300 clamp(18px,3.6vw,22px)/1.65 var(--f-t);color:#f3ead9}
-.ayat .kick{color:var(--saff-l)}
-.ayat .l-a{--lx:-14%;--ly:6%;--lw:clamp(320px,50vw,740px);--li:var(--l2)}
-.ayat .l-b{--lx:64%;--ly:52%;--lw:clamp(300px,46vw,700px);--li:var(--l3)}
+.date{position:relative;overflow:hidden}
 
 /* Mempelai */
 .pair{display:grid;justify-items:center;gap:clamp(28px,6vw,44px)}
@@ -525,19 +517,6 @@ html.lb-open{overflow:hidden}
       <h2 id="h-salam" class="rv">Assalamu'alaikum<small>Warahmatullahi Wabarakatuh</small></h2>
       <p class="rv" style="--rd:.15s">Dengan memohon rahmat dan ridho Allah SWT, kami bermaksud mengundang Bapak/Ibu/Saudara/i untuk hadir di hari pernikahan kami, ketika cahaya pagi pertama jatuh di Denpasar.</p>
     </div>
-  </section>
-
-  <!-- Ayat -->
-  <section class="ayat dark" aria-label="QS Ar-Rum ayat 21">
-    <div class="band draw" data-band="12" aria-hidden="true"></div>
-    <div class="light l-a" aria-hidden="true"></div>
-    <div class="light l-b" data-k="-.8" aria-hidden="true"></div>
-    <div class="wrap">
-      <p class="ar rv" lang="ar" dir="rtl">وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُمْ مِنْ أَنْفُسِكُمْ أَزْوَاجًا لِتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُمْ مَوَدَّةً وَرَحْمَةً ۚ إِنَّ فِي ذَٰلِكَ لَآيَاتٍ لِقَوْمٍ يَتَفَكَّرُونَ</p>
-      <blockquote class="rv" style="--rd:.2s">“Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu pasangan hidup dari jenismu sendiri, supaya kamu merasa tenteram kepadanya, dan dijadikan-Nya di antaramu rasa kasih dan sayang.”</blockquote>
-      <p class="kick rv" style="--rd:.3s">QS. Ar-Rum: 21</p>
-    </div>
-    <div class="band draw" data-band="13" aria-hidden="true"></div>
   </section>
 
   <!-- Mempelai -->
@@ -753,7 +732,7 @@ html.lb-open{overflow:hidden}
 <footer class="foot">
   <p class="foot-mark">Laras &amp; Bima · 12.12.2026</p>
   <p>Tema <b>Kaca Patri</b> · cahaya pagi melalui kaca berwarna jendela orsi. Nama, tanggal, alamat, dan rekening adalah data contoh; foto contoh dibuat dengan AI.</p>
-  <p>Font Playfair Display, Spectral &amp; Amiri, SIL Open Font License 1.1.</p>
+  <p>Font Playfair Display &amp; Spectral, SIL Open Font License 1.1.</p>
 </footer>
 
 <button class="music" id="music" type="button" aria-label="Putar musik" aria-pressed="false" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/><path class="slash" d="M4 4l16 16"/></svg></button>
