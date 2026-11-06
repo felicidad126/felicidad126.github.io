@@ -43,7 +43,7 @@ Foto memakai folder `foto/` yang sama dengan Lengkung Sage. Font (Cormorant Gara
 
 # Garis Editorial · Midnight Indigo — Preview Undangan Digital
 
-Tema ketiga, di subfolder [`garis-editorial/`](garis-editorial/): redesain Garis Editorial skema Midnight Indigo (indigo malam, emas, periwinkle, kertas krem). Undangan disusun sebagai rangkaian alat tulis pernikahan: polaroid sampul, surat pembuka, lembar acara, kartu balasan RSVP, amplop, dan kartu pos. Dua garis emas turun di tepi halaman, bersilang di "&" kedua mempelai, lalu menyatu di tanggal pernikahan.
+Tema ketiga, di subfolder [`garis-editorial/`](garis-editorial/): redesain Garis Editorial skema Midnight Indigo (indigo malam, emas, periwinkle, kertas krem). Undangan disusun sebagai rangkaian alat tulis pernikahan: polaroid sampul, surat pembuka, lembar acara, kartu balasan RSVP, amplop, dan surat penutup yang berpasangan dengan surat pembuka. Dua garis emas turun di tepi halaman, bersilang di "&" kedua mempelai, lalu menyatu di tanggal pernikahan.
 
 - Lihat: https://felicidad126.github.io/garis-editorial/
 - Dengan nama tamu: https://felicidad126.github.io/garis-editorial/?to=Nama%20Tamu

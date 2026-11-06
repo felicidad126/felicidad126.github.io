@@ -132,8 +132,9 @@ main{position:relative;max-width:var(--col);margin:0 auto;background:var(--navy)
 /* pembuka: surat di atas kertas, tepi bawah berlekuk, sobekan */
 .opening{padding:96px 18px 110px;background:var(--navy)}
 .letter{position:relative;background:var(--paper);color:var(--ink);padding:44px 28px 40px}
-.letter::after,.sheet::after{content:"";position:absolute;left:0;right:0;bottom:-11px;height:12px;background:radial-gradient(circle at 50% 0,var(--paper) 11px,transparent 11.6px) 0 0/22px 12px repeat-x}
-.sheet::before{content:"";position:absolute;left:0;right:0;top:-11px;height:12px;background:radial-gradient(circle at 50% 100%,var(--paper) 11px,transparent 11.6px) 0 0/22px 12px repeat-x}
+/* Tepi bergerigi: "round" menyesuaikan lebar gerigi supaya jumlahnya pas dan tidak ada gerigi terpotong di ujung kanan. */
+.letter::after,.sheet::after{content:"";position:absolute;left:0;right:0;bottom:-11px;height:12px;background:radial-gradient(circle at 50% 0,var(--paper) 11px,transparent 11.6px) 0 0/22px 12px round no-repeat}
+.sheet::before{content:"";position:absolute;left:0;right:0;top:-11px;height:12px;background:radial-gradient(circle at 50% 100%,var(--paper) 11px,transparent 11.6px) 0 0/22px 12px round no-repeat}
 .letter .q{font:italic 500 24px/1.32 var(--serif);color:var(--ink)}
 @media (min-width:420px){.letter .q{font-size:27px}}
 .letter .q::before{content:"“";display:block;font:500 86px/.6 var(--serif);color:var(--gold);margin-bottom:12px}
@@ -299,26 +300,16 @@ main{position:relative;max-width:var(--col);margin:0 auto;background:var(--navy)
 .envelope .open-btn{margin-top:24px}
 .envelope.open .open-btn{display:none}
 
-/* penutup: bidang emas + punggung kartu pos */
-.closing{background:var(--gold);color:var(--gold-ink);padding:100px var(--m) 0;text-align:center}
-.closing h2{font-size:clamp(68px,19vw,84px);color:var(--gold-ink)}
-.closing .duo{display:grid;grid-template-columns:52% 1fr;gap:18px;align-items:center;margin-top:44px;text-align:left}
-.closing .polaroid{padding:10px 10px 0;rotate:-4deg}
-.closing .polaroid .ph{aspect-ratio:1}
-.closing .polaroid .ph img{object-position:50% 30%}
-.closing .polaroid .cap{font-size:17cqw;padding:4cqw 0 5cqw}
-.closing .duo p{font-size:17px;line-height:1.55}
-.postcard{position:relative;margin:70px -12px 0;background:var(--paper);color:var(--ink);padding:44px 26px 30px;text-align:left}
-.postcard::before{content:"";position:absolute;left:0;right:0;top:-15px;height:16px;background:radial-gradient(circle at 50% 100%,var(--paper) 15px,transparent 15.6px) 0 0/30px 16px repeat-x}
-.postcard .stampbox{float:right;width:76px;margin:0 0 12px 14px;background:var(--paper-2);padding:5px}
-.postcard .stampbox .ph{aspect-ratio:3/4}
-.postcard .bye{font:500 30px/1.15 var(--serif)}
-.postcard .msg{margin-top:12px;font-size:17px}
-.postcard .wass{font:italic 500 20px/1.3 var(--serif);margin-top:18px}
-.postcard .fam{margin-top:12px;font-size:16px;color:var(--ink-soft)}
-.postcard .fam b{display:block;font:400 46px/1.1 var(--script);color:var(--ink)}
-.postcard .lines{clear:both;margin-top:26px;padding-top:6px;display:flex;flex-direction:column;gap:6px;font-size:16px}
-.postcard .imprint{margin-top:28px;text-align:center;font-size:13px;color:var(--ink-soft);padding-bottom:max(80px,env(safe-area-inset-bottom))}
+/* penutup: surat terima kasih, pasangan surat pembuka. Memakai kelas .letter yang sama
+   (salam, isi, tanda tangan) supaya huruf di awal dan akhir undangan persis sama. */
+.closing{background:var(--deep);padding:100px 18px calc(110px + env(safe-area-inset-bottom))}
+.closing .head{text-align:center;padding:0 10px;margin-bottom:44px}
+.closing .letter{padding-top:28px}
+.closing .letter .ph{aspect-ratio:5/4;margin-bottom:26px}
+.closing .letter .ph img{object-position:50% 30%}
+.closing .letter .body{margin-top:0}
+.closing .letter .salam{margin-top:22px}
+.closing .imprint{margin:60px auto 0;max-width:340px;text-align:center;font-size:13px;line-height:1.6;color:var(--peri)}
 
 /* tombol musik, lightbox, toast */
 .music{position:fixed;z-index:30;right:max(16px,env(safe-area-inset-right));bottom:max(18px,env(safe-area-inset-bottom));width:50px;height:50px;border-radius:50%;border:0;background:var(--gold);color:var(--gold-ink);display:none;align-items:center;justify-content:center;cursor:pointer;transition:transform .25s}
@@ -572,21 +563,19 @@ main{position:relative;max-width:var(--col);margin:0 auto;background:var(--navy)
     </section>
 
     <!-- Penutup -->
-    <section class="closing" data-stage="galeri-5" aria-labelledby="h-close">
-      <svg class="sprig rv" viewBox="0 0 150 28" aria-hidden="true" data-sprig style="color:var(--gold-ink)"></svg>
-      <h2 class="script rv" id="h-close">Terima kasih</h2>
-      <div class="duo">
-        <figure class="polaroid rv-tilt" style="--rot:-4deg"><div class="ph"><img src="../foto/galeri-5.jpg" alt="Laras dan Bima di pelaminan berlatar bunga putih" loading="lazy"></div><figcaption class="cap">Laras &amp; Bima</figcaption></figure>
-        <p class="rv">Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Anda berkenan hadir dan memberikan doa restu.</p>
+    <!-- Di desktop panggung kiri kembali ke foto sampul, supaya tidak sama dengan foto di surat penutup. -->
+    <section class="closing" data-stage="cover" aria-labelledby="h-close">
+      <div class="head">
+        <p class="lede rv">Terima kasih</p>
+        <h2 class="title rv" id="h-close">Sampai <i>jumpa</i></h2>
       </div>
-      <div class="postcard rv">
-        <div class="stampbox"><div class="ph"><img src="../foto/galeri-2.jpg" alt="Laras dan Bima tertawa bersama" loading="lazy" style="object-position:50% 40%"></div></div>
-        <p class="bye">Sampai jumpa di hari bahagia kami</p>
-        <p class="wass">Wassalamu'alaikum Wr. Wb.</p>
-        <p class="fam">Kami yang berbahagia,<b>Laras &amp; Bima</b>Keluarga besar kedua mempelai</p>
-        <div class="lines"><span>Akad · 09.00 WITA · Rumah Keluarga Mempelai Wanita</span><span>Resepsi · 19.00 WITA · Gedung Serbaguna Contoh</span><span>Denpasar, Bali</span></div>
-        <p class="imprint">Garis Editorial · Midnight Indigo. Nama, alamat, dan rekening adalah data contoh; foto dibuat dengan AI.</p>
-      </div>
+      <article class="letter rv">
+        <div class="ph"><img src="../foto/galeri-5.jpg" alt="Laras dan Bima di pelaminan berlatar bunga putih" loading="lazy"></div>
+        <p class="body">Merupakan suatu kehormatan dan kebahagiaan bagi kami sekeluarga apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu.</p>
+        <p class="salam">Wassalamu'alaikum Wr. Wb.</p>
+        <p class="sign script">Laras &amp; Bima</p>
+      </article>
+      <p class="imprint">Garis Editorial · Midnight Indigo. Nama, alamat, dan rekening adalah data contoh; foto dibuat dengan AI.</p>
     </section>
   </main>
 </div>
