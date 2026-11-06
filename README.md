@@ -2,7 +2,8 @@
 
 Halaman utama ([`index.html`](index.html)) adalah katalog untuk calon pengantin: 10 tema dalam bingkai HP, kolom "Coba dengan nama Anda" yang mengubah semua tautan demo menjadi `?to=<nama>`, tombol "Lihat demo" dan "Pesan tema ini" (WhatsApp dengan pesan terisi), daftar fitur, cara pesan, dan tanya jawab.
 
-- Lihat: https://felicidad126.github.io/
+- Lihat: https://invitation.helonoia.net/ (Cloudflare Pages, domain sendiri; juga tetap ada di https://felicidad126.github.io/)
+- Gambar pratinjau tautan (`og:image`) di katalog dan semua tema memakai `https://invitation.helonoia.net/`. Bila domain berganti, ganti alamat itu di setiap `index.html`.
 - Nama usaha dan nomor WhatsApp diisi di objek `TOKO` pada skrip di bagian bawah `index.html`. Selama nomornya kosong, tombol WhatsApp membuka WhatsApp dengan pesan terisi dan pengunjung memilih kontak sendiri.
 - Gambar sampul tiap tema dan gambar pratinjau tautan (`og.jpg`, 1200x630) ada di folder [`katalog/`](katalog/). Bila desain sampul berubah, gambarnya perlu dibuat ulang.
 - Tautan lama Lengkung Sage di alamat utama (`/?to=`, `/?open`, `/?motion=full`) otomatis diteruskan ke `/lengkung-sage/`.
