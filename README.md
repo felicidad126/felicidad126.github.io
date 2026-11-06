@@ -1,14 +1,25 @@
-# Lengkung Sage — Preview Undangan Digital
+# Katalog Undangan Digital
 
-Preview tema undangan pernikahan **Lengkung Sage**: sage green + ivory, bingkai lengkung (arch), ornamen botani, aksen champagne.
+Halaman utama ([`index.html`](index.html)) adalah katalog untuk calon pengantin: 10 tema dalam bingkai HP, kolom "Coba dengan nama Anda" yang mengubah semua tautan demo menjadi `?to=<nama>`, tombol "Lihat demo" dan "Pesan tema ini" (WhatsApp dengan pesan terisi), daftar fitur, cara pesan, dan tanya jawab.
 
 - Lihat: https://felicidad126.github.io/
-- Animasi penuh (abaikan setting reduced-motion): https://felicidad126.github.io/?motion=full
-- Langsung buka undangan: https://felicidad126.github.io/?open
+- Nama usaha dan nomor WhatsApp diisi di objek `TOKO` pada skrip di bagian bawah `index.html`. Selama nomornya kosong, tombol WhatsApp membuka WhatsApp dengan pesan terisi dan pengunjung memilih kontak sendiri.
+- Gambar sampul tiap tema dan gambar pratinjau tautan (`og.jpg`, 1200x630) ada di folder [`katalog/`](katalog/). Bila desain sampul berubah, gambarnya perlu dibuat ulang.
+- Tautan lama Lengkung Sage di alamat utama (`/?to=`, `/?open`, `/?motion=full`) otomatis diteruskan ke `/lengkung-sage/`.
+
+---
+
+# Lengkung Sage — Preview Undangan Digital
+
+Preview tema undangan pernikahan **Lengkung Sage**: sage green + ivory, bingkai lengkung (arch), ornamen botani, aksen champagne. Tema ini ada di subfolder [`lengkung-sage/`](lengkung-sage/).
+
+- Lihat: https://felicidad126.github.io/lengkung-sage/
+- Animasi penuh (abaikan setting reduced-motion): https://felicidad126.github.io/lengkung-sage/?motion=full
+- Langsung buka undangan: https://felicidad126.github.io/lengkung-sage/?open
 
 Nama, tanggal, alamat, dan rekening di halaman ini adalah data contoh. Foto contoh dibuat dengan AI (Gemini), bukan foto mempelai sebenarnya; ornamen masih placeholder.
 
-Font (Great Vibes, Lora, Inter) di-embed di `index.html` dan berlisensi SIL Open Font License 1.1, lihat folder `licenses/`.
+Font (Great Vibes, Lora, Inter) di-embed di `lengkung-sage/index.html` dan berlisensi SIL Open Font License 1.1, lihat folder `licenses/`.
 
 ---
 
