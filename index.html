@@ -216,14 +216,13 @@ html.js .rv.in{opacity:1;transform:none}
       <div class="tryname rv" style="margin-bottom:clamp(28px,4vw,40px)">
         <div>
           <h2>Coba dengan nama Anda</h2>
-          <p>Tulis sebuah nama, lalu buka demo mana saja. Sampulnya akan menyapa nama itu, persis seperti tautan yang diterima tamu.</p>
+          <p>Tulis sebuah nama, lalu pilih tema di bawah. Sampul demo akan menyapa nama itu, persis seperti tautan yang diterima tamu.</p>
         </div>
         <form id="nameForm" autocomplete="off">
           <label for="guestName">Nama tamu</label>
           <input id="guestName" name="to" type="text" maxlength="60" placeholder="mis. Bapak Budi &amp; Keluarga" enterkeyhint="done">
-          <a class="btn btn-ink" id="tryBtn" href="kelopak-mimpi/?to=Nama%20Tamu">Coba sekarang</a>
         </form>
-        <p class="live" id="live" aria-live="polite">Sampul demo akan menyapa: <b>Nama Tamu</b></p>
+        <p class="live" id="live" aria-live="polite">Sampul demo akan menyapa: <b>Nama Tamu</b>. Pilih temanya di bawah.</p>
         <div class="motion-opt" id="motionOpt" hidden>
           <p id="motionText">Perangkat Anda memakai setelan "kurangi animasi", jadi demo tampil tanpa gerakan.</p>
           <button class="btn btn-line btn-sm" id="motionBtn" type="button" aria-pressed="false">Tampilkan dengan animasi</button>
@@ -454,16 +453,16 @@ motionBtn.addEventListener("click", () => {
 });
 RM.addEventListener ? RM.addEventListener("change", () => { syncMotion(); applyName(); }) : RM.addListener(() => { syncMotion(); applyName(); });
 
-const input = $("#guestName"), live = $("#live b"), tryBtn = $("#tryBtn");
+const input = $("#guestName"), live = $("#live b");
 function applyName() {
   const name = input.value.trim().replace(/\s+/g, " ") || "Nama Tamu";
   const q = "?to=" + encodeURIComponent(name) + (RM.matches && fullMotion ? "&motion=full" : "");
   $$("[data-demo]").forEach((a) => { a.href = `${a.dataset.demo}/${q}`; });
-  tryBtn.href = `kelopak-mimpi/${q}`;
   live.textContent = name;
 }
 input.addEventListener("input", applyName);
-$("#nameForm").addEventListener("submit", (e) => { e.preventDefault(); input.blur(); location.href = tryBtn.href; });
+// Enter / "Selesai" di keyboard HP: tutup keyboard lalu gulir ke daftar tema, pengunjung memilih temanya sendiri.
+$("#nameForm").addEventListener("submit", (e) => { e.preventDefault(); input.blur(); $(".grid").scrollIntoView({ behavior: RM.matches ? "auto" : "smooth", block: "start" }); });
 syncMotion();
 applyName();
 
