@@ -312,7 +312,6 @@ textarea{min-height:110px;resize:vertical}
 .chips span{display:flex;align-items:center;justify-content:center;width:100%;min-height:46px;border-radius:999px;border:1px solid #cdb8bf;background:#fff;color:var(--ink);transition:background .3s,color .3s,border-color .3s}
 .chips input:checked + span{background:var(--plum);border-color:var(--plum);color:var(--ivory)}
 .chips input:focus-visible + span{outline:2px solid var(--mauve-d);outline-offset:3px}
-.off{opacity:.45}
 .err{color:#9b2c45;font-size:15px}
 .note{font-size:13px;color:var(--ink-2);text-align:center}
 form .btn{align-self:stretch;margin-top:4px}
@@ -1025,7 +1024,7 @@ $$("[data-copy]").forEach((b) => b.addEventListener("click", async () => {
 const rsvpForm = $("#rsvpForm"), rsvpDone = $("#rsvpDone");
 const syncCount = () => {
   const no = rsvpForm.att.value === "Tidak hadir";
-  $("#fCount").classList.toggle("off", no);
+  $("#fCount").hidden = no;
   $("#rCount").disabled = no;
 };
 rsvpForm.addEventListener("change", syncCount);

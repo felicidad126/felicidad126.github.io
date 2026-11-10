@@ -930,6 +930,8 @@ function showDone(r, focus) {
     if (FULL) rsvpDone.animate([{ opacity: 0, transform: "translateY(16px)", filter: "blur(6px)" }, { opacity: 1, transform: "none", filter: "blur(0)" }], { duration: 800, easing: "cubic-bezier(.2,.7,.1,1)" });
   }
 }
+// Pesan galat hilang begitu tamu memperbaiki isiannya.
+for (const ev of ["input", "change"]) rsvpForm.addEventListener(ev, () => { $("#rsvpErr").hidden = true; });
 rsvpForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const err = $("#rsvpErr");
