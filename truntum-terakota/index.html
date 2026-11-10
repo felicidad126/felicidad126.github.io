@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<title>Truntum Terakota · Laras &amp; Bima</title>
+<title>Laras &amp; Bima · Truntum Terakota</title>
 <meta name="description" content="Undangan pernikahan Laras &amp; Bima, Sabtu 12 Desember 2026, Denpasar, Bali.">
 <meta name="theme-color" content="#7a3322">
 <meta property="og:type" content="website">
@@ -44,6 +44,7 @@ html,body{margin:0}
 body{background:var(--grain),var(--bata);color:var(--brown);font:400 16px/1.6 var(--sans);overflow-x:hidden}
 .js body.locked{overflow:hidden;height:100svh}
 img{display:block;max-width:100%}
+[hidden]{display:none!important}
 button,input,select,textarea{font:inherit;color:inherit}
 a{color:inherit}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
@@ -262,7 +263,8 @@ main{max-width:var(--col);margin:0 auto;outline:none;background:var(--tera)}
 .bank .wm{position:absolute;right:-30px;top:-30px;width:150px;height:150px;color:var(--ink);opacity:.16}
 .bank .bn{font:600 11px/1.4 var(--sans);letter-spacing:.3em;text-transform:uppercase;color:var(--ink-2)}
 .bank .no{margin:14px 0 4px;font:300 30px/1.2 var(--serif);letter-spacing:.06em;font-variant-numeric:lining-nums}
-.bank .an{margin-bottom:18px;color:var(--ink-2);font-size:14px}
+.bank .an{margin-bottom:18px;color:var(--ink-2);font-size:14.5px}
+.bank-2{margin-top:18px}
 .giftaddr{max-width:380px;margin:18px auto 0;--fp:32px 24px 28px;--fi:8px;background:var(--grain),var(--tera-2)}
 .giftaddr h3{margin:0;font:italic 300 26px/1.2 var(--serif)}
 .giftaddr p{margin:10px auto 18px;max-width:30ch;color:var(--ink-2);font-size:14.5px;line-height:1.6}
@@ -273,11 +275,11 @@ main{max-width:var(--col);margin:0 auto;outline:none;background:var(--tera)}
 .closing .ph::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,var(--bata) 98%)}
 .closing .body{position:relative;padding:0 28px 76px;margin-top:-40px}
 .closing h2{margin:0}
-.closing p{max-width:32ch;margin:16px auto 0;color:var(--ink-2);font-size:15px;line-height:1.75}
+.closing p{max-width:32ch;margin:16px auto 0;color:var(--ink-2);font-size:15.5px;line-height:1.75}
 .closing .salam{font:italic 300 17px/1.6 var(--serif);color:var(--ink)}
 .closing .names{margin-top:26px;font-size:clamp(44px,12vw,58px);line-height:1.05}
 .fam{margin-top:20px;font-size:13px;line-height:1.8;color:var(--ink-2)}
-footer{padding:26px 24px max(92px,calc(env(safe-area-inset-bottom) + 76px));border-top:1px solid #f6ecdf1f;background:var(--grain),var(--bata);color:var(--ink-2);font-size:12.5px;line-height:1.7;text-align:center}
+footer{padding:26px 24px max(92px,calc(env(safe-area-inset-bottom) + 76px));border-top:1px solid #f6ecdf1f;background:var(--grain),var(--bata);color:var(--ink-2);font-size:12px;line-height:1.7;text-align:center}
 footer a{color:var(--ink)}
 
 /* ---------- musik, toast, lightbox ---------- */
@@ -492,7 +494,7 @@ footer a{color:var(--ink)}
 
     <!-- Acara -->
     <section class="events sec tera" aria-labelledby="h-events">
-      <div class="kicker rv">Save the Date</div>
+      <div class="kicker rv">Simpan Tanggalnya</div>
       <h2 class="title rv" id="h-events" style="--d:.1s">Hari <em>Bahagia</em></h2>
       <div class="cd rv" style="--d:.2s" id="countdown"><div><b>00</b><small>Hari</small></div><div><b>00</b><small>Jam</small></div><div><b>00</b><small>Menit</small></div><div><b>00</b><small>Detik</small></div></div>
 
@@ -532,12 +534,12 @@ footer a{color:var(--ink)}
 
     <!-- Konfirmasi -->
     <section class="rsvp sec tera" id="rsvp" aria-labelledby="h-rsvp">
-      <div class="kicker rv">RSVP</div>
+      <div class="kicker rv">Kabari Kami</div>
       <h2 class="title rv" id="h-rsvp" style="--d:.1s">Konfirmasi <em>Kehadiran</em></h2>
       <p class="lead rv" style="--d:.2s">Mohon konfirmasi kehadiran Anda paling lambat 5 Desember 2026.</p>
       <div class="reply frame rv">
         <form class="form" id="rsvpForm" novalidate>
-          <div class="f"><label for="rName">Nama</label><input id="rName" name="name" maxlength="80" autocomplete="name" placeholder="Nama Anda"></div>
+          <div class="f"><label for="rName">Nama</label><input id="rName" name="name" maxlength="80" autocomplete="name" placeholder="Nama Anda"><p class="err" id="rErr" role="alert" hidden></p></div>
           <div class="f"><span class="lab" id="rAttL">Kehadiran</span><div class="chips" role="radiogroup" aria-labelledby="rAttL">
             <label><input type="radio" name="att" value="Hadir" checked><span>Hadir</span></label>
             <label><input type="radio" name="att" value="Tidak hadir"><span>Tidak hadir</span></label>
@@ -548,7 +550,7 @@ footer a{color:var(--ink)}
           <button class="btn btn-tera" type="submit">Kirim Konfirmasi</button>
           <p class="note">Preview: data tersimpan di perangkat ini saja.</p>
         </form>
-        <div class="thanks" id="rsvpThanks" role="status" hidden><h3>Terima kasih</h3><p id="rsvpMsg"></p><button class="btn btn-brown sm" type="button" id="rsvpEdit">Ubah Jawaban</button></div>
+        <div class="thanks" id="rsvpThanks" role="status" hidden><h3>Terima Kasih</h3><p id="rsvpMsg"></p><button class="btn btn-brown sm" type="button" id="rsvpEdit">Ubah Jawaban</button></div>
       </div>
     </section>
 
@@ -560,7 +562,7 @@ footer a{color:var(--ink)}
         <div class="f"><label for="wName">Nama</label><input id="wName" maxlength="80" autocomplete="name" placeholder="Nama Anda"></div>
         <div class="f"><label for="wMsg">Ucapan</label><textarea id="wMsg" maxlength="500" placeholder="Tulis doa dan ucapan"></textarea><p class="err" id="wErr" role="alert" hidden></p></div>
         <button class="btn btn-tera" type="submit">Kirim Ucapan</button>
-        <p class="note">Preview: ucapan tersimpan di perangkat ini saja.</p>
+        <p class="note">Preview: data tersimpan di perangkat ini saja.</p>
       </form>
       <div class="kicker count" id="wCount"></div>
       <div class="wlist" id="wList"></div>
@@ -577,6 +579,13 @@ footer a{color:var(--ink)}
         <div class="no">1234 5678 90</div>
         <div class="an">a.n. Larasati Pramesti</div>
         <button class="btn btn-line sm" type="button" data-copy="1234567890"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="1.5"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>Salin Nomor</button>
+      </div>
+      <div class="bank bank-2 rv">
+        <svg class="wm" aria-hidden="true" focusable="false"><use href="#tr"/></svg>
+        <div class="bn">Dompet Digital</div>
+        <div class="no">0812 3456 7890</div>
+        <div class="an">a.n. Bima Arya Nugraha</div>
+        <button class="btn btn-line sm" type="button" data-copy="081234567890"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="1.5"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>Salin Nomor</button>
       </div>
       <div class="giftaddr frame rv">
         <h3>Kirim Kado</h3>
@@ -613,7 +622,7 @@ footer a{color:var(--ink)}
   <button class="next" type="button" aria-label="Berikutnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
   <div class="bar"></div>
 </div>
-<div class="toast" id="toast" role="status"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 const root = document.documentElement;
@@ -1016,10 +1025,17 @@ function showRsvp(r) {
   if (r) $("#rsvpMsg").textContent = r.att === "Hadir" ? `${r.name}, kami menantikan kehadiran Anda (${r.pax} orang).` : r.att === "Tidak hadir" ? `${r.name}, terima kasih atas kabarnya. Doa Anda sangat berarti bagi kami.` : `${r.name}, semoga Anda dapat hadir. Kabari kami bila sudah pasti, ya.`;
 }
 showRsvp(store.get("tt-rsvp", null));
+// "Jumlah tamu" hanya relevan bila hadir / masih ragu.
+const paxField = $("#rPax").closest(".f");
+const syncPax = () => { paxField.hidden = rsvpForm.att.value === "Tidak hadir"; };
+rsvpForm.addEventListener("change", syncPax);
+syncPax();
 rsvpForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const name = $("#rName").value.trim();
-  if (!name) { $("#rName").focus(); toast("Mohon isi nama Anda"); return; }
+  const rErr = $("#rErr");
+  rErr.hidden = !!name;
+  if (!name) { rErr.textContent = "Nama wajib diisi."; $("#rName").focus(); return; }
   const r = { name, att: rsvpForm.att.value, pax: $("#rPax").value, phone: $("#rPhone").value.trim() };
   store.set("tt-rsvp", r);
   showRsvp(r);
