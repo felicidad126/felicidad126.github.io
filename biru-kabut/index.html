@@ -844,7 +844,8 @@ function tick() {
     text: `Pernikahan ${EVENT.bride.name} & ${EVENT.groom.name}`,
     dates: `${z(evs[0].startsAt)}/${z(evs[evs.length - 1].endsAt)}`,
     details: `Akad ${fmt(EVENT.events.akad.startsAt)} WITA di ${EVENT.events.akad.venue}. Resepsi ${fmt(EVENT.events.resepsi.startsAt)} WITA di ${EVENT.events.resepsi.venue}. ${location.href.split("?")[0]}`,
-    location: evs[evs.length - 1].address,
+    // Lokasi = tempat acara pertama (akad), karena entri kalender dimulai dari sana.
+    location: `${evs[0].venue}, ${evs[0].address}`,
   });
   $("#calBtn").href = `https://calendar.google.com/calendar/render?${q}`;
 })();

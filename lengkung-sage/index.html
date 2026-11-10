@@ -280,7 +280,8 @@ function calendarUrl() {
     text: `Pernikahan ${EVENT.bride.name} & ${EVENT.groom.name}`,
     dates: `${z(first.startsAt)}/${z(last.endsAt ?? last.startsAt)}`,
     details: `${Object.entries(EVENT.events).map(([k, ev]) => `${k[0].toUpperCase()}${k.slice(1)} ${fmtTime(ev.startsAt, ev.timezone)} ${TZ_ABBR[ev.timezone] ?? ""} di ${ev.venue}.`).join(" ")} ${location.href.split("?")[0]}`,
-    location: last.address,
+    // Lokasi = tempat acara pertama (akad), karena entri kalender dimulai dari sana.
+    location: `${first.venue}, ${first.address}`,
   });
   return `https://calendar.google.com/calendar/render?${q}`;
 }

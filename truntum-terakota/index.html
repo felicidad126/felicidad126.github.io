@@ -707,7 +707,8 @@ for (const card of $$("[data-event]")) {
     text: `Pernikahan ${EVENT.bride.name} & ${EVENT.groom.name}`,
     dates: `${z(a.startsAt)}/${z(r.endsAt)}`,
     details: `Akad ${hm(a.startsAt, a.timezone)} ${TZ_ABBR[a.timezone]} di ${a.venue}. Resepsi ${hm(r.startsAt, r.timezone)} ${TZ_ABBR[r.timezone]} di ${r.venue}. ${location.href.split("?")[0]}`,
-    location: r.address,
+    // Lokasi = tempat acara pertama (akad), karena entri kalender dimulai dari sana.
+    location: `${a.venue}, ${a.address}`,
   });
   $("#calBtn").href = `https://calendar.google.com/calendar/render?${q}`;
 }

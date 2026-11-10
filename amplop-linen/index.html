@@ -875,7 +875,8 @@ $("#dateLine").textContent = fmtDate(EVENT.events.akad);
     text: `Pernikahan ${EVENT.bride.name} & ${EVENT.groom.name}`,
     dates: `${z(first.startsAt)}/${z(last.endsAt ?? last.startsAt)}`,
     details: `Akad ${fmtTime(EVENT.events.akad.startsAt, "Asia/Makassar")} WITA di ${EVENT.events.akad.venue}. Resepsi ${fmtTime(EVENT.events.resepsi.startsAt, "Asia/Makassar")} WITA di ${EVENT.events.resepsi.venue}. ${location.href.split("?")[0]}`,
-    location: last.address,
+    // Lokasi = tempat acara pertama (akad), karena entri kalender dimulai dari sana.
+    location: `${first.venue}, ${first.address}`,
   });
 }
 function tick() {
