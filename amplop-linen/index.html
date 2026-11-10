@@ -345,7 +345,8 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
 .err{margin:0;font:italic 15px/1.4 var(--f-serif);color:#8a3b2a}
 .form .btn{align-self:flex-start}
 .replied{margin-top:16px}
-.replied p{margin:0 0 10px;font:17px/1.5 var(--f-serif)}
+/* .note dikecualikan supaya keterangan "Preview" di sini tampil sama dengan yang di bawah formulir. */
+.replied p:where(:not(.note)){margin:0 0 10px;font:17px/1.5 var(--f-serif)}
 .replied .thanks{font:400 34px/1.1 var(--f-script)}
 
 /* 6 · Ucapan: kartu label hadiah dengan lubang, pita, dan charm; berisi formulir saja (daftar ucapan di kartu 7) */
@@ -414,6 +415,8 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
   -webkit-mask:linear-gradient(90deg,#0000,#000 var(--fl,0px),#000 calc(100% - var(--fr,0px)),#0000);mask:linear-gradient(90deg,#0000,#000 var(--fl,0px),#000 calc(100% - var(--fr,0px)),#0000)}
 .tabs::-webkit-scrollbar{display:none}
 .tab{flex:none;border:0;background:none;padding:6px 9px;min-height:32px;font:11px/1 var(--f-cap);letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2);cursor:pointer;position:relative;white-space:nowrap}
+/* Cincin fokus digambar di dalam tab: deretan tab menggulir (overflow), cincin di luar tab terpotong atas-bawah. */
+.tab:focus-visible{outline-offset:-2px}
 .tab[aria-selected="true"]{color:var(--ink)}
 .tab[aria-selected="true"]::after{content:"";position:absolute;left:9px;right:9px;bottom:2px;height:1px;background:var(--ink)}
 
@@ -640,7 +643,7 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
       <article class="card c-details" id="k-2" role="tabpanel" aria-labelledby="t-2">
         <div class="paper"><div class="scroll"><div class="in">
           <p class="kicker">Simpan tanggalnya</p>
-          <h2 class="title">Rangkaian <em>Acara</em></h2>
+          <h2 class="title">Rangkaian <em>acara</em></h2>
           <p class="date-line" id="dateLine"></p>
           <div class="cd" id="cd" role="timer" aria-label="Hitung mundur menuju akad nikah"><div><b>00</b><small>Hari</small></div><div><b>00</b><small>Jam</small></div><div><b>00</b><small>Menit</small></div><div><b>00</b><small>Detik</small></div></div>
           <div class="ev" id="ev-akad"></div>
@@ -1248,7 +1251,9 @@ $$(".print").forEach((b, i) => {
   $("#lbPrev").addEventListener("click", () => show(at - 1));
   $("#lbNext").addEventListener("click", () => show(at + 1));
   lb.addEventListener("click", (e) => { if (e.target === lb || e.target.tagName === "FIGURE") close(); });
-  lb.addEventListener("keydown", (e) => {
+  // Di document, bukan di lightbox: setelah foto diketuk fokus pindah ke body, dan Escape/panah harus tetap berfungsi.
+  document.addEventListener("keydown", (e) => {
+    if (lb.hidden) return;
     if (e.key === "Escape") close();
     else if (e.key === "ArrowLeft") show(at - 1);
     else if (e.key === "ArrowRight") show(at + 1);
@@ -1303,7 +1308,7 @@ function showReply(r) {
   done.hidden = !r;
   $("#stampbox").classList.toggle("done", !!r);
   if (!r) return;
-  const what = r.hadir === "Hadir" ? `akan hadir bersama ${r.jumlah} orang` : r.hadir === "Tidak hadir" ? "berhalangan hadir" : "belum dapat memastikan kehadiran";
+  const what = r.hadir === "Hadir" ? `akan hadir, ${r.jumlah} orang` : r.hadir === "Tidak hadir" ? "berhalangan hadir" : "belum dapat memastikan kehadiran";
   $("#repliedMsg").textContent = `${r.nama}, balasan Anda (${what}) sudah kami terima pada ${stampDate(r.waktu)}.`;
 }
 {
