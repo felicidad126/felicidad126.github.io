@@ -195,7 +195,7 @@ html.calm .rv{opacity:0;transition:opacity .7s ease}
 .g-names .amp{font:italic 400 .62em/1 var(--f-d);color:var(--coral);margin:0 .06em;position:relative;top:-.05em}
 .g-date{font:400 clamp(16px,2.4svh,20px)/1.3 var(--f-d);color:var(--ink)}
 .g-date span{white-space:nowrap}
-.g-date .city{display:block;font:600 12px/1.6 var(--f-t);letter-spacing:.22em;text-transform:uppercase;color:var(--ink-2)}
+.g-date .city{display:block;font:600 12px/1.6 var(--f-t);letter-spacing:.24em;text-transform:uppercase;color:var(--ink-2)}
 .g-date .sep{display:none}
 .g-photo{position:relative;flex:1 1 auto;min-height:118px;width:min(100%,400px);display:flex}
 .frame{position:relative;flex:1;padding:var(--fp,20px);border-radius:16px;background:var(--tile) 0 0/calc(var(--fp,20px) * 2) calc(var(--fp,20px) * 2),var(--wash);box-shadow:0 22px 40px -22px rgba(22,40,90,.55)}
@@ -255,7 +255,7 @@ html.motion .g-guest{animation-delay:1.05s!important}
 html.motion .plate .rim{transform:rotate(-140deg) scale(.86);opacity:0;transition:transform 1.8s cubic-bezier(.2,.9,.24,1.06),opacity .7s ease}
 html.motion .plate img{transform:scale(1.14);opacity:0;transition:transform 1.4s var(--ease) .35s,opacity .8s ease .35s}
 html.motion .plate.in .rim,html.motion .plate.in img{transform:none;opacity:1}
-.role{font:600 12px/1.3 var(--f-t);letter-spacing:.26em;text-transform:uppercase;color:var(--cob)}
+.role{font:600 12px/1.3 var(--f-t);letter-spacing:.24em;text-transform:uppercase;color:var(--cob)}
 .nick{font:400 clamp(46px,10vw,64px)/1 var(--f-s);color:var(--cob);margin-top:2px}
 .person h3{font:400 clamp(24px,4.4vw,30px)/1.2 var(--f-d)}
 .par{color:var(--ink-2);font-size:15px}
@@ -378,7 +378,7 @@ select.inp{appearance:none;background:#fbfaf6 url("data:image/svg+xml,%3Csvg xml
 .wish-wrap{display:grid;gap:clamp(28px,5vw,50px);align-items:start}
 .wish-form{background:var(--paper);border-radius:20px;box-shadow:inset 0 0 0 1px var(--line)}
 .wlist{display:grid;gap:14px}
-.wcount{font:600 12px/1.3 var(--f-t);letter-spacing:.22em;text-transform:uppercase;color:var(--cob)}
+.wcount{font:600 12px/1.3 var(--f-t);letter-spacing:.24em;text-transform:uppercase;color:var(--cob)}
 .wcount b{font:400 30px/1 var(--f-d);letter-spacing:0;margin-right:6px;display:inline-grid}
 .wcount b span{grid-area:1/1}
 #wList{list-style:none;margin:0;padding:0;display:grid;gap:14px}
@@ -447,6 +447,7 @@ html.lb-open{overflow:hidden}
 .lb-cap small{opacity:.8;font-size:12px;letter-spacing:.14em}
 .lb button{position:absolute;width:46px;height:46px;border-radius:50%;border:0;background:rgba(255,255,255,.16);color:#fff;display:grid;place-items:center;cursor:pointer}
 .lb button:hover{background:rgba(255,255,255,.28)}
+.lb :focus-visible{outline-color:#fff}
 .lb button svg{width:22px;height:22px}
 #lbX{top:12px;right:12px}
 #lbPrev{left:12px;top:50%;margin-top:-23px}
@@ -595,7 +596,7 @@ html.lb-open{overflow:hidden}
       <article class="menu rv" aria-label="Kartu menu acara">
         <div class="menu-top" aria-hidden="true"></div>
         <div class="menu-body">
-          <p class="menu-kick">Sabtu · 12 Desember 2026</p>
+          <p class="menu-kick">Sabtu, 12 Desember 2026</p>
           <p class="menu-name" aria-hidden="true">il Menu</p>
           <div class="course">
             <p class="c-no">Primo · pagi</p>
@@ -684,7 +685,7 @@ html.lb-open{overflow:hidden}
         <div class="wlist rv" style="--d:.12">
           <p class="wcount"><b id="wCount"></b>ucapan masuk</p>
           <ul id="wList" aria-live="polite"></ul>
-          <button class="btn btn-line sm" type="button" id="wMore" hidden>Tampilkan lebih banyak</button>
+          <button class="btn btn-line sm" type="button" id="wMore" hidden>Tampilkan Lebih Banyak</button>
         </div>
       </div>
     </div>
@@ -708,7 +709,7 @@ html.lb-open{overflow:hidden}
       <div class="lemon" data-lemon="divider" aria-hidden="true"></div>
       <p class="rv">Merupakan suatu kebahagiaan dan kehormatan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu.</p>
       <p class="wass rv" style="--d:.1">Wassalamu'alaikum Warahmatullahi Wabarakatuh</p>
-      <p class="kick rv" style="--d:.15">Kami yang berbahagia</p>
+      <p class="kick rv" style="--d:.15">Kami yang Berbahagia</p>
       <h2 class="cl-names rv" id="h-close" style="--d:.2">Laras <span class="amp">&amp;</span> Bima</h2>
       <p class="fam rv" style="--d:.28">Keluarga Bapak Wiryo Hadi &amp; Ibu Sekar Arum<br>Keluarga Bapak Arif Hidayat &amp; Ibu Siti Aminah</p>
     </div>
@@ -1001,15 +1002,17 @@ lb.addEventListener("keydown", (e) => {
   if (e.key === "ArrowRight") show(cur + 1, 1);
 });
 // Geser kiri/kanan untuk pindah foto.
-let sx = null;
-lb.addEventListener("pointerdown", (e) => { sx = e.clientX; });
+let sx = null, swiped = false;
+lb.addEventListener("pointerdown", (e) => { sx = e.clientX; swiped = false; });
 lb.addEventListener("pointercancel", () => { sx = null; });
 lb.addEventListener("pointerup", (e) => {
   if (sx === null) return;
   const dx = e.clientX - sx;
   sx = null;
-  if (Math.abs(dx) > 50) show(cur + (dx < 0 ? 1 : -1), dx < 0 ? 1 : -1);
+  if (Math.abs(dx) > 50) { swiped = true; show(cur + (dx < 0 ? 1 : -1), dx < 0 ? 1 : -1); }
 });
+// Ketuk di luar foto (latar gelap) menutup; geseran tidak dihitung sebagai ketukan.
+lb.addEventListener("click", (e) => { if ((e.target === lb || e.target.classList.contains("lb-in")) && !swiped) lb.close(); swiped = false; });
 
 /* ---------- Salin & toast ---------- */
 let toastT;

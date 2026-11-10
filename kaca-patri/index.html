@@ -421,8 +421,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .chips span{display:flex;align-items:center;justify-content:center;min-height:46px;border:1px solid rgba(90,58,34,.4);border-radius:999px;font:500 var(--fs-meta)/1 var(--f-t);letter-spacing:.14em;color:var(--ink);transition:background .3s,color .3s}
 .chips input:checked + span{background:var(--green);color:var(--ivory);border-color:var(--green)}
 .chips input:focus-visible + span{outline:2px solid var(--berry);outline-offset:2px}
-#fCount.off{opacity:.45}
-.err{color:#8e1f3f;font-size:var(--fs-small)}
+.err{color:var(--berry);font-size:var(--fs-small)}
 .note{font-size:var(--fs-meta);color:var(--ink-2);text-align:center}
 .done{text-align:center;align-items:center}
 .done h3{font-size:var(--fs-serif-l);font-style:italic;color:var(--teal)}
@@ -683,16 +682,17 @@ html.lb-open{overflow:hidden}
               <label><input type="radio" name="att" value="Tidak hadir"><span>Berhalangan</span></label>
             </div>
           </fieldset>
-          <label id="fCount">Jumlah tamu<select id="rCount" name="count"><option value="1">1 orang</option><option value="2">2 orang</option><option value="3">3 orang</option><option value="4">4 orang</option><option value="5">5 orang</option></select></label>
+          <label id="fCount">Jumlah Tamu<select id="rCount" name="count"><option value="1">1 orang</option><option value="2">2 orang</option><option value="3">3 orang</option><option value="4">4 orang</option><option value="5">5 orang</option></select></label>
           <p class="err" id="rsvpErr" role="alert" hidden></p>
           <button class="btn" type="submit">Kirim Konfirmasi</button>
           <p class="note">Preview: data tersimpan di perangkat ini saja.</p>
         </form>
         <div class="done" id="rsvpDone" tabindex="-1" hidden>
           <div class="fan-mini draw" data-fan="61"></div>
-          <h3>Terima kasih</h3>
+          <h3>Terima Kasih</h3>
           <p id="rsvpMsg" role="status"></p>
-          <button class="btn line sm" type="button" id="rsvpEdit">Ubah jawaban</button>
+          <button class="btn line sm" type="button" id="rsvpEdit">Ubah Jawaban</button>
+          <p class="note">Preview: data tersimpan di perangkat ini saja.</p>
         </div>
       </div>
     </div>
@@ -715,7 +715,7 @@ html.lb-open{overflow:hidden}
         <div class="rv" style="--rd:.12s;display:flex;flex-direction:column">
           <p class="wcount"><b id="wCount"></b> ucapan masuk</p>
           <ul class="wl" id="wList" aria-live="polite"></ul>
-          <button class="btn line sm" type="button" id="wMore" hidden>Tampilkan lebih banyak</button>
+          <button class="btn line sm" type="button" id="wMore" hidden>Tampilkan Lebih Banyak</button>
         </div>
       </div>
     </div>
@@ -744,7 +744,7 @@ html.lb-open{overflow:hidden}
       </div>
       <p class="rv">Merupakan suatu kebahagiaan dan kehormatan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu.</p>
       <p class="wass rv" style="--rd:.1s">Wassalamu'alaikum Warahmatullahi Wabarakatuh</p>
-      <p class="kick rv" style="--rd:.15s">Kami yang berbahagia</p>
+      <p class="kick rv" style="--rd:.15s">Kami yang Berbahagia</p>
       <h2 id="h-close" class="sign rv" style="--rd:.2s">Laras <span class="amp">&amp;</span> Bima</h2>
       <p class="fam rv" style="--rd:.25s">Keluarga <span class="nw">Bapak Wiryo Hadi</span> &amp; <span class="nw">Ibu Sekar Arum</span><br>Keluarga <span class="nw">Bapak Arif Hidayat</span> &amp; <span class="nw">Ibu Siti Aminah</span></p>
     </div>
@@ -1017,7 +1017,7 @@ $$("[data-copy]").forEach((b) => b.addEventListener("click", async () => {
 const rsvpForm = $("#rsvpForm"), rsvpDone = $("#rsvpDone");
 const syncCount = () => {
   const no = rsvpForm.att.value === "Tidak hadir";
-  $("#fCount").classList.toggle("off", no);
+  $("#fCount").hidden = no;
   $("#rCount").disabled = no;
 };
 rsvpForm.addEventListener("change", syncCount);

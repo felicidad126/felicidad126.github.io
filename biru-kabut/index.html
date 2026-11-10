@@ -297,7 +297,6 @@ fieldset.f{border:0;margin:0;padding:0;min-width:0}
 .f select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234f5b68' stroke-width='1.6'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:18px;padding-right:44px}
 .f input::placeholder,.f textarea::placeholder{color:#6b7683}
 .f input:focus,.f select:focus,.f textarea:focus{outline:none;border-color:var(--deep);background-color:#fff;box-shadow:0 0 0 3px rgba(77,106,135,.2)}
-.f.off{opacity:.45}
 .pills{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .pills label{position:relative;display:block;margin:0;padding:0;letter-spacing:normal;text-transform:none}
 .pills input{position:absolute;inset:0;width:100%;height:100%;opacity:0;margin:0;cursor:pointer}
@@ -406,7 +405,7 @@ html.lb-open{overflow:hidden}
       <span class="sprig" data-sprig="divider" aria-hidden="true"></span>
       <p class="kick g-kick">Undangan Pernikahan</p>
       <h1 class="g-names" aria-label="Laras dan Bima"><span>Laras</span><span class="amp">&amp;</span><span>Bima</span></h1>
-      <p class="g-date">Sabtu · 12 Desember 2026</p>
+      <p class="g-date">Sabtu, 12 Desember 2026</p>
     </div>
     <div class="g-card glass">
       <p class="g-to">Kepada Yth. Bapak/Ibu/Saudara/i</p>
@@ -916,7 +915,7 @@ $$("[data-copy]").forEach((b) => b.addEventListener("click", async () => {
 const rsvpForm = $("#rsvpForm"), rsvpDone = $("#rsvpDone");
 const syncCount = () => {
   const no = rsvpForm.att.value === "Tidak hadir";
-  $("#fCount").classList.toggle("off", no);
+  $("#fCount").hidden = no;
   $("#rCount").disabled = no;
 };
 rsvpForm.addEventListener("change", syncCount);
