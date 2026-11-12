@@ -2,6 +2,7 @@
 
 Halaman utama ([`index.html`](index.html)) adalah katalog untuk calon pengantin: 10 tema dalam bingkai HP, kolom "Coba dengan nama Anda" yang mengubah semua tautan demo menjadi `?to=<nama>`, tombol "Lihat demo" dan "Pesan tema ini" (WhatsApp dengan pesan terisi), daftar fitur, cara pesan, dan tanya jawab.
 
+- Rencana usaha (nama, harga, paket, portal, server): [`RENCANA-MENGUNDANG.md`](RENCANA-MENGUNDANG.md).
 - Lihat: https://invitation.helonoia.net/ (Cloudflare Pages, domain sendiri; juga tetap ada di https://felicidad126.github.io/)
 - Gambar pratinjau tautan (`og:image`) di katalog dan semua tema memakai `https://invitation.helonoia.net/`. Bila domain berganti, ganti alamat itu di setiap `index.html`.
 - Data usaha diisi di objek `TOKO` pada skrip di bagian bawah `index.html`: nama usaha, nomor WhatsApp, harga mulai, jumlah revisi, masa aktif tautan, waktu pengerjaan, cara kirim daftar tamu, batas tamu, pembayaran, Instagram, TikTok, kota, dan jam layanan. Bagian yang masih kosong tidak ditampilkan (bagian Harga, harga di pembuka, pertanyaan tambahan di tanya jawab, kontak di kaki halaman).
