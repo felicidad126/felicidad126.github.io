@@ -668,7 +668,8 @@ function shortName(raw, max = 60) {
   return cut.replace(/[\s.,;:!?&\/\-–—]+$/, "") + "…";
 }
 const guest = shortName(params.get("to") || "");
-if (guest) { $("#guest").textContent = guest; $("#rName").value = guest; $("#wName").value = guest; }
+const guestFull = [...(params.get("to") || "").trim()].slice(0, 80).join("");
+if (guest) { $("#guest").textContent = guest; $("#rName").value = guestFull; $("#wName").value = guestFull; }
 
 /* ---------- ornamen truntum ---------- */
 const use = (id, cls = "") => `<svg${cls ? ` class="${cls}"` : ""} aria-hidden="true" focusable="false"><use href="#${id}"/></svg>`;

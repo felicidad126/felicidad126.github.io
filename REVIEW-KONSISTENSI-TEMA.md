@@ -1,17 +1,19 @@
 # Review Konsistensi 10 Tema
 
-Hasil review 10 November 2026. Setiap tema direview satu per satu untuk dua hal:
+Hasil review 10 November 2026, diperbarui 12 November 2026 setelah catatan terbuka dikerjakan (putaran kedua). Setiap tema direview satu per satu untuk dua hal:
 
 - **Konsisten di dalam tema:** tipografi, kapitalisasi teks, bahasa, format tanggal, warna, komponen berulang, dan perilaku.
 - **Konsisten antartema:** data contoh, metadata, parameter URL, dan fitur yang dijanjikan katalog di bagian "Di setiap desain".
 
-Perbaikan yang jelas dan berisiko rendah langsung diterapkan di branch `claude/amazing-allen-7377vi`. Yang berupa keputusan desain dicatat di bawah tiap tema dan belum diubah.
+Perbaikan yang jelas dan berisiko rendah langsung diterapkan di branch `claude/amazing-allen-7377vi`. Pada putaran kedua, catatan terbuka yang punya perbaikan jelas dikerjakan. Yang tersisa di "Catatan terbuka" adalah keputusan isi, hal yang tampak disengaja, dan temuan baru.
 
 ## Cara uji
 
 - Chromium (Playwright) di 360×640, 390×844, dan 1440×900, dengan dan tanpa setelan kurangi-animasi.
 - Per tema: buka sampul, `?to=`, `?open`, `?motion=full`, hitung mundur, tautan kalender dan peta, RSVP, ucapan, tombol salin, lightbox, tombol musik, dan error konsol.
 - Setelah semua perbaikan, setiap tema dimuat ulang di ketiga ukuran (sampul tertutup dan `?open&to=`) untuk memastikan tidak ada error konsol dan tidak ada scroll horizontal.
+
+Putaran kedua diuji dengan cara yang sama, per tema, dengan pembanding versi sebelum perubahan. Setelah semuanya selesai, kesepuluh tema dimuat ulang di ketiga ukuran (sampul tertutup, `?open&to=` nama pendek, dan nama 89 karakter): tidak ada error konsol dan tidak ada scroll horizontal.
 
 **Belum diuji di semua tema:** Safari dan iPhone asli, Firefox, bunyi musik (hanya status tombolnya), geser dengan jari di lightbox, sensor kemiringan HP, pembaca layar, dan sebagian besar tata letak HP mendatar.
 
@@ -21,16 +23,16 @@ Perbaikan yang jelas dan berisiko rendah langsung diterapkan di branch `claude/a
 
 | No | Tema | Diperbaiki | Catatan terbuka |
 |---|---|---|---|
-| 1 | Lengkung Sage | 11 | 8 |
-| 2 | Parallax & Sway | 12 | 8 |
-| 3 | Garis Editorial | 12 | 6 |
-| 4 | Truntum Terakota | 11 | 7 |
-| 5 | Edisi Monokrom | 6 | 7 |
-| 6 | Amplop Linen | 6 | 9 |
-| 7 | Biru Kabut | 4 | 5 |
-| 8 | Riviera Kobalt | 9 | 7 |
-| 9 | Kaca Patri | 10 | 7 |
-| 10 | Kelopak Mimpi | 6 | 7 |
+| 1 | Lengkung Sage | 21 | 1 |
+| 2 | Parallax & Sway | 20 | 2 |
+| 3 | Garis Editorial | 20 | 0 |
+| 4 | Truntum Terakota | 17 | 3 |
+| 5 | Edisi Monokrom | 14 | 1 |
+| 6 | Amplop Linen | 16 | 2 |
+| 7 | Biru Kabut | 9 | 2 |
+| 8 | Riviera Kobalt | 18 | 0 |
+| 9 | Kaca Patri | 16 | 2 |
+| 10 | Kelopak Mimpi | 16 | 0 |
 
 ---
 
@@ -54,6 +56,9 @@ Mayoritas tema sudah memakai standar ini sebelum review. Tabel berikut mencatat 
 | Pesan galat RSVP | Hilang begitu isian diperbaiki | Biru Kabut, Riviera Kobalt, Kaca Patri, Kelopak Mimpi, Edisi Monokrom (tertinggal sampai dikirim ulang) | Diperbaiki |
 | `[hidden]{display:none!important}` | Ada bila atribut `hidden` dipakai | Lengkung Sage, Parallax & Sway, Truntum Terakota | Ditambahkan |
 | Lightbox tertutup dengan Escape | Ya | Amplop Linen (mati setelah foto diketuk) | Diperbaiki; tema lain lulus uji |
+| Nama tamu `?to=` yang panjang | Dipotong di batas kata, maksimal 60 karakter termasuk "…" | 10 tema (dipotong mentah di 60 karakter, kadang di tengah kata) | Sama di 10 tema |
+| Isian nama di form dari `?to=` | Nama utuh tanpa "…" (sebatas panjang maksimal isian) | 8 tema (memakai nama yang sudah dipotong) | Sama di 10 tema |
+| Tombol musik saat musik belum siap | Keadaan "memuat" | 10 tema (tanpa umpan balik; jeda 2 sampai 10 detik di mesin uji) | Sama di 10 tema |
 
 ### Perbedaan antartema yang dibiarkan
 
@@ -66,11 +71,10 @@ Ini perbedaan isi atau konsep, bukan kesalahan. Dicatat supaya bisa diputuskan s
 5. **Batas RSVP** tidak disebut di Lengkung Sage dan Amplop Linen.
 6. **Instagram** tidak ditampilkan di Lengkung Sage dan Garis Editorial. Di Parallax & Sway tautannya belum mengarah ke mana pun.
 7. **Form ucapan.** Garis Editorial tidak punya form ucapan sendiri; doa ditulis di kartu balasan.
-8. **Waktu ucapan.** Sebagian besar tema menulis waktu relatif ("2 jam yang lalu"); Amplop Linen menulis tanggal untuk ucapan tamu dan status hadir untuk ucapan contoh.
-9. **Nama tamu panjang.** `?to=` dipotong di 60 karakter tanpa tanda, kadang di tengah kata (terlihat di Biru Kabut, Kaca Patri, Kelopak Mimpi). Usul: potong di batas kata dan beri "…".
-10. **Kalender.** Semua tema membuat satu entri 09.00–21.30 WITA yang mencakup akad dan resepsi. Alternatifnya dua tombol, satu per acara.
-11. **`<h1>` setelah sampul dibuka.** Di Parallax & Sway, Riviera Kobalt, dan Amplop Linen, `<h1>` hanya ada di sampul, sehingga halaman tanpa `<h1>` setelah sampul hilang.
-12. **Catatan kaki.** Lima tema menulis nama tema, data contoh, dan font. Lengkung Sage hanya menulis soal foto AI; Garis Editorial, Parallax & Sway, Truntum Terakota, dan Amplop Linen tidak menyebut font.
+8. **Waktu ucapan.** Sebagian besar tema menulis waktu relatif ("2 jam yang lalu"); Amplop Linen menulis tanggal.
+9. **Kalender.** Semua tema membuat satu entri 09.00–21.30 WITA yang mencakup akad dan resepsi. Alternatifnya dua tombol, satu per acara.
+10. **`<h1>` setelah sampul dibuka.** Di Parallax & Sway dan Amplop Linen, `<h1>` hanya ada di sampul, sehingga halaman tanpa `<h1>` setelah sampul hilang.
+11. **Catatan kaki.** Enam tema menulis nama tema, data contoh, dan font. Garis Editorial, Parallax & Sway, Truntum Terakota, dan Amplop Linen tidak menyebut font.
 
 ---
 
@@ -92,16 +96,22 @@ Font: Great Vibes, Lora, Inter (di-embed). Tombol dan judul Title Case; label fo
 10. Outline fokus keyboard tombol sampul, tombol musik, dan tombol lightbox disamakan dengan tombol lain. Belum dilihat di layar.
 11. Data Instagram Laras dilengkapi (tidak ditampilkan) dan komentar kode yang usang dibetulkan.
 
+**Diperbaiki pada putaran kedua (12 November 2026)**
+
+1. Daftar ucapan tidak lagi berada di kotak scroll: daftar memanjang, tampil lima-lima dengan tombol "Tampilkan lebih banyak", dan form tidak ikut tergulir setelah mengirim.
+2. Ukuran Inter di desktop turun dari sepuluh tingkat menjadi lima (11,8 sampai 16 px). Ukuran di HP tidak berubah.
+3. Warna kembar disatukan (`#6f6b60` ke `#6c685e`, `#5f6f55` ke `#5d6c53`), warna solid dijadikan token, dan radius kartu disamakan ke 18.
+4. Tombol diberi gaya hover. Hanya diukur, belum dilihat di layar.
+5. Eyebrow "RSVP" menjadi "KABARI KAMI" dan "— KAMI BERDUA —" menjadi "KAMI BERDUA". "Kabari Kami" adalah pilihan saat review; ganti bila ada istilah yang lebih disukai.
+6. Nama lengkap mempelai tampil di bawah nama panggilan.
+7. Catatan kaki menyebut nama tema, data contoh, dan font, seperti tema lain.
+8. Foto diberi `alt` ("Foto Laras & Bima", "Foto: Awal cerita", dan seterusnya), termasuk di lightbox.
+9. Nama tamu dari `?to=` yang lebih dari 60 karakter dipotong di batas kata dan diberi "…"; isian nama di form memakai nama utuh.
+10. Tombol musik menampilkan keadaan "memuat" (`aria-busy` dan isyarat visual) sampai musik siap. Di mesin uji musik baru siap sekitar 4 detik setelah halaman dimuat.
+
 **Catatan terbuka**
 
-1. Daftar ucapan berada di kotak scroll di dalam halaman. Di 360 dan 390 ucapan terpotong di tengah kartu, dan setelah mengirim, form ikut tergulir sehingga kolom Nama tersembunyi. Usul: biarkan daftar memanjang, atau tombol "Tampilkan lebih banyak" seperti tema lain.
-2. Di desktop ada banyak ukuran huruf yang berdekatan (Inter 11 sampai 16 px dalam sembilan tingkat), karena ukuran per elemen dikalikan skala kanvas.
-3. Warna yang nyaris kembar di luar variabel tema: `#6c685e` dan `#6f6b60`, `#5d6c53` dan `#5f6f55`, `#c9b288` dan `#c2a878`. Radius kartu 18 dan 20.
-4. Tombol tidak punya gaya hover.
-5. Eyebrow "RSVP" satu-satunya yang berbahasa Inggris, dan "— KAMI BERDUA —" satu-satunya yang memakai tanda pisah.
-6. Nama lengkap mempelai tidak ditampilkan di bagian Mempelai (hanya nama panggilan dan orang tua).
-7. Catatan kaki tidak menyebut nama tema dan font.
-8. Semua foto ber-`alt` kosong; nama untuk pembaca layar ada di pembungkusnya.
+1. `#c9b288` dan `#c2a878` tidak disatukan: `#c9b288` dipakai untuk teks kecil di atas hijau tua, dan menggantinya menurunkan kontras dari 4,53 ke 4,07.
 
 ---
 
@@ -124,16 +134,21 @@ Font: Pinyon Script, Cormorant Garamond, Jost. Eyebrow berbahasa Inggris di atas
 11. Aturan `[hidden]` ditambahkan.
 12. Toast dan blok terima kasih diberi `aria-live`; pesan galat diberi `role="alert"`.
 
+**Diperbaiki pada putaran kedua (12 November 2026)**
+
+1. Judul "Doa & Ucapan": kata bergaya script diberi jarak, tidak lagi menempel pada "&" di 360.
+2. Skala huruf dirapikan: Jost dari enam tingkat menjadi tiga (12, 14, 16 px), Cormorant 16 sampai 26 px dari delapan menjadi enam, jarak huruf teks kapital dari enam nilai menjadi empat. Teks linimasa tetap 16 px, karena di 17 px paragrafnya bertambah satu baris di 360.
+3. Tombol, tombol musik, tombol lightbox, dan tautan Instagram diberi cincin fokus keyboard. Belum dilihat di layar.
+4. Warna di luar token dijadikan token (`--surface`, `--error`, `--on-ink`); `#fffdf8` disatukan ke `--surface`; dua warna inline dipindah ke CSS.
+5. "Ubah Jawaban" setelah halaman dimuat ulang sekarang membuka form berisi jawaban tersimpan. Bug-nya terbukti di browser: sebelumnya form terbuka kosong.
+6. Kartu kado menulis "a.n. Larasati Pramesti" tanpa kurung, sama dengan kartu bank.
+7. Nama tamu dari `?to=` yang lebih dari 60 karakter dipotong di batas kata dan diberi "…"; isian nama di form memakai nama utuh.
+8. Tombol musik menampilkan keadaan "memuat" (`aria-busy` dan isyarat visual) sampai musik siap. Di mesin uji jedanya 3 sampai 10 detik.
+
 **Catatan terbuka**
 
-1. Judul "Doa & Ucapan": huruf awal bergaya script menempel pada "&" di 360, terbaca "Doa &Ucapan".
-2. Skala huruf terlalu rapat: Jost 11 sampai 16 px dan Cormorant 16 sampai 26 px, masing-masing enam sampai delapan tingkat. Jarak huruf teks kapital punya enam nilai.
-3. Tombol tidak punya gaya `:focus-visible` sendiri; foto dan pilihan RSVP punya.
-4. Warna di luar token: `#fffaf2`, `#fffdf8`, `#b0413e`, `#8f89a6`, dan dua warna inline.
-5. Setelah halaman dimuat ulang, "Ubah Jawaban" membuka form kosong, bukan jawaban tersimpan. Dari membaca kode.
-6. Kartu bank menulis "a.n. Larasati Pramesti", kartu kado menulis "(a.n. Larasati Pramesti)" dalam kurung.
-7. Kartu acara menulis tanggal bertumpuk dan jam berawalan "Pukul"; sampul memakai "12 · 12 · 2026". Tampak disengaja.
-8. Penutup tanpa salam penutup.
+1. Kartu acara menulis tanggal bertumpuk dan jam berawalan "Pukul"; sampul memakai "12 · 12 · 2026". Tampak disengaja.
+2. Penutup tanpa salam penutup. Keputusan isi.
 
 ---
 
@@ -156,14 +171,20 @@ Font: Allura, Cormorant Garamond, Nunito Sans (di-embed). Sentence case di semua
 11. `<h1>` tersembunyi ditambahkan untuk pembaca layar.
 12. Komentar kode yang usang dibetulkan.
 
+**Diperbaiki pada putaran kedua (12 November 2026)**
+
+1. `alt` keenam foto galeri menjelaskan isi foto; keterangan puitis tetap tampil sebagai teks, dan masing-masing terbaca sekali.
+2. Ukuran huruf di luar skala dijadikan token; 26, 27, dan 28 px disatukan ke 27 px.
+3. Warna berulang dijadikan token (`--gold-deep`, `--navy-3`, `--film`, `--veil`); `#1a2440` memakai `--navy`.
+4. Kalimat balasan menjadi "akan hadir, total [2] orang", sehingga jelas jumlah seluruhnya.
+5. Pesan "balasan sudah kami terima" diumumkan pembaca layar lewat wilayah live, dan fokus pindah ke "Ubah jawaban".
+6. Fokus pindah ke isi setelah sampul dibuka, termasuk pada setelan kurangi-animasi.
+7. Nama tamu dari `?to=` yang lebih dari 60 karakter dipotong di batas kata dan diberi "…"; isian nama di form memakai nama utuh. Nama tanpa spasi tidak lagi meluber keluar sampul.
+8. Tombol musik menampilkan keadaan "memuat" (`aria-busy` dan isyarat visual) sampai musik siap. Di mesin uji musik baru siap sekitar 2,5 detik setelah halaman dimuat.
+
 **Catatan terbuka**
 
-1. `alt` foto galeri hanya keterangan puitis ("Awal cerita"), dan terbaca dua kali karena tombolnya berlabel sama.
-2. Beberapa ukuran angka dan judul di luar token: 26, 28, 30, 40, dan 24/27 px.
-3. Warna berulang tanpa token: `#88691e`, `#26325a`, `#070a12`; `#1a2440` sama dengan `--navy`.
-4. Kalimat "bersama [2] orang" ambigu: total atau tambahan.
-5. Pesan "balasan sudah kami terima" tidak diumumkan pembaca layar.
-6. Fokus tidak pindah ke isi setelah sampul dibuka, karena `<main>` tanpa `tabindex`.
+Tidak ada.
 
 ---
 
@@ -185,15 +206,20 @@ Font: Fraunces, Manrope. Eyebrow, label, dan tombol kapital lewat CSS; judul Tit
 10. Aturan `[hidden]` ditambahkan.
 11. Toast diberi `aria-live`.
 
+**Diperbaiki pada putaran kedua (12 November 2026)**
+
+1. Format tanggal: sampul menjadi "Sabtu, 12 Desember 2026" dan kartu acara menulis "Desember 2026". Di layar di bawah 460 px bulan dan tahun ditulis dua baris, karena tidak muat satu baris.
+2. Skala Manrope dari tujuh tingkat menjadi lima (11, 12, 13, 14,5, 16 px); jarak huruf teks kapital dari enam nilai menjadi lima.
+3. Warna di luar token dijadikan token (`--tera-glow`, `--err`, `--brown-2-soft`); `#93442b` disatukan ke `--tera-glow`.
+4. Ruang kosong footer di desktop dibuang (tinggi footer 160 menjadi 94 px). Di HP tetap, karena tombol musik menumpang di sana.
+5. Nama tamu dari `?to=` yang lebih dari 60 karakter dipotong di batas kata dan diberi "…"; isian nama di form memakai nama utuh.
+6. Tombol musik menampilkan keadaan "memuat" (`aria-busy` dan isyarat visual) sampai musik siap. Di mesin uji musik baru siap sekitar 6 detik setelah halaman dimuat.
+
 **Catatan terbuka**
 
-1. Format tanggal bervariasi: sampul "Sabtu · 12 Desember 2026", panel desktop "12 · 12 · 2026 · Denpasar", kartu acara "Des 2026" (disingkat), jam berawalan "Pukul".
-2. Skala Manrope masih rapat: 11, 12, 13, 13,5, 14,5, 15,5, 16 px. Jarak huruf teks kapital punya enam nilai.
-3. Warna di luar token: `#8f412a`, `#93442b`, `#9b2c1c`, `#6e3a28cc`.
-4. Di desktop, footer punya ruang kosong 92 px yang disiapkan untuk tombol musik, padahal tombolnya pindah ke panel kiri.
-5. Radius kartu bank 14 px, sedangkan tombol 2 px dan pilihan RSVP 0. Tampak disengaja.
-6. Eyebrow "Kabari Kami" adalah pilihan saat review; ganti bila ada istilah yang lebih disukai.
-7. Dibuka dengan "Bismillahirrahmanirrahim" dan ditutup "Wassalamu’alaikum" tanpa salam pembuka.
+1. Radius kartu bank 14 px, sedangkan tombol 2 px dan pilihan RSVP 0. Tampak disengaja.
+2. Eyebrow "Kabari Kami" adalah pilihan saat review; ganti bila ada istilah yang lebih disukai.
+3. Dibuka dengan "Bismillahirrahmanirrahim" dan ditutup "Wassalamu’alaikum" tanpa salam pembuka. Keputusan isi.
 
 ---
 
@@ -210,17 +236,22 @@ Font: Bodoni Moda, Plus Jakarta Sans. Sentence case di semua judul, tombol, dan 
 5. Pesan galat RSVP hilang begitu isian diperbaiki.
 6. Lokasi kalender memakai tempat akad.
 
+**Diperbaiki pada putaran kedua (12 November 2026)**
+
+1. Jarak huruf label kapital dari delapan nilai menjadi lima.
+2. Skala huruf: serif miring kecil menjadi 18, 20, 22, 24 px; isi sans menjadi 13, 15, 16 px.
+3. Warna di luar token dijadikan token (`--grey-night`, `--card`, `--hint`, `--err`, `--line-2`).
+4. Tanggal angka satu gaya: kaki halaman menjadi "12 · 12 · 2026".
+5. Petunjuk lookbook berbunyi "Klik foto…" di perangkat bermouse dan "Ketuk foto…" di layar sentuh.
+6. Cincin fokus tombol musik dibuat dua nada, sehingga terlihat di atas bagian hitam maupun kertas. Terbukti di layar: cincin lama nyaris tak terlihat.
+7. Nama tamu dari `?to=` yang lebih dari 60 karakter dipotong di batas kata dan diberi "…"; isian nama di form memakai nama utuh.
+8. Tombol musik menampilkan keadaan "memuat" (`aria-busy` dan isyarat visual) sampai musik siap. Di mesin uji musik baru siap sekitar 2 detik setelah halaman dimuat.
+
 **Catatan terbuka**
 
-1. Jarak huruf label kapital punya sekitar sepuluh nilai (.14em sampai .42em); eyebrow bagian sendiri seragam.
-2. Serif miring kecil rapat: 17, 18, 18,6, 19, 20, 22, 24 px. Isi sans: 13 sampai 17 px.
-3. Warna di luar token: `#b5ada3`, `#faf8f4`, `#8a8178`, `#8c2f22`, dan garis input `rgba(21,19,17,.35)` yang berbeda dari `--line`.
-4. Tanggal angka dua gaya: "12 · 12 · 2026" di kartu judul pembuka dan "12.12.2026" di kaki halaman.
-5. Petunjuk lookbook "Ketuk foto…" juga tampil di desktop.
-6. Cincin fokus tombol musik nyaris tak terlihat saat tombol berada di atas bagian hitam. Dari membaca kode.
-7. Catatan kaki lebih panjang dari tema lain ("dibuat dengan AI (Gemini), bukan foto mempelai sebenarnya").
+1. Catatan kaki lebih panjang dari tema lain ("dibuat dengan AI (Gemini), bukan foto mempelai sebenarnya"). Keputusan isi.
 
-Perbaikan nomor 1 dan 2 hanya diuji di Chromium; perlu dicek di Safari.
+Perbaikan lookbook dan posisi gulir dari putaran pertama diuji ulang dan tetap utuh, tetapi hanya di Chromium; perlu dicek di Safari.
 
 ---
 
@@ -237,17 +268,23 @@ Font: Parisienne, EB Garamond, Marcellus. Judul kartu sentence case dengan kata 
 5. Judul "Rangkaian Acara" menjadi "Rangkaian acara", seperti enam judul kartu lain.
 6. Lokasi kalender memakai tempat akad.
 
+**Diperbaiki pada putaran kedua (12 November 2026)**
+
+1. Jarak huruf eyebrow dari sepuluh nilai menjadi tiga tingkat (.16em, .2em, .3em).
+2. Ukuran huruf isi dari delapan tingkat menjadi empat (11, 13, 15, 17 px); judul kartu sekarang sama besar di semua kartu. Akibatnya di 360×640 tiga kartu perlu digulir 4 sampai 10 px lebih jauh.
+3. Tombol, tautan, tab, dan pilihan diberi gaya hover. Sebagian besar hanya dari membaca kode.
+4. Nama kartu di tab dan penghitung disamakan dengan judulnya: "Kiriman doa" dan "Tanda kasih".
+5. Ucapan contoh berlabel tanggal, sama dengan ucapan tamu.
+6. Kedua kolom mempelai memakai baris yang sama, sehingga nama orang tua sejajar di 390.
+7. Di layar tegak, panah lightbox pindah ke bawah keterangan foto dan tidak lagi menimpa foto.
+8. Area kartu tidak bisa lagi tergeser di 1440. Penyebabnya kontainer `overflow:hidden` yang masih bisa digulir lewat skrip atau fokus; sekarang `overflow:clip`.
+9. Nama tamu dari `?to=` yang lebih dari 60 karakter dipotong di batas kata dan diberi "…"; isian nama di form memakai nama utuh.
+10. Tombol musik menampilkan keadaan "memuat" (`aria-busy` dan isyarat visual) sampai musik siap. Di mesin uji musik baru siap sekitar 2 detik setelah halaman dimuat.
+
 **Catatan terbuka**
 
-1. Jarak huruf eyebrow punya sekitar sepuluh nilai (.14em sampai .34em). Usul: tiga tingkat.
-2. Ukuran huruf isi rapat (11 sampai 18 px, delapan tingkat). Judul kartu ter-render 28,0, 28,3, dan 29,0 px antarkartu.
-3. Hampir tidak ada gaya hover; hanya foto dan segel yang punya.
-4. Nama kartu di penghitung dan tab ("Tanda Kasih", "Doa Tamu") berbeda dari judul kartunya ("Tanda kasih", "Kiriman doa") dan dari eyebrow "Buku ucapan".
-5. Ucapan contoh berlabel "Hadir" atau "Berhalangan"; ucapan tamu sendiri berlabel tanggal.
-6. Di kartu Mempelai lebar 390, "Bima Arya Nugraha" turun dua baris sedangkan "Larasati Pramesti" satu baris, sehingga baris orang tua tidak sejajar.
-7. Panah lightbox di HP menumpuk di atas foto dengan kontras rendah.
-8. Di 1440, area kartu bisa tergeser 110 px ke kiri lewat skrip. Tidak terjadi dengan mouse, keyboard, atau sentuhan, tetapi belum diuji dengan keyboard HP sungguhan.
-9. Ejaan "ridho" tidak baku (KBBI: rida atau rido). Dipakai juga di tema lain.
+1. Ejaan "ridho" tidak baku (KBBI: rida atau rido). Dipakai juga di tema lain. Keputusan isi.
+2. Tab lain masih berlabel pendek yang berbeda dari judul kartunya ("Acara" untuk "Rangkaian acara", "Mempelai" untuk "Kami berdua", dan seterusnya). Judul penuh akan membuat deretan tab jauh lebih panjang.
 
 ---
 
@@ -262,13 +299,18 @@ Font: Gilda Display, Corinthia, Figtree. Judul, eyebrow, dan tombol Title Case; 
 3. Pesan galat RSVP hilang begitu isian diperbaiki.
 4. Lokasi kalender memakai tempat akad.
 
+**Diperbaiki pada putaran kedua (12 November 2026)**
+
+1. Ukuran Gilda disatukan: 32 ke 34 px di HP, 38 ke 40 px di desktop. Angka hitung mundur desktop tetap 34 px.
+2. Toast salin diberi titik ("Nomor rekening disalin."), seragam dengan toast lain.
+3. Daftar ucapan tidak lagi ber-`aria-live`; hanya ucapan baru yang diumumkan, lewat wilayah live terpisah.
+4. Nama tamu dari `?to=` yang lebih dari 60 karakter dipotong di batas kata dan diberi "…"; isian nama di form memakai nama utuh.
+5. Tombol musik menampilkan keadaan "memuat" (`aria-busy` dan isyarat visual) sampai musik siap. Di mesin uji jedanya 3 sampai 4 detik. Ketukan kedua saat memuat sekarang membatalkan.
+
 **Catatan terbuka**
 
-1. Ukuran Gilda yang nyaris sama: 32 dan 34 px di HP; 34, 38, dan 40 px di desktop.
-2. Tanda baca toast tidak seragam: "Nomor rekening disalin" tanpa titik, "Ucapan terkirim. Terima kasih!" dengan tanda baca.
-3. Daftar ucapan ber-`aria-live` tetapi dirender ulang seluruhnya tiap kirim, sehingga pembaca layar bisa membacakan semua ucapan.
-4. Di sampul 1440, tanggal menempel di bawah eyebrow dan nama besar terpisah di bawahnya. Tampak disengaja.
-5. Nama tamu 63 karakter terpotong di tengah kata di sampul 360.
+1. Di sampul 1440, tanggal menempel di bawah eyebrow dan nama besar terpisah di bawahnya. Tampak disengaja.
+2. Temuan baru: di 390×844, tombol musik yang mengambang bisa menutupi pilihan "Tidak hadir" pada posisi gulir tertentu. Perilaku lama; hilang begitu halaman digulir sedikit.
 
 ---
 
@@ -288,15 +330,21 @@ Font: DM Serif Display, Yellowtail, DM Sans. Eyebrow dan tombol Title Case di su
 8. Pesan galat RSVP hilang begitu isian diperbaiki.
 9. Lokasi kalender memakai tempat akad.
 
+**Diperbaiki pada putaran kedua (12 November 2026)**
+
+1. Kaki halaman dibuka dengan baris "Laras & Bima · 12.12.2026", seperti tema sejenis.
+2. Ukuran berdekatan disatukan: nama tempat 19 ke 20 px, label hitung mundur 11 ke 12 px.
+3. Warna di luar token dijadikan token; `--grout` sekarang didefinisikan dengan nilai yang selama ini ter-render.
+4. CSS yang tidak terpakai (`.hd.left`) dan pembungkus `<div class="row">` dibuang.
+5. Di layar di bawah 700 px, panah lightbox pindah ke baris keterangan dan tidak lagi menimpa foto.
+6. Jarak huruf label form, tautan, dan label hitung mundur dirapikan ke tingkat terdekat.
+7. `<h1>` tersembunyi ditambahkan, sehingga halaman tetap punya `<h1>` setelah sampul dibuka.
+8. Nama tamu dari `?to=` yang lebih dari 60 karakter dipotong di batas kata dan diberi "…"; isian nama di form memakai nama utuh.
+9. Tombol musik menampilkan keadaan "memuat" (`aria-busy` dan isyarat visual) sampai musik siap. Di mesin uji jedanya sampai 5 detik. Ketukan kedua saat memuat sekarang membatalkan. Toast salin diberi titik.
+
 **Catatan terbuka**
 
-1. Penutup tidak punya baris "Laras & Bima · 12.12.2026" seperti tema yang sejenis.
-2. Ukuran berdekatan: 19 dan 20 px; label hitung mundur 11 px sedangkan eyebrow lain 12 px.
-3. Warna di luar token: `#e7ecf8`, `#cfd6e8`, `#fbfaf6`, `#a3291a`. Variabel `--grout` dipakai tetapi tidak pernah didefinisikan.
-4. CSS yang tidak terpakai: `.hd.left`; `<div class="row">` tanpa gaya.
-5. Panah lightbox di 390 menimpa tepi foto dan agak samar.
-6. Jarak huruf label form, tautan, dan tombol masih berbeda-beda (.10em sampai .22em).
-7. Halaman tanpa `<h1>` setelah sampul dibuka.
+Tidak ada.
 
 ---
 
@@ -317,15 +365,19 @@ Font: Playfair Display, Spectral. Eyebrow, tombol, dan label kapital lewat CSS; 
 9. Judul salam tanpa spasi di antara dua barisnya ("Assalamu'alaikumWarahmatullahi" bagi pembaca layar); spasi ditambahkan.
 10. Aturan redup yang tidak lagi terpakai dihapus.
 
+**Diperbaiki pada putaran kedua (12 November 2026)**
+
+1. Tombol musik menampilkan keadaan "memuat" (`aria-busy` dan isyarat visual) sampai musik siap. Di mesin uji jedanya 9 sampai 10 detik. Ketukan kedua saat memuat sekarang benar-benar membatalkan; sebelumnya musik tetap berbunyi beberapa detik kemudian.
+2. Di bawah 420 px, kedua baris keluarga di penutup sama-sama pecah sebelum "& Ibu", sehingga simetris di 390.
+3. Tanggal angka satu gaya: kaki halaman menjadi "12 · 12 · 2026".
+4. Tombol "Lewati sampul" memakai gaya tombol kecil tema.
+5. Warna yang sama dengan token memakai tokennya; ubin menit memakai token baru `--plum`.
+6. Nama tamu dari `?to=` yang lebih dari 60 karakter dipotong di batas kata dan diberi "…"; isian nama di form memakai nama utuh. Toast salin diberi titik.
+
 **Catatan terbuka**
 
-1. Musik lambat mulai tanpa umpan balik. Musik dirender di browser; di mesin uji butuh sekitar 9 detik dari ketukan sampai berbunyi, dan tombolnya tidak berubah selama itu. Di HP nyata belum diukur. Usul: keadaan "memuat" pada tombol musik. Tema lain yang merender musik dengan cara sama mungkin terkena juga.
-2. Penutup di 390 tidak simetris: keluarga pertama satu baris, keluarga kedua dua baris.
-3. Format tanggal angka berbeda: kaki halaman "12.12.2026", bagian tanggal "12 · 12 · 2026".
-4. Tombol "Lewati sampul" (muncul saat fokus keyboard) bergaya beda dari tombol lain.
-5. Warna yang sama dengan token tetapi ditulis langsung: `#f5efe4`, `#3a2414`, dan warna ubin hitung mundur.
-6. Sepuluh ukuran Playfair. Ini hasil sengaja review sebelumnya.
-7. Nama tamu 70 karakter terpotong di tengah kata.
+1. Sepuluh ukuran Playfair. Ini hasil sengaja review sebelumnya.
+2. Temuan baru: selama musik masih dirender (sekitar 10 detik pertama), memuat ulang halaman di tab yang sama tertahan lama di Chromium tanpa tampilan. Sudah ada sebelum putaran ini; belum diperiksa di browser nyata, dan tema lain yang merender musik dengan cara sama mungkin terkena.
 
 ---
 
@@ -342,12 +394,19 @@ Font: Italiana, Urbanist, Ephesis. Eyebrow, tombol, dan label kapital lewat CSS;
 5. Pesan galat RSVP hilang begitu isian diperbaiki.
 6. Lokasi kalender memakai tempat akad.
 
+**Diperbaiki pada putaran kedua (12 November 2026)**
+
+1. Eyebrow dan judul amplop ditukar: eyebrow "Tanda Kasih", judul "Amplop Digital", sama dengan tema sejenis.
+2. Jarak huruf label kapital dari lima nilai menjadi tiga.
+3. Teks kecil dari lima tingkat menjadi dua (12 dan 14 px).
+4. Warna di luar token dijadikan token; garis pilihan disatukan dengan garis input.
+5. Bagian selector yang mati (`:not(.force)`) dibuang. Aturannya sendiri ternyata aktif (mematikan riak tombol musik pada setelan kurangi-animasi), jadi dipertahankan.
+6. Angka lama penghitung yang sedang memudar disembunyikan dari pembaca layar.
+7. Nama tamu dari `?to=` yang lebih dari 60 karakter dipotong di batas kata dan diberi "…"; isian nama di form memakai nama utuh.
+8. Tombol musik menampilkan keadaan "memuat" (`aria-busy` dan isyarat visual) sampai musik siap. Di mesin uji jedanya sekitar 2 detik.
+9. Kartu form ucapan selebar kolom; sebelumnya menyusut mengikuti teks dan lebih sempit dari kartu RSVP.
+10. Tanggal angka satu gaya: kaki halaman menjadi "12 · 12 · 2026". Toast salin diberi titik.
+
 **Catatan terbuka**
 
-1. Eyebrow dan judul amplop terbalik dibanding tema sejenis: di sini eyebrow "Amplop Digital" dan judul "Tanda Kasih".
-2. Jarak huruf label kapital punya lima nilai (.18em sampai .32em).
-3. Ukuran teks kecil rapat: 11, 12, 13, 14, 15 px, lalu 17 px untuk isi.
-4. Warna di luar token: garis input `#dcc9cf` dan garis pilihan `#cdb8bf` (bersebelahan, beda tipis), `#f3e5ea`, `#9b2c45`, `#fffdf9`.
-5. Selector yang tidak pernah aktif: `html.calm:not(.force) .music.on::before`.
-6. Penghitung ucapan sesaat memuat angka lama dan baru sekaligus selama animasi, sehingga pembaca layar bisa membaca keliru.
-7. Nama tamu 71 karakter terpotong di tengah kata di sampul 360.
+Tidak ada.

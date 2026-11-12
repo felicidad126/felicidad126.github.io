@@ -802,11 +802,12 @@ const clipName = (s) => {
   return cut + "…";
 };
 const GUEST = clipName((params.get("to") || "").trim());
+const GUEST_FULL = [...(params.get("to") || "").trim()].slice(0, 80).join("");
 if (GUEST) {
   $("#guest").textContent = GUEST;
   $("#guest").classList.toggle("long", GUEST.length > 24);
-  $("#rName").value = GUEST;
-  $("#wName").value = GUEST;
+  $("#rName").value = GUEST_FULL;
+  $("#wName").value = GUEST_FULL;
 }
 
 /* ---------- Jendela, kipas, dan pita kaca ---------- */
@@ -1029,7 +1030,7 @@ $$("[data-copy]").forEach((b) => b.addEventListener("click", async () => {
   const text = b.dataset.copy;
   try { await navigator.clipboard.writeText(text); }
   catch { const t = document.createElement("textarea"); t.value = text; document.body.appendChild(t); t.select(); try { document.execCommand("copy"); } catch {} t.remove(); }
-  toast(`${b.dataset.what} disalin`);
+  toast(`${b.dataset.what} disalin.`);
 }));
 
 /* ---------- Konfirmasi kehadiran ---------- */

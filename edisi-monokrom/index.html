@@ -695,8 +695,9 @@ function clipName(name, max = 60) {
   return `${cut}…`;
 }
 const GUEST = clipName((params.get("to") || "").trim());
+const GUEST_FULL = [...(params.get("to") || "").trim()].slice(0, 80).join("");
 if (GUEST) $("#guest").textContent = GUEST;
-$$('input[name="name"]').forEach((i) => { i.value = GUEST; });
+$$('input[name="name"]').forEach((i) => { i.value = GUEST_FULL; });
 
 /* ---------- Masthead: huruf dipecah untuk animasi, ukurannya dipas selebar sampul ---------- */
 const mast = $("#mast");

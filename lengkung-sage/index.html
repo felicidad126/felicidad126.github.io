@@ -189,6 +189,7 @@ function clipName(name, max = 60) {
   return head.slice(0, at).join("").replace(/[\s.,;:!?&\/\-–—]+$/, "") + "…";
 }
 const GUEST = clipName((new URLSearchParams(location.search).get("to") || "").trim());
+const GUEST_FULL = [...(new URLSearchParams(location.search).get("to") || "").trim()].slice(0, 80).join("");
 const PH = {
   guest_name: GUEST || "Tamu Undangan",
   bride_name: EVENT.bride.name,
@@ -279,13 +280,13 @@ function widget(e) {
         else if (f.type === "text-area") input = `<textarea ${attrs} placeholder="${esc(f.label)}"></textarea>`;
         else if (f.type === "number") input = `<input type="number" ${attrs} inputmode="numeric" min="${v.min ?? 1}" max="${v.max ?? 20}" value="${v.min ?? 1}">`;
         else if (f.type === "phone") input = `<input type="tel" ${attrs} inputmode="tel" autocomplete="tel" placeholder="${esc(f.label)}">`;
-        else input = `<input type="${f.type === "email" ? "email" : "text"}" ${attrs} placeholder="${esc(f.label)}"${f.system === "name" ? ` autocomplete="name" value="${esc(GUEST)}"` : ""}>`;
+        else input = `<input type="${f.type === "email" ? "email" : "text"}" ${attrs} placeholder="${esc(f.label)}"${f.system === "name" ? ` autocomplete="name" value="${esc(GUEST_FULL)}"` : ""}>`;
         return `<label><span>${esc(f.label)}${req}</span>${input}</label>`;
       };
       return `<form class="w form" style="${base}" data-form="${esc(e.formId)}" novalidate>${form.fields.map(field).join("")}<p class="err" role="alert" hidden></p><button class="pill solid">Kirim Konfirmasi</button><p class="note">Preview: data tersimpan di perangkat ini saja.</p><div class="done" role="status"><b>Terima kasih</b><p></p><button class="pill" type="button">Ubah Jawaban</button></div></form>`;
     }
     case "widget-greeting":
-      return `<div class="greet"><form class="w form" style="${base};min-height:0" data-greet novalidate><label><span>Nama <em>*</em></span><input name="name" maxlength="80" autocomplete="name" placeholder="Nama Anda" value="${esc(GUEST)}"></label><label><span>Ucapan <em>*</em></span><textarea name="msg" maxlength="500" placeholder="Tulis doa dan ucapan"></textarea></label><p class="err" role="alert" hidden></p><button class="pill solid">Kirim Ucapan</button><p class="note">Preview: data tersimpan di perangkat ini saja.</p></form>
+      return `<div class="greet"><form class="w form" style="${base};min-height:0" data-greet novalidate><label><span>Nama <em>*</em></span><input name="name" maxlength="80" autocomplete="name" placeholder="Nama Anda" value="${esc(GUEST_FULL)}"></label><label><span>Ucapan <em>*</em></span><textarea name="msg" maxlength="500" placeholder="Tulis doa dan ucapan"></textarea></label><p class="err" role="alert" hidden></p><button class="pill solid">Kirim Ucapan</button><p class="note">Preview: data tersimpan di perangkat ini saja.</p></form>
         <div class="w" style="${base};margin-top:${s(18)}"><p class="wcount"></p><div class="wlist"></div><button class="pill more" type="button" hidden>Tampilkan lebih banyak</button></div></div>`;
     case "widget-gift": {
       const card = (label, shown, name, raw) => `<div class="bank"><div style="opacity:.75;font-size:${fontSize(12, "label")};letter-spacing:${s(2)};text-transform:uppercase">${label}</div><div class="no">${shown}</div><div>a.n. ${esc(name)}</div><button class="pill" type="button" data-copy="${raw}">Salin Nomor</button></div>`;

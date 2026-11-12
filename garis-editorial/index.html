@@ -640,7 +640,7 @@ function clipName(s, max = 60) {
   return cut.replace(/[\uD800-\uDBFF]$/, "").replace(/[\s.,;:!?&\/(\-–—]+$/, "") + "…";
 }
 const guest = clipName((params.get("to") || "").trim());
-if (guest) { $("#guest").textContent = guest; $("#rName").value = guest; }
+if (guest) { $("#guest").textContent = guest; $("#rName").value = [...(params.get("to") || "").trim()].slice(0, 60).join(""); }
 
 /* ---------- ranting garis ---------- */
 const SPRIG = `<path d="M6 16 H144"/><path d="M75 16c-6-8-14-10-22-8M75 16c6-8 14-10 22-8M44 16c-5-7-12-8-18-5M106 16c5-7 12-8 18-5"/>` +

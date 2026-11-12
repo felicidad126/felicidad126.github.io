@@ -696,11 +696,12 @@ function fitName(raw) {
   return ch.slice(0, cut).join("").replace(/[\s.,;:!?&\/\-–—]+$/, "") + "…";
 }
 const GUEST = fitName(params.get("to") || "");
+const GUEST_FULL = [...(params.get("to") || "").trim()].slice(0, 80).join("");
 if (GUEST) {
   $("#guest").textContent = GUEST;
   $("#guest").classList.toggle("long", GUEST.length > 24);
-  $("#rName").value = GUEST;
-  $("#wName").value = GUEST;
+  $("#rName").value = GUEST_FULL;
+  $("#wName").value = GUEST_FULL;
 }
 
 /* ---------- Ornamen hydrangea & baby's breath (SVG garis halus, digambar ulang di setiap tempat supaya bisa dianimasikan) ---------- */

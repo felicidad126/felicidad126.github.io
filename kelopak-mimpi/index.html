@@ -663,7 +663,7 @@ html.lb-open{overflow:hidden}
 </main>
 
 <footer class="foot">
-  <p class="foot-mark">Laras &amp; Bima · 12.12.2026</p>
+  <p class="foot-mark">Laras &amp; Bima · <span style="white-space:nowrap">12 · 12 · 2026</span></p>
   <p>Tema <b>Kelopak Mimpi</b> · taman kelopak abstrak di bawah cahaya kubah, palet powdery dan sampanye. Nama, tanggal, alamat, dan rekening adalah data contoh; foto contoh dibuat dengan AI.</p>
   <p>Font Italiana, Urbanist &amp; Ephesis, SIL Open Font License 1.1.</p>
 </footer>
@@ -1033,7 +1033,7 @@ $$("[data-copy]").forEach((b) => b.addEventListener("click", async () => {
   const text = b.dataset.copy;
   try { await navigator.clipboard.writeText(text); }
   catch { const t = document.createElement("textarea"); t.value = text; document.body.appendChild(t); t.select(); try { document.execCommand("copy"); } catch {} t.remove(); }
-  toast(`${b.dataset.what} disalin`);
+  toast(`${b.dataset.what} disalin.`);
 }));
 
 /* ---------- Konfirmasi kehadiran ---------- */

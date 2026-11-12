@@ -605,7 +605,8 @@ function shortName(s, max = 60) {
   return head.replace(/[\s.,;:!?&/([{'"\-–—]+$/, "") + "…";
 }
 const guest = shortName((params.get("to") || "").trim());
-if (guest) { $("#guest").textContent = guest; $("#rName").value = guest; $("#wName").value = guest; }
+const guestFull = [...(params.get("to") || "").trim()].slice(0, 80).join("");
+if (guest) { $("#guest").textContent = guest; $("#rName").value = guestFull; $("#wName").value = guestFull; }
 
 /* ---------- ornamen ---------- */
 function jasmine(len) {
