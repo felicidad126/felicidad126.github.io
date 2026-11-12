@@ -10,6 +10,19 @@ Halaman utama ([`index.html`](index.html)) adalah katalog untuk calon pengantin:
 
 ---
 
+# Helonoia — Halaman Perkenalan Brand
+
+Halaman di folder [`HTML/`](HTML/) mengenalkan brand **Helonoia** sebelum ada produk: arti nama (HELO dari "halo", NOIA dari "paranoia"), maskot monster ungu dan arti tiap bagian tubuhnya, empat sifat brand, serta palet warna dan huruf.
+
+- Lihat: https://felicidad126.github.io/HTML/ (dan https://invitation.helonoia.net/HTML/)
+- Animasi penuh (abaikan setting reduced-motion): `HTML/?motion=full`
+- Maskot dan tulisan HELONOIA di halaman ini dibuat dari [`helonoia/helonoia_monster.py`](helonoia/helonoia_monster.py), jadi bentuknya sama persis dengan logo. Bila logo berubah, potongan SVG di awal `<body>` perlu dibuat ulang dari generator itu.
+- Semua warna diambil dari logo: Malam `#120B1E`, Ungu Noia `#B26BFF`, Ungu Tua `#7C3FD6`, Lilac `#CDA6FF`, Lime `#C6FF3D`, Putih Halo `#F4EFFF`.
+- Interaksi: mata maskot mengikuti kursor (di HP ia melirik ke sana kemari sendiri), tombol "Sapa balik" membuat maskot melambai dan menjawab, kotak warna bisa diklik untuk menyalin kodenya.
+- Font Fredoka (huruf logo) dan Plus Jakarta Sans dimuat dari Google Fonts, berlisensi SIL Open Font License 1.1.
+
+---
+
 # Lengkung Sage — Preview Undangan Digital
 
 Preview tema undangan pernikahan **Lengkung Sage**: sage green + ivory, bingkai lengkung (arch), ornamen botani, aksen champagne. Tema ini ada di subfolder [`lengkung-sage/`](lengkung-sage/).
