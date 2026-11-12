@@ -35,7 +35,7 @@ html{-webkit-tap-highlight-color:transparent}
   /* Skala huruf. Gilda Display untuk judul, nama, dan angka; Figtree untuk teks (400) serta label dan tombol (500);
      Corinthia hanya untuk "&" dan "Terima kasih". Label huruf kapital minimal 12 px supaya terbaca oleh tamu yang lebih tua. */
   --fs-label:12px;--fs-meta:13px;--fs-small:14px;--fs-body:16px;
-  --fs-serif-s:19px;--fs-lead:clamp(19px,4.8vw,24px);--fs-num:28px;--fs-card-h:clamp(32px,8vw,40px);
+  --fs-serif-s:19px;--fs-lead:clamp(19px,4.8vw,24px);--fs-num:28px;--fs-card-h:clamp(34px,8vw,40px);
   /* Kabut: noise fraktal yang bisa diulang tanpa sambungan (stitchTiles), dirender sekali lalu hanya digeser dengan transform. */
   --fog:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='300'%3E%3Cfilter id='f' x='0' y='0' width='1' height='1'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.0036 .0078' numOctaves='3' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .97 0 0 0 0 .98 0 0 0 0 1 2.7 0 0 0 -1.08'/%3E%3C/filter%3E%3Crect width='900' height='300' filter='url(%23f)'/%3E%3C/svg%3E");
   --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n' x='0' y='0' width='1' height='1'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .15 0 0 0 0 .19 0 0 0 0 .24 0 0 0 1.1 -.35'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
@@ -224,7 +224,7 @@ html.motion .portrait .ring .st.b{transition-delay:.6s}
 html.motion .portrait.in .ring .st{stroke-dashoffset:0}
 .portrait .sprig{position:absolute;left:50%;bottom:-7%;width:96px;transform:translateX(-50%)}
 .person .kick{color:var(--deep)}
-.pn{font:400 clamp(28px,7vw,38px)/1.2 var(--f-d);margin:8px 0 10px;color:var(--ink);text-wrap:balance}
+.pn{font:400 clamp(28px,7vw,40px)/1.2 var(--f-d);margin:8px 0 10px;color:var(--ink);text-wrap:balance}
 .c-amp{font:400 clamp(84px,22vw,120px)/.8 var(--f-s);color:var(--deep);margin:4px 0 0}
 .ig{display:inline-flex;align-items:center;gap:8px;margin-top:14px;padding:9px 16px;border-radius:999px;border:1px solid rgba(77,106,135,.35);background:rgba(255,255,255,.55);font-size:var(--fs-small);color:var(--deep);text-decoration:none;transition:background-color .3s}
 .ig svg{width:16px;height:16px}
@@ -370,6 +370,11 @@ fieldset.f{border:0;margin:0;padding:0;min-width:0}
 html.calm:not(.force) .music.tuck{transform:none}
 .music .slash{display:none}
 .music:not(.on) .slash{display:block}
+/* Musik masih dirender: ikon diredupkan dan busur tipis berputar (diam bila gerak dikurangi). */
+.music.busy svg{opacity:.5}
+.music.busy::after{content:"";position:absolute;inset:3px;border-radius:50%;border:1.5px solid transparent;border-top-color:var(--paper);animation:spin 1s linear infinite}
+html.calm:not(.force) .music.busy::after{animation:none}
+@keyframes spin{to{transform:rotate(360deg)}}
 .music.on::before{content:"";position:absolute;inset:-1px;border-radius:50%;border:1px solid rgba(77,106,135,.55);animation:ripple 2.8s ease-out infinite}
 html.calm:not(.force) .music.on::before{animation:none;opacity:0}
 @keyframes ripple{from{transform:scale(1);opacity:.9}to{transform:scale(1.6);opacity:0}}
@@ -609,7 +614,9 @@ html.lb-open{overflow:hidden}
         </form>
         <div>
           <p class="wcount rv"><b id="wCount"><span>0</span></b><span>ucapan &amp; doa</span></p>
-          <ol class="wlist" id="wList" aria-live="polite"></ol>
+          <ol class="wlist" id="wList"></ol>
+          <!-- Hanya ucapan yang baru dikirim yang diumumkan ke pembaca layar; daftar di atas tidak ber-aria-live karena dirender ulang seluruhnya. -->
+          <p class="sr" id="wLive" aria-live="polite"></p>
           <button class="btn btn-line sm wmore" id="wMore" type="button" hidden>Tampilkan Lebih Banyak</button>
         </div>
       </div>
@@ -679,13 +686,22 @@ const store = {
   set(k, v) { try { localStorage.setItem("bk-" + k, JSON.stringify(v)); } catch {} },
 };
 
-// Nama tamu dari ?to=Nama: spasi di ujung dibuang, maksimal 60 karakter.
-const GUEST = (params.get("to") || "").trim().slice(0, 60);
+// Nama tamu dari ?to=Nama: spasi di ujung dibuang, maksimal 60 karakter. Nama yang lebih panjang dipotong di batas kata
+// terakhir dan diberi "…"; bila tidak ada spasi setelah karakter ke-30, dipotong keras di 59 karakter.
+function fitName(raw) {
+  const ch = [...raw.trim()];
+  if (ch.length <= 60) return ch.join("");
+  let cut = 59;
+  for (let i = 59; i >= 30; i--) if (/\s/.test(ch[i])) { cut = i; break; }
+  return ch.slice(0, cut).join("").replace(/[\s.,;:!?&\/\-–—]+$/, "") + "…";
+}
+const GUEST = fitName(params.get("to") || "");
+const GUEST_FULL = [...(params.get("to") || "").trim()].slice(0, 80).join("");
 if (GUEST) {
   $("#guest").textContent = GUEST;
   $("#guest").classList.toggle("long", GUEST.length > 24);
-  $("#rName").value = GUEST;
-  $("#wName").value = GUEST;
+  $("#rName").value = GUEST_FULL;
+  $("#wName").value = GUEST_FULL;
 }
 
 /* ---------- Ornamen hydrangea & baby's breath (SVG garis halus, digambar ulang di setiap tempat supaya bisa dianimasikan) ---------- */
@@ -909,7 +925,7 @@ $$("[data-copy]").forEach((b) => b.addEventListener("click", async () => {
   const text = b.dataset.copy;
   try { await navigator.clipboard.writeText(text); }
   catch { const t = document.createElement("textarea"); t.value = text; document.body.appendChild(t); t.select(); try { document.execCommand("copy"); } catch {} t.remove(); }
-  toast(`${b.dataset.what} disalin`);
+  toast(`${b.dataset.what} disalin.`);
 }));
 
 /* ---------- Konfirmasi kehadiran ---------- */
@@ -994,6 +1010,14 @@ function renderWishes(fresh) {
   $("#wMore").hidden = all.length <= shown;
 }
 $("#wMore").addEventListener("click", () => { shown += 5; renderWishes(); });
+// Pembaca layar: umumkan satu ucapan baru saja, lalu kosongkan supaya tidak terbaca dua kali saat halaman dijelajahi.
+let liveT;
+function announceWish(w) {
+  const live = $("#wLive");
+  live.textContent = `Ucapan baru dari ${w.name}: ${w.msg}`;
+  clearTimeout(liveT);
+  liveT = setTimeout(() => { live.textContent = ""; }, 6000);
+}
 $("#wishForm").addEventListener("submit", (e) => {
   e.preventDefault();
   const f = e.target, err = $("#wishErr");
@@ -1010,6 +1034,7 @@ $("#wishForm").addEventListener("submit", (e) => {
   store.set("wishes", mine.slice(0, 30));
   f.msg.value = "";
   renderWishes(true);
+  announceWish(mine[0]);
   toast("Ucapan terkirim. Terima kasih!");
 });
 renderWishes();
@@ -1084,21 +1109,30 @@ var Music = (() => {
     for (let i = 0; i < n; i++) peak = Math.max(peak, Math.abs(data[i]));
     return wav(data.subarray(0, n), SR, .55 / (peak || 1));
   }
-  const prepare = () => (making ||= render().then((u) => { url = u; if (want) start(); }).catch(() => { musicBtn.remove(); }));
+  const prepare = () => (making ||= render().then((u) => { url = u; if (want) start(); else setBusy(false); }).catch(() => { musicBtn.remove(); }));
   function start() {
     if (!url) return;
     if (audio.src !== url) audio.src = url;
     audio.play().then(() => setUi(true)).catch(() => setUi(false));
   }
+  // Keadaan "memuat": tamu sudah meminta musik, tetapi musik belum selesai dirender.
+  function setBusy(on) {
+    musicBtn.classList.toggle("busy", on);
+    if (on) musicBtn.setAttribute("aria-busy", "true"); else musicBtn.removeAttribute("aria-busy");
+  }
   function setUi(on) {
+    setBusy(false);
     musicBtn.classList.toggle("on", on);
     musicBtn.setAttribute("aria-pressed", String(on));
     musicBtn.setAttribute("aria-label", on ? "Jeda musik" : "Putar musik");
   }
   musicBtn.addEventListener("click", () => {
-    if (!audio.paused) { want = false; audio.pause(); setUi(false); return; }
+    // Ketukan saat musik menyala, atau saat masih memuat, mematikan/membatalkannya.
+    if (!audio.paused || (want && !url)) { want = false; audio.pause(); setUi(false); return; }
     want = true;
-    url ? start() : prepare();
+    if (url) return start();
+    setBusy(true);
+    prepare();
   });
   // Dirender saat browser senggang supaya siap ketika tamu membuka undangan.
   if (typeof OfflineAudioContext === "undefined") musicBtn.remove();
@@ -1110,6 +1144,7 @@ var Music = (() => {
       // Musik belum siap: buka kunci pemutaran iOS dengan sunyi di dalam gestur ketukan, lalu putar begitu selesai dirender.
       audio.src = SILENT;
       audio.play().catch(() => {});
+      setBusy(true);
       prepare();
     },
   };

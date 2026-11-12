@@ -31,6 +31,7 @@ html{-webkit-tap-highlight-color:transparent}
   --ivory:#fbf6ef;--paper:#fffaf4;--blush:#ecd3cf;--blush-bg:#f6e7e3;--lilac:#d9cde3;--lilac-bg:#efe6f0;--peach:#f2d6c2;
   --mauve:#b98c9a;--mauve-d:#8a5466;--champ:#c8a46a;--champ-l:#e8d3a6;--champ-d:#7a5c2e;
   --ink:#4a3340;--ink-2:#6e5562;--plum:#4a3340;--plum-2:#5e3d4f;
+  --line:#dcc9cf;--mist:#f3e5ea;--err:#9b2c45;--card:#fffdf9;
   --f-d:"Italiana","Didot",Georgia,serif;--f-t:"Urbanist",system-ui,sans-serif;--f-s:"Ephesis","Segoe Script",cursive;
   --ease:cubic-bezier(.2,.7,.1,1);
   /* Satuan kelopak: s=100 kira-kira 230px di HP dan 400px di desktop lebar. */
@@ -56,12 +57,12 @@ a{color:inherit}
 h2 em,.salam h2 small,.wass{word-spacing:.16em}
 /* Angka penting (jam, hitung mundur, rekening, jumlah ucapan) memakai Urbanist, bukan Italiana: angka Italiana bergaya lama, 1 mirip I dan 0 mirip O. */
 .ev-time,.peb b,.gift .val,.wcount b{font-variant-numeric:lining-nums tabular-nums}
-.btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:12px 28px;border:0;border-radius:999px;background:var(--plum);color:var(--ivory);font:600 13px/1.2 var(--f-t);letter-spacing:.2em;text-transform:uppercase;text-decoration:none;cursor:pointer;box-shadow:0 14px 28px -16px rgba(74,51,64,.7),inset 0 0 0 1px rgba(232,211,166,.5);transition:transform .4s var(--ease),box-shadow .4s var(--ease)}
+.btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:12px 28px;border:0;border-radius:999px;background:var(--plum);color:var(--ivory);font:600 14px/1.2 var(--f-t);letter-spacing:.2em;text-transform:uppercase;text-decoration:none;cursor:pointer;box-shadow:0 14px 28px -16px rgba(74,51,64,.7),inset 0 0 0 1px rgba(232,211,166,.5);transition:transform .4s var(--ease),box-shadow .4s var(--ease)}
 .btn:hover{transform:translateY(-2px)}
 .btn:active{transform:translateY(1px) scale(.98)}
 .btn svg{width:18px;height:18px;flex:none}
 .btn.line{background:transparent;color:var(--plum);box-shadow:inset 0 0 0 1px currentColor}
-.btn.sm{min-height:42px;padding:10px 20px;font-size:12px;letter-spacing:.18em}
+.btn.sm{min-height:42px;padding:10px 20px;font-size:12px}
 /* Kilau sampanye metalik yang lewat sesekali di tombol utama. */
 .btn:not(.line)::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 30%,rgba(232,211,166,.0) 36%,rgba(244,228,194,.55) 48%,rgba(232,211,166,.0) 60%,transparent 66%);transform:translateX(-110%);pointer-events:none}
 html.motion .btn:not(.line)::after{animation:glint 7s 2.6s ease-in-out infinite}
@@ -252,7 +253,7 @@ html.calm .rv:not(.in){opacity:0}
 .peb:nth-child(4){border-radius:52% 48% 46% 54% / 44% 56% 44% 56%}
 .peb b{position:relative;display:grid;font:300 clamp(28px,7vw,40px)/1 var(--f-t);color:var(--champ-l)}
 .peb b > span{grid-area:1/1}
-.peb small{font:600 11px/1.4 var(--f-t);letter-spacing:.24em;text-transform:uppercase;color:#f3e5ea;margin-top:6px}
+.peb small{font:600 12px/1.4 var(--f-t);letter-spacing:.24em;text-transform:uppercase;color:var(--mist);margin-top:6px}
 .count-msg{font:400 clamp(24px,5vw,32px)/1.3 var(--f-d)}
 
 /* Acara */
@@ -273,7 +274,7 @@ html.calm .rv:not(.in){opacity:0}
 .ev-venue{font-weight:600}
 .ev-addr{color:var(--ink-2);margin-bottom:20px}
 .cal{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:44px;text-align:center}
-.cal small{font-size:13px;color:var(--ink-2)}
+.cal small{font-size:14px;color:var(--ink-2)}
 
 /* Galeri */
 .galeri{background:var(--ivory) var(--tex)}
@@ -296,24 +297,24 @@ html.calm .rv:not(.in){opacity:0}
 /* Formulir */
 .rsvp{background:var(--lilac-bg) var(--tex)}
 .ucapan{background:var(--paper) var(--tex)}
-.card{position:relative;max-width:560px;margin:0 auto;padding:38px 26px 30px;background:var(--paper);border-radius:28px 96px 28px 96px;box-shadow:0 30px 60px -40px rgba(74,51,64,.45)}
+.card{position:relative;width:100%;max-width:560px;margin:0 auto;padding:38px 26px 30px;background:var(--paper);border-radius:28px 96px 28px 96px;box-shadow:0 30px 60px -40px rgba(74,51,64,.45)}
 .card::before{content:"";position:absolute;inset:9px;border:1px solid rgba(200,164,106,.55);border-radius:22px 88px 22px 88px;pointer-events:none}
 .card > *{position:relative}
 form{display:flex;flex-direction:column;gap:16px}
 label,.fl{display:flex;flex-direction:column;gap:6px;font:600 12px/1.4 var(--f-t);letter-spacing:.2em;text-transform:uppercase;color:var(--ink-2)}
 fieldset{border:0;margin:0;padding:0}
 legend{padding:0}
-input[type=text],select,textarea{font:400 17px/1.4 var(--f-t);letter-spacing:0;text-transform:none;color:var(--ink);background:#fff;border:1px solid #dcc9cf;border-radius:14px;padding:12px 14px;width:100%}
+input[type=text],select,textarea{font:400 17px/1.4 var(--f-t);letter-spacing:0;text-transform:none;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;width:100%}
 input:focus,select:focus,textarea:focus{outline:2px solid var(--mauve-d);outline-offset:1px;border-color:transparent}
 textarea{min-height:110px;resize:vertical}
 .chips{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
-.chips label{position:relative;flex-direction:row;justify-content:center;letter-spacing:.06em;text-transform:none;font:500 15px/1.2 var(--f-t)}
+.chips label{position:relative;flex-direction:row;justify-content:center;letter-spacing:.06em;text-transform:none;font:500 14px/1.2 var(--f-t)}
 .chips input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer}
-.chips span{display:flex;align-items:center;justify-content:center;width:100%;min-height:46px;border-radius:999px;border:1px solid #cdb8bf;background:#fff;color:var(--ink);transition:background .3s,color .3s,border-color .3s}
+.chips span{display:flex;align-items:center;justify-content:center;width:100%;min-height:46px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink);transition:background .3s,color .3s,border-color .3s}
 .chips input:checked + span{background:var(--plum);border-color:var(--plum);color:var(--ivory)}
 .chips input:focus-visible + span{outline:2px solid var(--mauve-d);outline-offset:3px}
-.err{color:#9b2c45;font-size:15px}
-.note{font-size:13px;color:var(--ink-2);text-align:center}
+.err{color:var(--err);font-size:14px}
+.note{font-size:12px;color:var(--ink-2);text-align:center}
 form .btn{align-self:stretch;margin-top:4px}
 .done{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;padding:14px 0}
 .done h3{font:400 clamp(40px,9vw,52px)/1 var(--f-s);color:var(--mauve-d)}
@@ -324,11 +325,11 @@ form .btn{align-self:stretch;margin-top:4px}
 .wcount b{display:inline-grid;font:400 24px/1 var(--f-t);letter-spacing:0;color:var(--champ-d);margin-right:6px;vertical-align:-3px}
 .wcount b > span{grid-area:1/1}
 .wl{list-style:none;margin:0;padding:0;display:grid;gap:12px}
-.wish{position:relative;padding:16px 18px 16px 34px;background:#fffdf9;border-radius:18px 40px 18px 40px;box-shadow:0 14px 30px -24px rgba(74,51,64,.5)}
+.wish{position:relative;padding:16px 18px 16px 34px;background:var(--card);border-radius:18px 40px 18px 40px;box-shadow:0 14px 30px -24px rgba(74,51,64,.5)}
 .wish::before{content:"";position:absolute;left:14px;top:22px;width:9px;height:9px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff8ea,var(--champ))}
 .who{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:4px}
 .who b{font-weight:600}
-.who span{font-size:13px;color:var(--ink-2)}
+.who span{font-size:14px;color:var(--ink-2)}
 .wish p{color:var(--ink-2);overflow-wrap:anywhere}
 #wMore{align-self:center;margin-top:14px}
 
@@ -340,7 +341,7 @@ form .btn{align-self:stretch;margin-top:4px}
 .gift::before{content:"";width:22px;height:22px;border-radius:50%;margin-bottom:6px;background:radial-gradient(circle at 36% 34%,#fffaf0,var(--champ-l) 45%,var(--champ) 100%);box-shadow:0 0 0 6px rgba(232,211,166,.25)}
 .gift .val{font:400 clamp(22px,5vw,27px)/1.3 var(--f-t);color:var(--ink);letter-spacing:.06em}
 .gift .val.addr{font-size:clamp(18px,4vw,21px);letter-spacing:.01em}
-.gift .nm{color:var(--ink-2);font-size:15px;margin-bottom:10px}
+.gift .nm{color:var(--ink-2);font-size:14px;margin-bottom:10px}
 
 /* Penutup */
 .closing{text-align:center;background:linear-gradient(180deg,var(--ivory),var(--lilac-bg))}
@@ -350,10 +351,10 @@ form .btn{align-self:stretch;margin-top:4px}
 .wass{font:400 clamp(26px,5.6vw,34px)/1.3 var(--f-s)!important;color:var(--mauve-d)!important}
 .sign{font-size:clamp(46px,12vw,92px)}
 .sign .amp{font-size:.8em;color:var(--champ-d)}
-.fam{font-size:15px}
+.fam{font-size:14px}
 
 /* Kaki halaman */
-.foot{background:var(--plum);color:#f3e5ea;text-align:center;padding:42px 20px calc(92px + env(safe-area-inset-bottom));font-size:13px;line-height:1.7}
+.foot{background:var(--plum);color:var(--mist);text-align:center;padding:42px 20px calc(92px + env(safe-area-inset-bottom));font-size:12px;line-height:1.7}
 .foot-mark{font:400 26px/1.3 var(--f-d);color:var(--champ-l);margin-bottom:8px}
 .foot b{color:#fff}
 
@@ -363,8 +364,12 @@ form .btn{align-self:stretch;margin-top:4px}
 .music .slash{display:none}
 .music:not(.on) .slash{display:block}
 .music.on::before{content:"";position:absolute;inset:-1px;border-radius:50%;border:1px solid rgba(232,211,166,.6);animation:ripple 2.8s ease-out infinite}
-html.calm:not(.force) .music.on::before{animation:none;opacity:0}
+html.calm .music.on::before{animation:none;opacity:0}
 @keyframes ripple{to{transform:scale(1.6);opacity:0}}
+/* Musik sedang dirender: ikon berdenyut pelan; pada mode tenang cukup diredupkan. */
+.music[aria-busy="true"] svg{opacity:.55}
+html.motion .music[aria-busy="true"] svg{animation:busy 1.1s ease-in-out infinite alternate}
+@keyframes busy{from{opacity:.9}to{opacity:.35}}
 .music.tuck{opacity:0;transform:translateY(12px) scale(.9);pointer-events:none}
 html.calm .music.tuck{transform:none}
 .toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));z-index:70;transform:translate(-50%,16px);opacity:0;background:var(--plum);color:var(--ivory);padding:11px 20px;border-radius:999px;font:500 14px/1.3 var(--f-t);pointer-events:none;transition:opacity .3s,transform .4s var(--ease);max-width:calc(100vw - 32px)}
@@ -376,7 +381,7 @@ html.calm .music.tuck{transform:none}
 .lb figure{margin:0;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:64px 16px 26px}
 .lb img{max-width:min(100%,1100px);max-height:calc(100svh - 160px);object-fit:contain;border-radius:22px;box-shadow:0 0 0 1px rgba(232,211,166,.45),0 30px 70px -30px #000}
 .lb figcaption{text-align:center;font:400 22px/1.35 var(--f-d)}
-.lb figcaption small{display:block;font:600 12px/1.4 var(--f-t);letter-spacing:.22em;opacity:.85}
+.lb figcaption small{display:block;font:600 12px/1.4 var(--f-t);letter-spacing:.24em;opacity:.85}
 .lb button{position:absolute;width:46px;height:46px;border-radius:50%;border:1px solid rgba(232,211,166,.6);background:rgba(74,51,64,.7);color:var(--ivory);display:grid;place-items:center;cursor:pointer}
 .lb button svg{width:22px;height:22px}
 #lbX{top:max(14px,env(safe-area-inset-top));right:14px}
@@ -633,7 +638,7 @@ html.lb-open{overflow:hidden}
   <section class="sec kasih" aria-labelledby="h-kasih">
     <div class="petals" data-set="kasih" aria-hidden="true"></div>
     <div class="wrap">
-      <header class="hd"><p class="kick rv">Amplop Digital</p><h2 id="h-kasih" class="rv" style="--rd:.1s">Tanda <em>Kasih</em></h2><p class="lead rv" style="--rd:.2s">Doa restu Anda adalah hadiah terbaik bagi kami. Bila ingin memberi tanda kasih, Anda dapat mengirimkannya melalui:</p></header>
+      <header class="hd"><p class="kick rv">Tanda Kasih</p><h2 id="h-kasih" class="rv" style="--rd:.1s">Amplop <em>Digital</em></h2><p class="lead rv" style="--rd:.2s">Doa restu Anda adalah hadiah terbaik bagi kami. Bila ingin memberi tanda kasih, Anda dapat mengirimkannya melalui:</p></header>
       <ul class="gifts">
         <li class="gift rv"><p class="kick">Bank Contoh</p><p class="val">1234 5678 90</p><p class="nm">a.n. Larasati Pramesti</p><button class="btn line sm" type="button" data-copy="1234567890" data-what="Nomor rekening">Salin Nomor</button></li>
         <li class="gift rv" style="--rd:.1s"><p class="kick">Dompet Digital</p><p class="val">0812 3456 7890</p><p class="nm">a.n. Bima Arya Nugraha</p><button class="btn line sm" type="button" data-copy="081234567890" data-what="Nomor dompet digital">Salin Nomor</button></li>
@@ -658,7 +663,7 @@ html.lb-open{overflow:hidden}
 </main>
 
 <footer class="foot">
-  <p class="foot-mark">Laras &amp; Bima · 12.12.2026</p>
+  <p class="foot-mark">Laras &amp; Bima · <span style="white-space:nowrap">12 · 12 · 2026</span></p>
   <p>Tema <b>Kelopak Mimpi</b> · taman kelopak abstrak di bawah cahaya kubah, palet powdery dan sampanye. Nama, tanggal, alamat, dan rekening adalah data contoh; foto contoh dibuat dengan AI.</p>
   <p>Font Italiana, Urbanist &amp; Ephesis, SIL Open Font License 1.1.</p>
 </footer>
@@ -688,13 +693,21 @@ const store = {
   set(k, v) { try { localStorage.setItem("km-" + k, JSON.stringify(v)); } catch {} },
 };
 
-// Nama tamu dari ?to=Nama: spasi di ujung dibuang, maksimal 60 karakter.
-const GUEST = (params.get("to") || "").trim().slice(0, 60);
+// Nama tamu dari ?to=Nama: spasi di ujung dibuang. Di sampul maksimal 60 karakter; nama yang lebih panjang dipotong
+// di batas kata terakhir dan diberi "…" (bila tidak ada spasi setelah karakter ke-30, dipotong keras di 59 karakter).
+function shortName(s, max = 60) {
+  const ch = [...s];
+  if (ch.length <= max) return s;
+  const cut = ch.slice(0, max).lastIndexOf(" ");
+  return ch.slice(0, cut >= 30 ? cut : max - 1).join("").replace(/[\s.,;:!?&/\-–—]+$/u, "") + "…";
+}
+const TO = (params.get("to") || "").trim();
+const GUEST = shortName(TO);
 if (GUEST) {
   $("#guest").textContent = GUEST;
   $("#guest").classList.toggle("long", GUEST.length > 22);
-  $("#rName").value = GUEST;
-  $("#wName").value = GUEST;
+  // Formulir memakai nama utuh (dibatasi maxlength 80), bukan versi berelipsis untuk sampul.
+  $("#rName").value = $("#wName").value = [...TO].slice(0, 80).join("");
 }
 
 /* ---------- Kelopak ---------- */
@@ -923,6 +936,8 @@ function swap(el, text) {
   el.append(n);
   if (!old) return;
   if (!FULL) { old.remove(); return; }
+  // Angka lama yang sedang memudar disembunyikan dari pembaca layar, supaya hanya angka baru yang terbaca.
+  old.setAttribute("aria-hidden", "true");
   old.animate([{ opacity: 1, transform: "none" }, { opacity: 0, transform: "translateY(-24%) scale(.92)" }], { duration: 600, easing: "ease", fill: "forwards" }).onfinish = () => old.remove();
   n.animate([{ opacity: 0, transform: "translateY(24%) scale(.92)" }, { opacity: 1, transform: "none" }], { duration: 700, delay: 80, easing: "cubic-bezier(.2,.7,.1,1)", fill: "backwards" });
 }
@@ -1018,7 +1033,7 @@ $$("[data-copy]").forEach((b) => b.addEventListener("click", async () => {
   const text = b.dataset.copy;
   try { await navigator.clipboard.writeText(text); }
   catch { const t = document.createElement("textarea"); t.value = text; document.body.appendChild(t); t.select(); try { document.execCommand("copy"); } catch {} t.remove(); }
-  toast(`${b.dataset.what} disalin`);
+  toast(`${b.dataset.what} disalin.`);
 }));
 
 /* ---------- Konfirmasi kehadiran ---------- */
@@ -1204,7 +1219,8 @@ var Music = (() => {
     for (let i = 0; i < n; i++) peak = Math.max(peak, Math.abs(data[i]));
     return wav(data.subarray(0, n), SR, .5 / (peak || 1));
   }
-  const prepare = () => (making ||= render().then((u) => { url = u; if (want) start(); }).catch(() => { musicBtn.remove(); }));
+  const busy = (on) => { if (on) musicBtn.setAttribute("aria-busy", "true"); else musicBtn.removeAttribute("aria-busy"); };
+  const prepare = () => (making ||= render().then((u) => { url = u; busy(false); if (want) start(); }).catch(() => { musicBtn.remove(); }));
   function start() {
     if (!url) return;
     if (audio.src !== url) audio.src = url;
@@ -1218,7 +1234,10 @@ var Music = (() => {
   musicBtn.addEventListener("click", () => {
     if (!audio.paused) { want = false; audio.pause(); setUi(false); return; }
     want = true;
-    url ? start() : prepare();
+    if (url) return start();
+    // Musik belum selesai dirender: tombol menandai "memuat" sampai siap.
+    busy(true);
+    prepare();
   });
   // Dirender saat browser senggang supaya siap ketika tamu membuka undangan.
   if (typeof OfflineAudioContext === "undefined") musicBtn.remove();
@@ -1230,6 +1249,7 @@ var Music = (() => {
       // Musik belum siap: buka kunci pemutaran iOS dengan sunyi di dalam gestur ketukan, lalu putar begitu selesai dirender.
       audio.src = SILENT;
       audio.play().catch(() => {});
+      busy(true);
       prepare();
     },
   };

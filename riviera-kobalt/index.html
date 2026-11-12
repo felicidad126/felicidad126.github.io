@@ -97,6 +97,7 @@ html{-webkit-tap-highlight-color:transparent}
   --lem:#f3c94a;--lem-2:#f8df8c;--lem-d:#dfa92c;
   --leaf:#5d7d3b;--leaf-d:#4a6a2c;--coral:#c9512f;
   --ink:#16285a;--ink-2:#44507a;--line:#d9d1c0;
+  --on-cob:#e7ecf8;--field:#fbfaf6;--field-line:#cfd6e8;--err:#a3291a;--grout:#e6dcc8;
   --f-d:"DM Serif Display",Georgia,"Times New Roman",serif;--f-s:"Yellowtail","Brush Script MT",cursive;--f-t:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --ease:cubic-bezier(.2,.7,.1,1);--sw:28px;
   --tile:linear-gradient(var(--wash),var(--wash));
@@ -132,7 +133,7 @@ html.motion .btn::after{animation:glint 5.5s ease-in-out infinite}
 .btn-line::after{display:none}
 .btn-line:hover{background:var(--cob);color:#fff;box-shadow:inset 0 0 0 1.5px var(--cob)}
 .btn.sm{min-height:42px;padding:11px 18px;font-size:12px}
-.lnk{display:inline-flex;align-items:center;gap:6px;color:var(--cob);font:600 12px/1.3 var(--f-t);letter-spacing:.18em;text-transform:uppercase;text-decoration:none;padding:6px 0;border-bottom:1.5px solid currentColor}
+.lnk{display:inline-flex;align-items:center;gap:6px;color:var(--cob);font:600 12px/1.3 var(--f-t);letter-spacing:.16em;text-transform:uppercase;text-decoration:none;padding:6px 0;border-bottom:1.5px solid currentColor}
 .lnk:hover{color:var(--coral)}
 
 /* ---------- Kanopi beach club: garis kobalt-putih dengan tepi scallop ---------- */
@@ -207,7 +208,7 @@ html.calm .rv{opacity:0;transition:opacity .7s ease}
 .g-to{font-size:13px;color:var(--ink-2)}
 .g-name{font:400 clamp(22px,3.4svh,30px)/1.15 var(--f-d);color:var(--ink);overflow-wrap:anywhere;text-wrap:balance}
 .g-guest .btn{margin-top:clamp(2px,.8svh,8px)}
-.g-floor{flex:none;--th:clamp(26px,4.4svh,44px);box-shadow:0 -1px 0 var(--grout,#e6dcc8)}
+.g-floor{flex:none;--th:clamp(26px,4.4svh,44px);box-shadow:0 -1px 0 var(--grout)}
 /* Isi sampul masuk berurutan. */
 html.motion .g-in > *{animation:rise 1s var(--ease) both}
 html.motion .g-text{animation-delay:.55s!important}
@@ -300,7 +301,7 @@ html.motion .pin.on{transform:none}
 .cd .face{height:100%;border-radius:6px;background:var(--white);display:grid;place-items:center;overflow:hidden;perspective:300px}
 .cd .num{display:grid;font:400 clamp(30px,7.8vw,46px)/1 var(--f-d);color:var(--cob);font-variant-numeric:tabular-nums}
 .cd .num span{grid-area:1/1}
-.cd small{font:600 11px/1 var(--f-t);letter-spacing:.22em;text-transform:uppercase}
+.cd small{font:600 12px/1 var(--f-t);letter-spacing:.24em;text-transform:uppercase}
 #countMsg{font:400 26px/1.3 var(--f-d);color:var(--cob)}
 
 /* =========================================================== ACARA: kartu menu beach club */
@@ -321,7 +322,7 @@ html.motion .pin.on{transform:none}
 .course h3{font:400 clamp(28px,6vw,34px)/1.1 var(--f-d)}
 .c-time{display:flex;align-items:baseline;gap:10px;font:600 14px/1.3 var(--f-t);letter-spacing:.1em;color:var(--cob);margin:6px auto 4px;width:min(100%,300px)}
 .c-time::before,.c-time::after{content:"";flex:1;border-bottom:2px dotted var(--wash);transform:translateY(-4px)}
-.c-venue{font:400 19px/1.3 var(--f-d)}
+.c-venue{font:400 20px/1.3 var(--f-d)}
 .c-addr{font-size:14px;color:var(--ink-2)}
 .course .lnk{justify-self:center;margin-top:8px}
 .menu-sep{width:150px;justify-self:center}
@@ -351,21 +352,21 @@ html.motion .grid .rv{transform:translateY(30px) scale(.94)}
 .tk-head{position:relative;background:var(--cob);color:#fff;text-align:center;padding:22px 20px 34px}
 .tk-head::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:14px;background:radial-gradient(circle at 50% 100%,var(--white) 13.4px,transparent 14px) 0 0/28px 14px repeat-x}
 .tk-head .sc{display:block;color:#fff;font-size:clamp(44px,10vw,56px);line-height:1}
-.tk-head small{display:block;margin-top:6px;font:600 12px/1.3 var(--f-t);letter-spacing:.24em;text-transform:uppercase;color:#e7ecf8}
+.tk-head small{display:block;margin-top:6px;font:600 12px/1.3 var(--f-t);letter-spacing:.24em;text-transform:uppercase;color:var(--on-cob)}
 .form{display:grid;gap:16px;padding:24px clamp(18px,5vw,30px) 28px}
 .field{display:grid;gap:7px;border:0;margin:0;padding:0;min-width:0}
-.field > span,.field legend{font:600 12px/1.3 var(--f-t);letter-spacing:.18em;text-transform:uppercase;color:var(--cob);padding:0;margin-bottom:7px}
-.inp{width:100%;font:400 16px/1.4 var(--f-t);color:var(--ink);background:#fbfaf6;border:1.5px solid #cfd6e8;border-radius:12px;padding:12px 14px;transition:border-color .2s,box-shadow .2s}
+.field > span,.field legend{font:600 12px/1.3 var(--f-t);letter-spacing:.16em;text-transform:uppercase;color:var(--cob);padding:0;margin-bottom:7px}
+.inp{width:100%;font:400 16px/1.4 var(--f-t);color:var(--ink);background:var(--field);border:1.5px solid var(--field-line);border-radius:12px;padding:12px 14px;transition:border-color .2s,box-shadow .2s}
 .inp:focus{outline:0;border-color:var(--cob);box-shadow:0 0 0 3px rgba(29,74,160,.18)}
 textarea.inp{min-height:110px;resize:vertical}
-select.inp{appearance:none;background:#fbfaf6 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231d4aa0' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") right 12px center/18px no-repeat;padding-right:40px}
+select.inp{appearance:none;background:var(--field) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231d4aa0' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") right 12px center/18px no-repeat;padding-right:40px}
 .pills{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .pill{position:relative}
 .pill input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
-.pill span{display:flex;align-items:center;justify-content:center;min-height:46px;padding:10px;border-radius:999px;border:1.5px solid #cfd6e8;font:600 13px/1.2 var(--f-t);letter-spacing:.06em;color:var(--ink);transition:background .2s,color .2s,border-color .2s}
+.pill span{display:flex;align-items:center;justify-content:center;min-height:46px;padding:10px;border-radius:999px;border:1.5px solid var(--field-line);font:600 13px/1.2 var(--f-t);letter-spacing:.06em;color:var(--ink);transition:background .2s,color .2s,border-color .2s}
 .pill input:checked + span{background:var(--cob);border-color:var(--cob);color:#fff}
 .pill input:focus-visible + span{outline:2.5px solid var(--cob);outline-offset:3px}
-.err{color:#a3291a;font-size:14px;font-weight:500}
+.err{color:var(--err);font-size:14px;font-weight:500}
 .note{font-size:12px;color:var(--ink-2);text-align:center}
 .done{display:grid;justify-items:center;gap:14px;text-align:center;padding:30px 26px 34px}
 .done:focus{outline:0}
@@ -418,8 +419,9 @@ select.inp{appearance:none;background:#fbfaf6 url("data:image/svg+xml,%3Csvg xml
 .close .waves{--wh:clamp(46px,7vw,80px);margin-top:-1px}
 
 /* =========================================================== FOOTER */
-.foot{background:var(--cob);color:#e7ecf8;text-align:center;padding:34px 20px calc(88px + env(safe-area-inset-bottom));font-size:13px;line-height:1.75}
+.foot{background:var(--cob);color:var(--on-cob);text-align:center;padding:34px 20px calc(88px + env(safe-area-inset-bottom));font-size:13px;line-height:1.75}
 .foot p{max-width:46em;margin:0 auto 8px}
+.foot-mark{font:400 26px/1.3 var(--f-d);color:var(--lem-2)}
 .foot b{color:#fff}
 .foot a{color:#fff;text-underline-offset:3px}
 .foot a:hover{color:var(--lem)}
@@ -432,6 +434,11 @@ select.inp{appearance:none;background:#fbfaf6 url("data:image/svg+xml,%3Csvg xml
 .music.on::before{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid rgba(243,201,74,.85);animation:ripple 2.6s ease-out infinite}
 html.calm .music.on::before{animation:none;opacity:0}
 @keyframes ripple{from{transform:scale(.85);opacity:1}to{transform:scale(1.35);opacity:0}}
+/* Musik masih dirender: cincin berputar pelan sampai siap (diam bila animasi dikurangi). */
+.music.busy .slash{display:none}
+.music.busy::before{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid rgba(243,201,74,.3);border-top-color:var(--lem);animation:spin .9s linear infinite}
+html.calm .music.busy::before{animation:none}
+@keyframes spin{to{transform:rotate(1turn)}}
 /* Menepi selama halaman digulir, kembali saat berhenti. */
 .music.tuck{opacity:0;transform:translateY(14px) scale(.9);pointer-events:none}
 html.calm .music.tuck{transform:none}
@@ -443,7 +450,7 @@ html.lb-open{overflow:hidden}
 .lb-in{position:relative;width:100%;height:100%;display:grid;grid-template-rows:1fr auto;align-items:center;justify-items:center;padding:60px 16px 18px}
 .lb img{max-width:100%;max-height:calc(100svh - 140px);object-fit:contain;border-radius:8px;box-shadow:0 0 0 6px #fff;user-select:none;-webkit-user-drag:none}
 .lb-cap{display:grid;gap:4px;text-align:center;padding-top:16px;font-size:14px}
-.lb-cap small{opacity:.8;font-size:12px;letter-spacing:.14em}
+.lb-cap small{opacity:.8;font-size:12px;letter-spacing:.16em}
 .lb button{position:absolute;width:46px;height:46px;border-radius:50%;border:0;background:rgba(255,255,255,.16);color:#fff;display:grid;place-items:center;cursor:pointer}
 .lb button:hover{background:rgba(255,255,255,.28)}
 .lb :focus-visible{outline-color:#fff}
@@ -451,10 +458,14 @@ html.lb-open{overflow:hidden}
 #lbX{top:12px;right:12px}
 #lbPrev{left:12px;top:50%;margin-top:-23px}
 #lbNext{right:12px;top:50%;margin-top:-23px}
+/* Layar sempit: foto hampir selebar layar, jadi panah turun ke baris keterangan supaya tidak menimpa foto. */
+@media (max-width:699px){
+  .lb-cap{min-height:62px;align-content:center;padding-inline:60px}
+  #lbPrev,#lbNext{top:auto;bottom:18px;margin-top:0}
+}
 
 /* =========================================================== DESKTOP */
 @media (min-width:900px){
-  .hd.left{text-align:left;justify-items:start}
   .pair{grid-template-columns:1fr auto 1fr;align-items:center;column-gap:clamp(20px,4vw,60px)}
   .plate{width:min(30vw,360px)}
   .track{padding:20px 0}
@@ -502,6 +513,8 @@ html.lb-open{overflow:hidden}
 <div class="curtain" aria-hidden="true"></div>
 
 <main id="main" tabindex="-1">
+  <!-- Judul halaman untuk pembaca layar; <h1> di sampul ikut hilang begitu sampul dibuka. -->
+  <h1 class="sr">Undangan pernikahan Laras &amp; Bima</h1>
   <section class="sec salam" aria-labelledby="h-salam">
     <div class="wrap">
       <div class="medal tiles" data-tiles="1" aria-hidden="true"></div>
@@ -570,17 +583,15 @@ html.lb-open{overflow:hidden}
   <section class="date" aria-labelledby="h-date">
     <div class="wrap">
       <p class="kick rv">Simpan Tanggalnya</p>
-      <div class="row">
-        <h2 id="h-date" class="rv" style="--d:.1"><span class="d-day">Sabtu</span><span class="d-num">12</span><span class="d-my">Desember 2026</span></h2>
-        <div>
-          <div class="count rv" id="count" style="--d:.2" role="timer" aria-label="Hitung mundur menuju akad nikah">
-            <div class="cd"><div class="box"><div class="face"><b class="num" data-u="d"></b></div></div><small>Hari</small></div>
-            <div class="cd"><div class="box"><div class="face"><b class="num" data-u="h"></b></div></div><small>Jam</small></div>
-            <div class="cd"><div class="box"><div class="face"><b class="num" data-u="m"></b></div></div><small>Menit</small></div>
-            <div class="cd"><div class="box"><div class="face"><b class="num" data-u="s"></b></div></div><small>Detik</small></div>
-          </div>
-          <p id="countMsg" hidden></p>
+      <h2 id="h-date" class="rv" style="--d:.1"><span class="d-day">Sabtu</span><span class="d-num">12</span><span class="d-my">Desember 2026</span></h2>
+      <div>
+        <div class="count rv" id="count" style="--d:.2" role="timer" aria-label="Hitung mundur menuju akad nikah">
+          <div class="cd"><div class="box"><div class="face"><b class="num" data-u="d"></b></div></div><small>Hari</small></div>
+          <div class="cd"><div class="box"><div class="face"><b class="num" data-u="h"></b></div></div><small>Jam</small></div>
+          <div class="cd"><div class="box"><div class="face"><b class="num" data-u="m"></b></div></div><small>Menit</small></div>
+          <div class="cd"><div class="box"><div class="face"><b class="num" data-u="s"></b></div></div><small>Detik</small></div>
         </div>
+        <p id="countMsg" hidden></p>
       </div>
     </div>
   </section>
@@ -720,6 +731,7 @@ html.lb-open{overflow:hidden}
 </main>
 
 <footer class="foot">
+  <p class="foot-mark">Laras &amp; Bima · 12.12.2026</p>
   <p>Tema <b>Riviera Kobalt</b> · pernikahan ala beach club Riviera di Bali: ubin majolika, ranting lemon, dan kanopi bergaris yang dilukis tangan. Nama, tanggal, alamat, dan rekening adalah data contoh; foto contoh dibuat dengan AI.</p>
   <p>Font DM Serif Display, Yellowtail &amp; DM Sans, SIL Open Font License 1.1.</p>
 </footer>
@@ -752,12 +764,22 @@ const store = {
   set(k, v) { try { localStorage.setItem("rk-" + k, JSON.stringify(v)); } catch {} },
 };
 
-// Nama tamu dari ?to=Nama: spasi di ujung dibuang, maksimal 60 karakter.
-const GUEST = (params.get("to") || "").trim().slice(0, 60);
+// Nama tamu dari ?to=Nama: spasi di ujung dibuang, maksimal 60 karakter. Nama yang lebih panjang dipotong di batas kata
+// terakhir lalu diberi "…" (hasilnya tetap paling banyak 60 karakter); tanpa spasi setelah karakter ke-30, dipotong di karakter ke-59.
+const clipName = (s, max = 60) => {
+  const ch = [...s];
+  if (ch.length <= max) return s;
+  let i = max - 1;
+  while (i >= 30 && !/\s/.test(ch[i])) i--;
+  const head = i >= 30 ? ch.slice(0, i) : ch.slice(0, max - 1);
+  return head.join("").replace(/[\s.,;:!?&\/·\-–—]+$/, "") + "…";
+};
+const GUEST = clipName((params.get("to") || "").trim());
+const GUEST_FULL = [...(params.get("to") || "").trim()].slice(0, 80).join("");
 if (GUEST) {
   $("#guest").textContent = GUEST;
-  $("#rName").value = GUEST;
-  $("#wName").value = GUEST;
+  $("#rName").value = GUEST_FULL;
+  $("#wName").value = GUEST_FULL;
 }
 
 /* ---------- Ranting lemon: daun dua nada, lemon bergaris bayang, bunga putih kecil ---------- */
@@ -1027,7 +1049,7 @@ $$("[data-copy]").forEach((b) => b.addEventListener("click", async () => {
   const text = b.dataset.copy;
   try { await navigator.clipboard.writeText(text); }
   catch { const t = document.createElement("textarea"); t.value = text; document.body.appendChild(t); t.select(); try { document.execCommand("copy"); } catch {} t.remove(); }
-  toast(`${b.dataset.what} disalin`);
+  toast(`${b.dataset.what} disalin.`);
 }));
 
 /* ---------- Reservasi (konfirmasi kehadiran) ---------- */
@@ -1200,7 +1222,7 @@ var Music = (() => {
     for (let i = 0; i < n; i++) peak = Math.max(peak, Math.abs(data[i]));
     return wav(data.subarray(0, n), SR, .5 / (peak || 1));
   }
-  const prepare = () => (making ||= render().then((u) => { url = u; if (want) start(); }).catch(() => { musicBtn.remove(); }));
+  const prepare = () => (making ||= render().then((u) => { url = u; setBusy(false); if (want) start(); }).catch(() => { musicBtn.remove(); }));
   function start() {
     if (!url) return;
     if (audio.src !== url) audio.src = url;
@@ -1211,10 +1233,19 @@ var Music = (() => {
     musicBtn.setAttribute("aria-pressed", String(on));
     musicBtn.setAttribute("aria-label", on ? "Jeda musik" : "Putar musik");
   }
+  // Keadaan "memuat": tamu sudah minta musik, tetapi rendernya belum selesai.
+  function setBusy(on) {
+    musicBtn.classList.toggle("busy", on);
+    if (on) { musicBtn.setAttribute("aria-busy", "true"); musicBtn.setAttribute("aria-label", "Memuat musik"); }
+    else { musicBtn.removeAttribute("aria-busy"); setUi(musicBtn.classList.contains("on")); }
+  }
   musicBtn.addEventListener("click", () => {
+    // Ketukan saat masih memuat membatalkan permintaan.
+    if (want && !url) { want = false; audio.pause(); setBusy(false); return; }
     if (!audio.paused) { want = false; audio.pause(); setUi(false); return; }
     want = true;
-    url ? start() : prepare();
+    if (url) start();
+    else { setBusy(true); prepare(); }
   });
   // Dirender saat browser senggang supaya siap ketika tamu membuka undangan.
   if (typeof OfflineAudioContext === "undefined") musicBtn.remove();
@@ -1226,6 +1257,7 @@ var Music = (() => {
       // Musik belum siap: buka kunci pemutaran iOS dengan sunyi di dalam gestur ketukan, lalu putar begitu selesai dirender.
       audio.src = SILENT;
       audio.play().catch(() => {});
+      setBusy(true);
       prepare();
     },
   };

@@ -24,6 +24,8 @@
   --env:#ece4d6;--linen:#d9cebd;
   --ease:cubic-bezier(.22,.8,.24,1);
   --f-script:"Parisienne",cursive;--f-serif:"EB Garamond",Georgia,serif;--f-cap:"Marcellus","EB Garamond",serif;
+  /* Jarak huruf untuk teks kapital, tiga tingkat: tombol/tab/tautan, label formulir & data, eyebrow. */
+  --ls-1:.16em;--ls-2:.2em;--ls-3:.3em;
   --vh:100vh;
   /* Ukuran kartu: setinggi ruang di antara kepala & navigasi, lebar mengikuti rasio kartu undangan.
      Nilai ini hanya cadangan; JS (sizeCards) mengukur ruang yang benar-benar tersisa di .deck. */
@@ -53,7 +55,9 @@ body::after{opacity:.55;mix-blend-mode:multiply;background-image:url("data:image
 button{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--ink);outline-offset:3px}
 
-.scene{position:relative;z-index:1;height:var(--vh);min-height:500px;overflow:hidden}
+/* overflow:clip (bukan hidden): kartu tetangga yang tersingkir ke samping melebihi lebar layar, dan kotak overflow:hidden
+   masih bisa digulir lewat skrip/fokus sehingga seluruh area kartu tergeser. clip tidak membuat area gulir. */
+.scene{position:relative;z-index:1;height:var(--vh);min-height:500px;overflow:hidden;overflow:clip}
 /* Hiasan meja (ranting kering & pita sutra), di belakang semuanya. */
 .decor{position:absolute;pointer-events:none;z-index:0}
 .decor.sprig{width:min(46vw,260px);left:-34px;top:-20px;color:#8f806b;opacity:.75;transform:rotate(-12deg);transition:opacity .8s}
@@ -62,8 +66,8 @@ body.opened .decor.sprig{opacity:.3}
 
 /* ---------- Amplop ---------- */
 .env-stage{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(14px,3vh,26px);padding:24px 16px}
-.env-kicker{margin:0;font:12px/1.4 var(--f-cap);letter-spacing:.32em;text-transform:uppercase;color:var(--ink-2);text-align:center}
-.env-hint{margin:0;font:italic 16px/1.4 var(--f-serif);color:var(--ink-2);text-align:center}
+.env-kicker{margin:0;font:11px/1.4 var(--f-cap);letter-spacing:var(--ls-3);text-transform:uppercase;color:var(--ink-2);text-align:center}
+.env-hint{margin:0;font:italic 15px/1.4 var(--f-serif);color:var(--ink-2);text-align:center}
 /* Ukuran dari tinggi halaman (.scene minimal 500px), supaya di HP landscape amplop tidak mengecil. */
 .env{--ew:min(80vw,350px,calc((max(var(--vh),500px) - 190px) * .75));position:relative;width:var(--ew);height:calc(var(--ew) * 1.33);perspective:1300px;container-type:size}
 .env > *{position:absolute}
@@ -94,7 +98,7 @@ body.opened .decor.sprig{opacity:.3}
 .env.flipped .env-flapwrap{z-index:1}
 /* Alamat ditulis tangan + perangko + cap pos */
 .addr{position:absolute;left:8%;right:8%;top:57%;text-align:center;color:var(--ink)}
-.addr small{display:block;font:max(11px,2.9cqw)/1.4 var(--f-cap);letter-spacing:.28em;text-transform:uppercase;color:var(--ink-2)}
+.addr small{display:block;font:max(11px,2.9cqw)/1.4 var(--f-cap);letter-spacing:var(--ls-3);text-transform:uppercase;color:var(--ink-2)}
 .addr span{display:block;font:italic max(12px,4.4cqw)/1.3 var(--f-serif);color:var(--ink-2);margin-top:1.2cqw}
 .addr b{display:block;font:400 clamp(24px,10.5cqw,46px)/1.15 var(--f-script);margin:1.4cqw 0 0;overflow-wrap:anywhere;padding:0 2%}
 .addr b::after{content:"";display:block;width:58%;height:1px;margin:2.4cqw auto 0;background:linear-gradient(90deg,transparent,#9a8a76 20%,#9a8a76 80%,transparent)}
@@ -148,9 +152,12 @@ body.opened .decor.sprig{opacity:.3}
 body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
 .top{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:6px 14px 0}
 .top .mono-s{font:400 26px/1 var(--f-script);color:var(--ink);justify-self:start}
-.top .date{font:11px/1 var(--f-cap);letter-spacing:.3em;color:var(--ink-2)}
-.music{justify-self:end;width:40px;height:40px;border-radius:50%;border:1px solid #9a8a7680;background:#f6f1e9e6;color:var(--ink);display:grid;place-items:center;cursor:pointer;position:relative}
+.top .date{font:11px/1 var(--f-cap);letter-spacing:var(--ls-3);color:var(--ink-2)}
+.music{justify-self:end;width:40px;height:40px;border-radius:50%;border:1px solid #9a8a7680;background:#f6f1e9e6;color:var(--ink);display:grid;place-items:center;cursor:pointer;position:relative;transition:background-color .2s,border-color .2s}
 .music svg{width:18px;height:18px}
+/* Musik masih dirender (ketukan terlalu cepat): ikon berdenyut pelan; reduced motion: hanya diredupkan. */
+.music[aria-busy="true"] svg{opacity:.5;animation:busy .9s ease-in-out infinite alternate}
+@keyframes busy{from{opacity:.3}to{opacity:1}}
 .music[aria-pressed="false"]::after{content:"";position:absolute;width:20px;height:1.5px;background:var(--ink);rotate:-45deg}
 .music[aria-pressed="true"] svg{animation:bob 2.4s ease-in-out infinite}
 @keyframes bob{50%{translate:0 -2px}}
@@ -197,22 +204,24 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
 .in{margin-block:auto;display:flex;flex-direction:column;align-items:center}
 /* Tanda gulir: pil "Gulir" di tepi bawah kertas selama isi masih berlanjut; hilang setelah kartu digulir. */
 .more{position:absolute;left:50%;bottom:14px;translate:-50% 0;z-index:1;display:inline-flex;align-items:center;gap:6px;padding:5px 10px 5px 13px;border-radius:20px;background:var(--ivory-2);box-shadow:inset 0 0 0 1px #9a8a7680;
-  font:11px/1.2 var(--f-cap);letter-spacing:.2em;text-transform:uppercase;color:var(--ink-2);pointer-events:none;opacity:0;transition:opacity .3s}
+  font:11px/1.2 var(--f-cap);letter-spacing:var(--ls-2);text-transform:uppercase;color:var(--ink-2);pointer-events:none;opacity:0;transition:opacity .3s}
 .more svg{width:12px;height:12px}
 .js .more svg{animation:nudge 1.8s ease-in-out infinite}
 @keyframes nudge{50%{translate:0 2px}}
 .paper.more-on .scroll{--fb:64px}
 .paper.more-on .more{opacity:1}
 .paper.more-on.scrolled .more{opacity:0}
-.kicker{margin:0;font:11px/1.5 var(--f-cap);letter-spacing:.3em;text-transform:uppercase;color:var(--ink-2)}
-.title{margin:.35em 0 0;font:400 clamp(28px,9cqw,38px)/1.1 var(--f-serif);color:var(--ink)}
+.kicker{margin:0;font:11px/1.5 var(--f-cap);letter-spacing:var(--ls-3);text-transform:uppercase;color:var(--ink-2)}
+/* Ukuran judul dari lebar kartu (--cw), bukan cqw: padding kertas berbeda antarkartu, sehingga cqw memberi
+   ukuran judul yang berbeda-beda (28,0/28,3/29,0 px). 48px = padding kiri+kanan kertas standar. */
+.title{margin:.35em 0 0;font:400 clamp(28px,calc((var(--cw) - 48px) * .09),38px)/1.1 var(--f-serif);color:var(--ink)}
 .title em{color:var(--gold)}
 .rule{width:96px;height:22px;color:var(--champ);margin:14px auto}
 .rule svg{width:100%;height:100%;display:block}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:10px 22px;border-radius:2px;border:0;background:var(--ink);color:var(--ivory);font:13px/1.2 var(--f-cap);letter-spacing:.16em;text-transform:uppercase;text-decoration:none;cursor:pointer}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:10px 22px;border-radius:2px;border:0;background:var(--ink);color:var(--ivory);font:13px/1.2 var(--f-cap);letter-spacing:var(--ls-1);text-transform:uppercase;text-decoration:none;cursor:pointer;transition:background-color .2s,box-shadow .2s}
 .btn.line{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px #3b322b99}
 .btn svg{width:16px;height:16px}
-.note{margin:10px 0 0;font:italic 14px/1.45 var(--f-serif);color:var(--ink-2)}
+.note{margin:10px 0 0;font:italic 13px/1.45 var(--f-serif);color:var(--ink-2)}
 
 /* 1 · Undangan: kartu berpuncak lengkung, dibungkus vellum dan pita */
 .c-invite .paper{border-radius:calc(var(--cw) / 2) calc(var(--cw) / 2) 6px 6px;padding-top:calc(var(--cw) * .17)}
@@ -220,15 +229,15 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
 .mono{position:relative;width:66px;height:66px;display:grid;place-items:center;margin-bottom:10px;color:var(--gold)}
 .mono svg{position:absolute;inset:0;width:100%;height:100%;color:var(--champ)}
 .mono span{font:400 27px/1 var(--f-script);color:var(--ink);translate:0 3px}
-.lead{margin:12px 0 0;font:italic 16px/1.5 var(--f-serif);color:var(--ink-2);max-width:26ch}
+.lead{margin:12px 0 0;font:italic 15px/1.5 var(--f-serif);color:var(--ink-2);max-width:26ch}
 .names{margin:.2em 0 0;font:400 clamp(40px,14cqw,60px)/1.1 var(--f-script);color:var(--ink);display:flex;flex-wrap:wrap;justify-content:center;align-items:baseline;column-gap:.18em}
 .names i{font:italic 400 .5em/1 var(--f-serif);color:var(--gold)}
-.full{margin:8px 0 0;font:11px/1.6 var(--f-cap);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
+.full{margin:8px 0 0;font:11px/1.6 var(--f-cap);letter-spacing:var(--ls-1);text-transform:uppercase;color:var(--ink-2)}
 .when{margin:0;display:flex;flex-direction:column;align-items:center;gap:4px}
-.when span{font:italic 16px/1.3 var(--f-serif);color:var(--ink-2)}
-.when b{font:400 22px/1.2 var(--f-cap);letter-spacing:.24em;color:var(--ink)}
+.when span{font:italic 15px/1.3 var(--f-serif);color:var(--ink-2)}
+.when b{font:400 22px/1.2 var(--f-cap);letter-spacing:var(--ls-2);color:var(--ink)}
 .quote{margin:14px 0 0;max-width:30ch;font:italic 15px/1.5 var(--f-serif);color:var(--ink-2)}
-.swipe-hint{margin:14px 0 0;font:11px/1.4 var(--f-cap);letter-spacing:.22em;text-transform:uppercase;color:var(--ink-2)}
+.swipe-hint{margin:14px 0 0;font:11px/1.4 var(--f-cap);letter-spacing:var(--ls-2);text-transform:uppercase;color:var(--ink-2)}
 .vellum{position:absolute;inset:0;z-index:2;border-radius:calc(var(--cw) / 2) calc(var(--cw) / 2) 6px 6px;overflow:hidden;
   background:linear-gradient(175deg,#fdfbf7c4,#f6f1e9b8),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.02 .09' numOctaves='3' seed='5'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .7 -.25'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23f)'/%3E%3C/svg%3E");
   -webkit-backdrop-filter:blur(5px) saturate(.85);backdrop-filter:blur(5px) saturate(.85);
@@ -238,10 +247,10 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
 /* Foil emas: titik terang gradasi tetap ≥ 3:1 terhadap vellum supaya nama terbaca di layar. */
 .v-names{font:400 clamp(40px,13cqw,58px)/1 var(--f-script);background:linear-gradient(100deg,#6b532e,#87693d 40%,#5e4828 60%,#8b6f43 85%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 1px 0 #ffffffb3)}
 .v-names i{font:italic .5em var(--f-serif)}
-.v-date{font:12px/1 var(--f-cap);letter-spacing:.34em;color:var(--gold)}
+.v-date{font:11px/1 var(--f-cap);letter-spacing:var(--ls-3);color:var(--gold)}
 .band{position:absolute;left:-2px;right:-2px;top:62%;min-height:64px;border:0;padding:10px 16px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
   background:var(--grain),repeating-linear-gradient(90deg,#ffffff0d 0 1px,transparent 1px 3px),linear-gradient(#e9dfcf,#ddd1bd);box-shadow:0 2px 5px #3b322b33,inset 0 1px 0 #ffffff80;transition:transform .75s cubic-bezier(.55,0,.25,1),opacity .4s ease .35s}
-.band-for{font:11px/1.4 var(--f-cap);letter-spacing:.3em;text-transform:uppercase;color:var(--ink-2)}
+.band-for{font:11px/1.4 var(--f-cap);letter-spacing:var(--ls-3);text-transform:uppercase;color:var(--ink-2)}
 .band-name{font:400 26px/1.15 var(--f-script);color:var(--ink);max-width:92%;overflow-wrap:anywhere}
 .band-tap{font:italic 13px/1.3 var(--f-serif);color:var(--ink-2)}
 /* Charm kecil: daun kuningan yang tergantung di pita */
@@ -263,14 +272,14 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
 .cd{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;width:100%;max-width:300px;margin:14px 0 4px}
 .cd div{padding:8px 0 6px;border-top:1px solid #9a8a7666;border-bottom:1px solid #9a8a7666}
 .cd b{display:block;font:400 24px/1.1 var(--f-cap);color:var(--ink)}
-.cd small{font:11px/1.4 var(--f-cap);letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2)}
+.cd small{font:11px/1.4 var(--f-cap);letter-spacing:var(--ls-1);text-transform:uppercase;color:var(--ink-2)}
 .cd.over{display:block;font:italic 17px/1.5 var(--f-serif);color:var(--ink);border-block:1px solid #9a8a7666;padding:10px}
 .ev{margin-top:14px}
 .ev h3{margin:0;font:400 34px/1.1 var(--f-script);color:var(--ink)}
-.ev .time{margin:4px 0 0;font:13px/1.5 var(--f-cap);letter-spacing:.16em;color:var(--gold)}
-.ev .venue{margin:4px 0 0;font:500 18px/1.3 var(--f-serif)}
+.ev .time{margin:4px 0 0;font:13px/1.5 var(--f-cap);letter-spacing:var(--ls-1);color:var(--gold)}
+.ev .venue{margin:4px 0 0;font:500 17px/1.3 var(--f-serif)}
 .ev .addr2{margin:2px 0 0;font:15px/1.45 var(--f-serif);color:var(--ink-2)}
-.link{display:inline-flex;align-items:center;gap:6px;margin-top:6px;min-height:36px;font:12px/1 var(--f-cap);letter-spacing:.18em;text-transform:uppercase;color:var(--ink);text-decoration:none;border-bottom:1px solid #3b322b66}
+.link{display:inline-flex;align-items:center;gap:6px;margin-top:6px;min-height:36px;font:13px/1 var(--f-cap);letter-spacing:var(--ls-1);text-transform:uppercase;color:var(--ink);text-decoration:none;border-bottom:1px solid #3b322b66;transition:border-color .2s}
 .link svg{width:12px;height:12px}
 .ev-sep{width:120px;height:20px;margin:12px auto 0;color:var(--champ)}
 .c-details .btn{margin-top:16px}
@@ -287,8 +296,8 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
 .window::after{content:"";position:absolute;inset:0;border-radius:50%;box-shadow:inset 2px 3px 5px #3b322b66,inset -1px -1px 0 #ffffffa6;pointer-events:none}
 .amp{font:italic 30px/1 var(--f-serif);color:var(--gold);align-self:center;margin-top:-30px}
 .pname{margin:12px 0 0;font:400 40px/1 var(--f-script);color:var(--ink)}
-.pfull{margin:6px 0 0;font:11px/1.5 var(--f-cap);letter-spacing:.16em;text-transform:uppercase;color:var(--ink)}
-.pparents{margin:6px 0 0;font:italic 14px/1.45 var(--f-serif);color:var(--ink-2)}
+.pfull{margin:6px 0 0;font:11px/1.5 var(--f-cap);letter-spacing:var(--ls-1);text-transform:uppercase;color:var(--ink)}
+.pparents{margin:6px 0 0;font:italic 15px/1.45 var(--f-serif);color:var(--ink-2)}
 /* Instagram contoh sebagai teks biasa: tautan ke instagram.com bisa membuka akun milik orang lain. */
 .ig{display:inline-flex;align-items:center;gap:5px;margin-top:6px;font:13px/1.4 var(--f-serif);color:var(--ink-2)}
 .ig svg{width:14px;height:14px}
@@ -298,6 +307,15 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
 .person .pparents{margin-bottom:6px}
 .person .ig{align-self:center;margin-top:auto}
 .c-couple .lead{margin-top:6px}
+/* Baris nama lengkap, orang tua, dan Instagram kedua mempelai memakai baris grid yang sama (subgrid), supaya
+   tetap sejajar ketika nama lengkap salah satunya turun dua baris. */
+@supports (grid-template-rows:subgrid){
+  .pair{grid-template-rows:repeat(5,auto);gap:0 4px}
+  .pair>.person{display:grid;grid-row:1/-1;grid-template-rows:subgrid;justify-items:center}
+  .person figcaption{display:grid;grid-row:2/-1;grid-template-rows:subgrid;justify-self:stretch}
+  .person .ig{justify-self:center;align-self:end}
+  .amp{grid-column:2;grid-row:1/-1}
+}
 
 /* 4 · Foto: map kertas oat dengan takik ibu jari, berisi cetakan foto */
 .c-prints .paper{--p1:#ece5d9;--p2:#e4dacb;padding:44px 18px 22px;
@@ -327,14 +345,14 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
 .stampbox.done svg{opacity:1;transform:rotate(-4deg)}
 .stampbox.done .pm{opacity:.75;transform:rotate(-12deg)}
 .form{display:flex;flex-direction:column;gap:12px;margin-top:14px}
-.field{display:flex;flex-direction:column;gap:2px;font:11px/1.4 var(--f-cap);letter-spacing:.2em;text-transform:uppercase;color:var(--ink-2)}
-.field input,.field textarea,.field select{font:400 18px/1.4 var(--f-serif);letter-spacing:0;text-transform:none;color:var(--ink);background:transparent;border:0;border-bottom:1px solid #9a8a76;border-radius:0;padding:6px 2px;width:100%}
+.field{display:flex;flex-direction:column;gap:2px;font:11px/1.4 var(--f-cap);letter-spacing:var(--ls-2);text-transform:uppercase;color:var(--ink-2)}
+.field input,.field textarea,.field select{font:400 17px/1.4 var(--f-serif);letter-spacing:0;text-transform:none;color:var(--ink);background:transparent;border:0;border-bottom:1px solid #9a8a76;border-radius:0;padding:6px 2px;width:100%}
 .field textarea{resize:none;height:84px;border:1px solid #9a8a7699;padding:8px 10px;background:#ffffff5c}
 .field select{appearance:none;-webkit-appearance:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%233b322b' stroke-width='1.3'/%3E%3C/svg%3E") right 4px center no-repeat}
 .field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--ink);box-shadow:0 1px 0 var(--ink)}
 .field textarea:focus{box-shadow:0 0 0 1px var(--ink)}
 .opts{border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
-.opts legend{padding:0;margin-bottom:4px;font:11px/1.4 var(--f-cap);letter-spacing:.2em;text-transform:uppercase;color:var(--ink-2)}
+.opts legend{padding:0;margin-bottom:4px;font:11px/1.4 var(--f-cap);letter-spacing:var(--ls-2);text-transform:uppercase;color:var(--ink-2)}
 .opt{display:flex;align-items:center;gap:12px;min-height:40px;cursor:pointer;font:17px/1.3 var(--f-serif)}
 .opt input{position:absolute;opacity:0;width:1px;height:1px}
 /* Pilihan tunggal: lingkaran dengan titik, bukan kotak centang */
@@ -371,50 +389,50 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
 .tape{position:absolute;left:50%;top:-9px;width:104px;height:28px;margin-left:-52px;z-index:2;rotate:-3deg;pointer-events:none;opacity:.92;
   background:var(--grain),repeating-linear-gradient(-45deg,#ffffff38 0 5px,#0000 5px 10px),linear-gradient(#e6d6b6,#dcc8a2);
   clip-path:polygon(0 0,100% 0,97% 17%,100% 33%,97% 50%,100% 67%,97% 83%,100% 100%,0 100%,3% 83%,0 67%,3% 50%,0 33%,3% 17%);filter:drop-shadow(0 1px 1px #3b322b33)}
-.wcount{margin:10px 0 4px;font:11px/1.4 var(--f-cap);letter-spacing:.2em;text-transform:uppercase;color:var(--ink-2)}
+.wcount{margin:10px 0 4px;font:11px/1.4 var(--f-cap);letter-spacing:var(--ls-2);text-transform:uppercase;color:var(--ink-2)}
 .wlist{width:100%;text-align:left}
 .wish{padding:12px 0;border-top:1px solid #9a8a7659}
 .wish b{display:block;font:400 26px/1.1 var(--f-script);color:var(--ink)}
-.wish p{margin:4px 0 0;font:16px/1.5 var(--f-serif);color:var(--ink)}
-.wish small{display:block;margin-top:4px;font:11px/1.4 var(--f-cap);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2)}
+.wish p{margin:4px 0 0;font:17px/1.5 var(--f-serif);color:var(--ink)}
+.wish small{display:block;margin-top:4px;font:11px/1.4 var(--f-cap);letter-spacing:var(--ls-2);text-transform:uppercase;color:var(--ink-2)}
 
 /* 8 · Tanda Kasih: kartu sisipan dengan sudut terlipat (setinggi kartu lain, supaya kartu di belakangnya tidak mengintip) */
 .c-gift .paper{--p1:#ebe2d4;--p2:#e2d7c6;clip-path:polygon(0 0,calc(100% - 38px) 0,100% 38px,100% 100%,0 100%);padding:30px 22px}
 .fold{position:absolute;right:0;top:0;width:38px;height:38px;z-index:1;background:linear-gradient(225deg,transparent 50%,#cfc2ae 50%,#f1e9dc 100%);filter:drop-shadow(-2px 2px 2px #3b322b33);pointer-events:none}
 .acct{width:100%;margin-top:14px;padding:14px 16px;background:#fbf8f2b3;box-shadow:inset 0 0 0 1px #9a8a7666;text-align:left;display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 12px}
 /* Tombol Salin di baris label, supaya nomor mendapat lebar penuh dan tidak patah baris. */
-.acct small{grid-row:1;align-self:center;font:11px/1.4 var(--f-cap);letter-spacing:.2em;text-transform:uppercase;color:var(--ink-2)}
+.acct small{grid-row:1;align-self:center;font:11px/1.4 var(--f-cap);letter-spacing:var(--ls-2);text-transform:uppercase;color:var(--ink-2)}
 .acct .copy{grid-column:2;grid-row:1}
 .acct b,.acct span{grid-column:1/-1}
 .acct b{font:400 clamp(18px,6.6cqw,22px)/1.2 var(--f-cap);letter-spacing:.08em;color:var(--ink);white-space:nowrap}
 .acct span{font:italic 15px/1.4 var(--f-serif);color:var(--ink-2)}
-.copy{min-height:40px;padding:6px 14px;border:1px solid #3b322b80;background:transparent;border-radius:2px;font:11px/1 var(--f-cap);letter-spacing:.16em;text-transform:uppercase;color:var(--ink);cursor:pointer}
+.copy{min-height:40px;padding:6px 14px;border:1px solid #3b322b80;background:transparent;border-radius:2px;font:11px/1 var(--f-cap);letter-spacing:var(--ls-1);text-transform:uppercase;color:var(--ink);cursor:pointer;transition:background-color .2s,border-color .2s}
 .acct.addr3 b{font:500 17px/1.35 var(--f-serif);letter-spacing:0;white-space:normal}
 
 /* 9 · Penutup: kartu catatan dengan tepi bawah kertas buatan tangan (deckle) */
 .c-note .paper{--p1:#fbf8f2;--p2:#f3ece1;padding-bottom:36px;
   -webkit-mask:linear-gradient(#000 0 0) top/100% calc(100% - 12px) no-repeat,var(--deckle) 0 100%/80px 12px repeat-x;mask:linear-gradient(#000 0 0) top/100% calc(100% - 12px) no-repeat,var(--deckle) 0 100%/80px 12px repeat-x}
-.c-note .closing{margin:0;max-width:30ch;font:italic 18px/1.6 var(--f-serif);color:var(--ink)}
+.c-note .closing{margin:0;max-width:30ch;font:italic 17px/1.6 var(--f-serif);color:var(--ink)}
 .c-note .kicker{margin-top:22px}
 .sign{margin:18px 0 0;font:400 clamp(44px,15cqw,60px)/1 var(--f-script);color:var(--ink)}
-.sign-sub{margin:6px 0 0;font:12px/1.5 var(--f-cap);letter-spacing:.24em;text-transform:uppercase;color:var(--ink-2)}
+.sign-sub{margin:6px 0 0;font:11px/1.5 var(--f-cap);letter-spacing:var(--ls-2);text-transform:uppercase;color:var(--ink-2)}
 .small{margin:14px 0 0;font:13px/1.5 var(--f-serif);color:var(--ink-2)}
 .again{margin-top:16px}
 
 /* ---------- Navigasi ---------- */
 .deck-nav{padding:6px 12px max(12px,env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:center;gap:6px}
 .nav-row{display:flex;align-items:center;justify-content:space-between;width:min(100%,460px)}
-.nav-btn{width:44px;height:44px;border-radius:50%;border:1px solid #9a8a7699;background:#f6f1e9d9;color:var(--ink);display:grid;place-items:center;cursor:pointer;transition:opacity .2s}
+.nav-btn{width:44px;height:44px;border-radius:50%;border:1px solid #9a8a7699;background:#f6f1e9d9;color:var(--ink);display:grid;place-items:center;cursor:pointer;transition:opacity .2s,background-color .2s,border-color .2s}
 .nav-btn svg{width:18px;height:18px}
 .nav-btn:disabled{opacity:.35;cursor:default}
 .count{margin:0;text-align:center;line-height:1.2}
-.count b{display:block;font:12px/1.4 var(--f-cap);letter-spacing:.24em;color:var(--ink-2)}
-.count span{font:italic 18px/1.3 var(--f-serif);color:var(--ink)}
+.count b{display:block;font:11px/1.4 var(--f-cap);letter-spacing:var(--ls-2);color:var(--ink-2)}
+.count span{font:italic 17px/1.3 var(--f-serif);color:var(--ink)}
 /* Deretan tab memudar di tepi yang masih bisa digeser (--fl/--fr diatur JS). */
 .tabs{display:flex;gap:2px;max-width:100%;overflow-x:auto;scrollbar-width:none;padding:2px 4px;scroll-behavior:smooth;
   -webkit-mask:linear-gradient(90deg,#0000,#000 var(--fl,0px),#000 calc(100% - var(--fr,0px)),#0000);mask:linear-gradient(90deg,#0000,#000 var(--fl,0px),#000 calc(100% - var(--fr,0px)),#0000)}
 .tabs::-webkit-scrollbar{display:none}
-.tab{flex:none;border:0;background:none;padding:6px 9px;min-height:32px;font:11px/1 var(--f-cap);letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2);cursor:pointer;position:relative;white-space:nowrap}
+.tab{flex:none;border:0;background:none;padding:6px 9px;min-height:32px;font:11px/1 var(--f-cap);letter-spacing:var(--ls-1);text-transform:uppercase;color:var(--ink-2);cursor:pointer;position:relative;white-space:nowrap;transition:color .2s}
 /* Cincin fokus digambar di dalam tab: deretan tab menggulir (overflow), cincin di luar tab terpotong atas-bawah. */
 .tab:focus-visible{outline-offset:-2px}
 .tab[aria-selected="true"]{color:var(--ink)}
@@ -431,7 +449,28 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
 .lb .pv{left:12px;top:50%;translate:0 -50%}
 .lb .nx{right:12px;top:50%;translate:0 -50%}
 .lb :focus-visible{outline-color:#f6f1e9}
-.toast{position:fixed;left:50%;bottom:120px;z-index:30;translate:-50% 12px;opacity:0;pointer-events:none;background:var(--ink);color:var(--ivory);padding:10px 18px;border-radius:2px;font:14px/1.3 var(--f-serif);transition:opacity .3s,translate .3s;max-width:calc(100vw - 32px)}
+/* Layar tegak (HP/tablet): foto selebar layar, jadi panah pindah ke bawah keterangan supaya tidak menumpuk di atas foto. */
+@media (max-width:1023px) and (orientation:portrait){
+  .lb figure{padding-bottom:calc(74px + env(safe-area-inset-bottom))}
+  .lb img{max-height:calc(var(--vh) - 190px)}
+  .lb .pv,.lb .nx{top:auto;bottom:max(16px,env(safe-area-inset-bottom));translate:none}
+  .lb .pv{left:calc(50% - 62px)}
+  .lb .nx{right:calc(50% - 62px)}
+}
+/* Hover (hanya perangkat berkursor): isyarat halus bahwa elemen bisa diklik. */
+@media (hover:hover){
+  .btn:hover{background:var(--ink-2)}
+  .btn.line:hover,.copy:hover{background:#3b322b14}
+  .btn.line:hover{box-shadow:inset 0 0 0 1px var(--ink)}
+  .copy:hover{border-color:var(--ink)}
+  .link:hover{border-bottom-color:var(--ink)}
+  .tab:hover{color:var(--ink)}
+  .nav-btn:not(:disabled):hover,.music:hover{background:var(--ivory-2);border-color:var(--ink-2)}
+  .band:hover .band-tap{color:var(--ink)}
+  .opt:hover i{border-color:var(--ink)}
+  .lb button:hover{background:#f6f1e940}
+}
+.toast{position:fixed;left:50%;bottom:120px;z-index:30;translate:-50% 12px;opacity:0;pointer-events:none;background:var(--ink);color:var(--ivory);padding:10px 18px;border-radius:2px;font:15px/1.3 var(--f-serif);transition:opacity .3s,translate .3s;max-width:calc(100vw - 32px)}
 .toast.show{opacity:1;translate:-50% 0}
 
 /* Layar pendek (HP kecil, laptop pendek): kepala & navigasi lebih rapat dan isi kartu dipadatkan supaya
@@ -440,28 +479,25 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
   .deck-wrap{grid-template-rows:44px minmax(0,1fr) auto}
   .deck-nav{padding-top:2px;gap:2px;padding-bottom:max(8px,env(safe-area-inset-bottom))}
   .paper{padding:26px 20px 22px}
-  .title{font-size:clamp(26px,8.4cqw,34px)}
+  .title{font-size:clamp(26px,calc((var(--cw) - 40px) * .084),34px)}
   .rule{height:18px;margin:8px auto}
-  .lead{margin-top:8px;font-size:15px}
-  .note{margin-top:6px;font-size:13px}
+  .lead{margin-top:8px}
+  .note{margin-top:6px}
   .c-invite .paper{padding-top:calc(var(--cw) * .13)}
   .mono{width:50px;height:50px;margin-bottom:4px}
   .mono span{font-size:21px}
   .names{font-size:clamp(36px,12.5cqw,52px)}
-  .when span{font-size:15px}
   .when b{font-size:19px}
-  .quote{margin-top:10px;font-size:14px}
+  .quote{margin-top:10px}
   .swipe-hint{display:none}
   .c-details .paper{padding:22px 18px}
-  .date-line{margin-top:2px;font-size:16px}
+  .date-line{margin-top:2px}
   .cd{margin:8px 0 0}
   .cd div{padding:5px 0 4px}
   .cd b{font-size:20px}
   .ev{margin-top:8px}
   .ev h3{font-size:30px}
   .ev .time,.ev .venue{margin-top:2px}
-  .ev .venue{font-size:17px}
-  .ev .addr2{font-size:14px}
   .ev .link{margin-top:2px}
   .ev-sep{height:16px;margin-top:4px}
   .c-details .btn{margin-top:10px}
@@ -479,7 +515,7 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
   .acct{margin-top:8px;padding:10px 14px}
   .copy{min-height:32px;padding:4px 12px}
   .c-note .paper{padding-bottom:30px}
-  .c-note .closing{font-size:17px;line-height:1.5}
+  .c-note .closing{line-height:1.5}
   .c-note .kicker{margin-top:14px}
   .sign{margin-top:8px;font-size:clamp(40px,13cqw,52px)}
   .again{margin-top:10px}
@@ -747,7 +783,7 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
         </div></div></div>
       </article>
 
-      <!-- 7 · Doa tamu -->
+      <!-- 7 · Kiriman doa -->
       <article class="card c-book" id="k-7" role="tabpanel" aria-labelledby="t-7">
         <span class="tape" aria-hidden="true"></span>
         <div class="paper"><div class="scroll"><div class="in">
@@ -758,7 +794,7 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
         </div></div></div>
       </article>
 
-      <!-- 8 · Tanda Kasih -->
+      <!-- 8 · Tanda kasih -->
       <article class="card c-gift" id="k-8" role="tabpanel" aria-labelledby="t-8">
         <div class="paper"><div class="scroll"><div class="in">
           <p class="kicker">Amplop digital</p>
@@ -798,8 +834,8 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
         <button class="tab" role="tab" id="t-4" aria-controls="k-4" type="button">Foto</button>
         <button class="tab" role="tab" id="t-5" aria-controls="k-5" type="button">Balasan</button>
         <button class="tab" role="tab" id="t-6" aria-controls="k-6" type="button">Ucapan</button>
-        <button class="tab" role="tab" id="t-7" aria-controls="k-7" type="button">Doa Tamu</button>
-        <button class="tab" role="tab" id="t-8" aria-controls="k-8" type="button">Tanda Kasih</button>
+        <button class="tab" role="tab" id="t-7" aria-controls="k-7" type="button">Kiriman doa</button>
+        <button class="tab" role="tab" id="t-8" aria-controls="k-8" type="button">Tanda kasih</button>
         <button class="tab" role="tab" id="t-9" aria-controls="k-9" type="button">Penutup</button>
       </div>
     </nav>
@@ -826,8 +862,14 @@ const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const esc = (t) => String(t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 
 const EVENT = {"bride":{"name":"Laras","fullName":"Larasati Pramesti","parents":"Putri dari Bapak Wiryo Hadi & Ibu Sekar Arum","instagram":"laras.contoh"},"groom":{"name":"Bima","fullName":"Bima Arya Nugraha","parents":"Putra dari Bapak Arif Hidayat & Ibu Siti Aminah","instagram":"bima.contoh"},"events":{"akad":{"startsAt":"2026-12-12T09:00:00+08:00","endsAt":"2026-12-12T10:30:00+08:00","timezone":"Asia/Makassar","venue":"Rumah Keluarga Mempelai Wanita","address":"Jl. Contoh Raya No. 1, Denpasar, Bali","lat":-8.65,"lng":115.2167},"resepsi":{"startsAt":"2026-12-12T19:00:00+08:00","timezone":"Asia/Makassar","endsAt":"2026-12-12T21:30:00+08:00","venue":"Gedung Serbaguna Contoh","address":"Jl. Contoh Kedua No. 2, Denpasar, Bali","lat":-8.66,"lng":115.21}}};
-// Nama tamu dari ?to=Nama: spasi di ujung dibuang, maksimal 60 karakter.
-const GUEST = (Q.get("to") || "").trim().slice(0, 60);
+// Nama tamu dari ?to=Nama: spasi di ujung dibuang. Lebih dari 60 karakter: dipotong di batas kata terakhir lalu diberi
+// "…" (hasil ≤ 60 karakter); bila tidak ada spasi setelah karakter ke-30, dipotong keras di 59 karakter.
+const GUEST_RAW = (Q.get("to") || "").trim();
+const GUEST = (() => {
+  if (GUEST_RAW.length <= 60) return GUEST_RAW;
+  const sp = GUEST_RAW.slice(0, 60).search(/\s\S*$/);
+  return GUEST_RAW.slice(0, sp >= 30 ? sp : 59).replace(/[\s.,;:!?&+\/\-–—(]+$/, "") + "…";
+})();
 const TZ_ABBR = { "Asia/Jakarta": "WIB", "Asia/Makassar": "WITA", "Asia/Jayapura": "WIT" };
 const fmtTime = (iso, tz) => new Intl.DateTimeFormat("id-ID", { hour: "2-digit", minute: "2-digit", timeZone: tz }).format(new Date(iso)).replace(":", ".");
 const fmtDate = (ev) => new Intl.DateTimeFormat("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: ev.timezone }).format(new Date(ev.startsAt));
@@ -838,7 +880,8 @@ const store = {
 };
 
 if (GUEST) $$(".guest").forEach((n) => (n.textContent = GUEST));
-$$('input[name="nama"]').forEach((i) => (i.value = GUEST));
+// Kolom nama di formulir memakai nama utuh (tanpa "…"), sebatas maxlength-nya.
+$$('input[name="nama"]').forEach((i) => (i.value = GUEST_RAW.slice(0, i.maxLength > 0 ? i.maxLength : 80)));
 // Satu baris dulu: ukuran huruf diturunkan sampai muat (paling kecil ratio × ukuran asli), baru boleh turun baris.
 function fitLine(el, ratio) {
   if (el.clientWidth < 2) return;
@@ -1342,10 +1385,11 @@ function showReply(r) {
 }
 
 /* ---------- Ucapan ---------- */
+// Ucapan contoh dan ucapan tamu memakai label yang sama: tanggal ("09 · 11 · 2026", format stampDate).
 const SAMPLE_WISHES = [
-  { nama: "Rani", pesan: "Selamat menempuh hidup baru, Laras & Bima. Semoga menjadi keluarga yang sakinah, mawaddah, warahmah.", ket: "Hadir" },
-  { nama: "Dimas", pesan: "Bahagia selalu untuk kalian berdua. Sampai jumpa di Denpasar!", ket: "Hadir" },
-  { nama: "Tante Wulan", pesan: "Barakallahu lakuma. Maaf belum bisa datang, doa terbaik dari Surabaya.", ket: "Berhalangan" },
+  { nama: "Rani", pesan: "Selamat menempuh hidup baru, Laras & Bima. Semoga menjadi keluarga yang sakinah, mawaddah, warahmah.", ket: "09 · 11 · 2026" },
+  { nama: "Dimas", pesan: "Bahagia selalu untuk kalian berdua. Sampai jumpa di Denpasar!", ket: "05 · 11 · 2026" },
+  { nama: "Tante Wulan", pesan: "Barakallahu lakuma. Maaf belum bisa datang, doa terbaik dari Surabaya.", ket: "02 · 11 · 2026" },
 ];
 function renderWishes() {
   const mine = store.get("wishes", []);
@@ -1365,7 +1409,7 @@ function renderWishes() {
     store.set("wishes", [...store.get("wishes", []), { nama, pesan, waktu: Date.now() }]);
     form.pesan.value = "";
     renderWishes();
-    // Tampilkan ucapan yang baru terikat di kartu Doa Tamu.
+    // Tampilkan ucapan yang baru terikat di kartu Kiriman doa.
     showWishes();
     toast("Ucapan sudah terikat. Terima kasih!");
   });
@@ -1441,9 +1485,12 @@ const Music = (() => {
     for (let i = n; i < d.length; i++) loop[i - n] += d[i];
     return wavUrl(loop);
   }
-  render().then((u) => { url = u; if (unlocked && u) { audio.src = u; if (wanted) audio.play().catch(() => {}); } }).catch(() => {});
+  let ready = false;
+  const done = () => { ready = true; $("#musicBtn").removeAttribute("aria-busy"); };
+  render().then((u) => { url = u; if (unlocked && u) { audio.src = u; if (wanted) audio.play().catch(() => {}); } }).catch(() => {}).then(done);
   return {
     audio,
+    get ready() { return ready; },
     get playing() { return wanted; },
     play() { wanted = true; if (!unlocked) { unlocked = true; audio.src = url || SILENT; } audio.play().catch(() => {}); },
     pause() { wanted = false; audio.pause(); },
@@ -1451,7 +1498,10 @@ const Music = (() => {
 })();
 function toggleMusic(on = !Music.playing) {
   on ? Music.play() : Music.pause();
-  $("#musicBtn").setAttribute("aria-pressed", String(on));
+  const btn = $("#musicBtn");
+  btn.setAttribute("aria-pressed", String(on));
+  // Musik belum selesai dirender: tombol berstatus "memuat" sampai bunyi siap (dilepas di Music saat render selesai).
+  if (on && !Music.ready) btn.setAttribute("aria-busy", "true"); else btn.removeAttribute("aria-busy");
 }
 $("#musicBtn").addEventListener("click", () => toggleMusic());
 document.addEventListener("visibilitychange", () => {
