@@ -1153,7 +1153,9 @@ window.__ps = { swings, parallax, Music };
    di bawahnya, supaya ketukan di tepi kanan tidak tertangkap tombol musik. Muncul lagi begitu halaman digulir menjauh. */
 {
   let idle = 0;
-  const CONTROL = "a[href],button,input,select,textarea,label,summary,[role=button],[tabindex]:not([tabindex='-1'])";
+  const CONTROL = "a[href],button,input,select,textarea,summary,[role=button],[tabindex]:not([tabindex='-1'])";
+  // Label dihitung hanya bila terhubung ke isian; label judul seperti "Kehadiran" tidak bisa diketuk.
+  const isControl = (el) => !!(el.closest(CONTROL) || el.closest("label")?.control);
   const covers = () => {
     const w = musicBtn.offsetWidth, h = musicBtn.offsetHeight;
     if (!w || !musicBtn.isConnected) return false;
@@ -1162,7 +1164,7 @@ window.__ps = { swings, parallax, Music };
     for (const fx of [.15, .5, .85]) for (const fy of [.15, .5, .85]) {
       for (const el of document.elementsFromPoint(x0 + w * fx, y0 + h * fy)) {
         if (musicBtn.contains(el)) continue;
-        if (el.closest(CONTROL)) return true;
+        if (isControl(el)) return true;
         break;
       }
     }
