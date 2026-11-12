@@ -159,6 +159,7 @@ svg.sprig{width:100%;height:100%;display:block}
   html.js-anim:not(.force-motion) [data-anim]{translate:none!important;scale:none!important;animation:none!important;transition-duration:.6s!important}
   html.js-anim:not(.force-motion) [data-anim] .ch{translate:none!important;transition-delay:0s!important}
 }
+.music-btn.dodge{opacity:0!important;pointer-events:none!important}
 </style>
 </head>
 <body class="locked">
@@ -1033,6 +1034,30 @@ function tick() {
 tick();
 setInterval(tick, 1000);
 if (new URLSearchParams(location.search).has("open")) open.click();
+
+/* ---------- Tombol musik menepi selama ada kontrol di bawahnya ---------- */
+/* Setelah halaman berhenti digulir, tombol musik disembunyikan bila ada isian, pilihan, tombol, tautan, atau foto
+   di bawahnya, supaya ketukan di tepi kanan tidak tertangkap tombol musik. Muncul lagi begitu halaman digulir menjauh. */
+{
+  let idle = 0;
+  const CONTROL = "a[href],button,input,select,textarea,label,summary,[role=button],[tabindex]:not([tabindex='-1'])";
+  const covers = () => {
+    const w = musicBtn.offsetWidth, h = musicBtn.offsetHeight;
+    if (!w || !musicBtn.isConnected) return false;
+    const cs = getComputedStyle(musicBtn), de = document.documentElement;
+    const x0 = de.clientWidth - parseFloat(cs.right) - w, y0 = de.clientHeight - parseFloat(cs.bottom) - h;
+    for (const fx of [.15, .5, .85]) for (const fy of [.15, .5, .85]) {
+      for (const el of document.elementsFromPoint(x0 + w * fx, y0 + h * fy)) {
+        if (musicBtn.contains(el)) continue;
+        if (el.closest(CONTROL)) return true;
+        break;
+      }
+    }
+    return false;
+  };
+  const settle = () => musicBtn.classList.toggle("dodge", document.activeElement !== musicBtn && covers());
+  for (const ev of ["scroll", "resize", "input", "change", "click"]) addEventListener(ev, () => { clearTimeout(idle); idle = setTimeout(settle, ev === "scroll" ? 150 : 300); }, { passive: true });
+}
 </script>
 </body>
 </html>
