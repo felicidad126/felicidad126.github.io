@@ -47,7 +47,7 @@ Mayoritas tema sudah memakai standar ini sebelum review. Tabel berikut mencatat 
 | Dompet digital di amplop digital | Bank, dompet digital, alamat kirim hadiah | Lengkung Sage, Parallax & Sway, Truntum Terakota (tidak ada, padahal katalog menjanjikannya di setiap desain) | Ditambahkan di ketiganya |
 | Tombol salin alamat | Ada | Lengkung Sage | Ditambahkan |
 | Keterangan "Preview: data tersimpan di perangkat ini saja." | Di bawah form RSVP dan form ucapan | Lengkung Sage, Parallax & Sway, Garis Editorial, Truntum Terakota (teks berbeda) | Diperbaiki |
-| "Jumlah tamu" saat tamu tidak hadir | Disembunyikan | Tidak ada logikanya: Lengkung Sage, Parallax & Sway, Truntum Terakota. Hanya diredupkan: Biru Kabut, Riviera Kobalt, Kaca Patri, Kelopak Mimpi | Disembunyikan di 10 tema |
+| "Jumlah tamu" saat tamu tidak hadir | Disembunyikan | Tidak ada logikanya: Lengkung Sage, Parallax & Sway, Truntum Terakota. Hanya diredupkan: Edisi Monokrom, Biru Kabut, Riviera Kobalt, Kaca Patri, Kelopak Mimpi | Disembunyikan di 10 tema |
 | Lokasi di "Simpan ke kalender" | Tempat akad, karena entri dimulai pukul 09.00 | 9 tema memakai alamat resepsi; Garis Editorial hanya "Denpasar, Bali" | Nama dan alamat tempat akad di 10 tema |
 | Jam acara | Mulai dan selesai ("09.00 – 10.30 WITA") | Garis Editorial (hanya jam mulai) | Diperbaiki |
 | Batas RSVP | 5 Desember 2026 | Garis Editorial ("seminggu sebelum acara") | Diperbaiki |
@@ -59,10 +59,10 @@ Mayoritas tema sudah memakai standar ini sebelum review. Tabel berikut mencatat 
 
 Ini perbedaan isi atau konsep, bukan kesalahan. Dicatat supaya bisa diputuskan sekali untuk semua tema.
 
-1. **Salam.** Tujuh tema memakai "Assalamu'alaikum … Wassalamu'alaikum". Parallax & Sway dan Truntum Terakota dibuka dengan "Bismillahirrahmanirrahim"; Truntum Terakota ditutup dengan "Wassalamu'alaikum" tanpa salam pembuka, dan Parallax & Sway tanpa salam penutup. Amplop Linen sengaja netral ("Tuhan Yang Maha Esa"), tetapi ucapan contohnya bernuansa Islam.
+1. **Salam.** Enam tema memakai "Assalamu'alaikum … Wassalamu'alaikum". Parallax & Sway dan Truntum Terakota dibuka dengan "Bismillahirrahmanirrahim"; Truntum Terakota ditutup dengan "Wassalamu'alaikum" tanpa salam pembuka, dan Parallax & Sway tanpa salam penutup. Lengkung Sage dan Amplop Linen netral ("Tuhan Yang Maha Esa") tanpa salam; di Amplop Linen ini disengaja, tetapi ucapan contohnya bernuansa Islam.
 2. **Apostrof.** Biru Kabut dan Truntum Terakota memakai ’; tema lain memakai '. Konsisten di dalam tiap tema.
 3. **Bagian "Kisah Kami".** Tidak ada di Lengkung Sage, Garis Editorial, Truntum Terakota, dan Amplop Linen.
-4. **Pilihan RSVP.** Dua pilihan (hadir, tidak hadir) di enam tema; tiga pilihan (ditambah "masih ragu") di Lengkung Sage, Parallax & Sway, Garis Editorial, Truntum Terakota, dan Amplop Linen. Jumlah tamu maksimal 4 atau 5. Kolom WhatsApp hanya ada di Parallax & Sway, Truntum Terakota, dan Edisi Monokrom.
+4. **Pilihan RSVP.** Dua pilihan (hadir, tidak hadir) di lima tema; tiga pilihan (ditambah "masih ragu") di Lengkung Sage, Parallax & Sway, Garis Editorial, Truntum Terakota, dan Amplop Linen. Jumlah tamu maksimal 4 atau 5. Kolom WhatsApp hanya ada di Lengkung Sage, Parallax & Sway, Truntum Terakota, dan Edisi Monokrom.
 5. **Batas RSVP** tidak disebut di Lengkung Sage dan Amplop Linen.
 6. **Instagram** tidak ditampilkan di Lengkung Sage dan Garis Editorial. Di Parallax & Sway tautannya belum mengarah ke mana pun.
 7. **Form ucapan.** Garis Editorial tidak punya form ucapan sendiri; doa ditulis di kartu balasan.
@@ -70,7 +70,7 @@ Ini perbedaan isi atau konsep, bukan kesalahan. Dicatat supaya bisa diputuskan s
 9. **Nama tamu panjang.** `?to=` dipotong di 60 karakter tanpa tanda, kadang di tengah kata (terlihat di Biru Kabut, Kaca Patri, Kelopak Mimpi). Usul: potong di batas kata dan beri "…".
 10. **Kalender.** Semua tema membuat satu entri 09.00–21.30 WITA yang mencakup akad dan resepsi. Alternatifnya dua tombol, satu per acara.
 11. **`<h1>` setelah sampul dibuka.** Di Parallax & Sway, Riviera Kobalt, dan Amplop Linen, `<h1>` hanya ada di sampul, sehingga halaman tanpa `<h1>` setelah sampul hilang.
-12. **Catatan kaki.** Tujuh tema menulis nama tema, data contoh, dan font. Lengkung Sage hanya menulis soal foto AI; Garis Editorial, Parallax & Sway, Truntum Terakota, dan Amplop Linen tidak menyebut font.
+12. **Catatan kaki.** Lima tema menulis nama tema, data contoh, dan font. Lengkung Sage hanya menulis soal foto AI; Garis Editorial, Parallax & Sway, Truntum Terakota, dan Amplop Linen tidak menyebut font.
 
 ---
 
