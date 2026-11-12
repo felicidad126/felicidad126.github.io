@@ -302,6 +302,7 @@ html.calm .rv:not(.in){opacity:0}
 form{display:flex;flex-direction:column;gap:16px}
 label,.fl{display:flex;flex-direction:column;gap:6px;font:600 12px/1.4 var(--f-t);letter-spacing:.2em;text-transform:uppercase;color:var(--ink-2)}
 fieldset{border:0;margin:0;padding:0}
+legend{padding:0}
 input[type=text],select,textarea{font:400 17px/1.4 var(--f-t);letter-spacing:0;text-transform:none;color:var(--ink);background:#fff;border:1px solid #dcc9cf;border-radius:14px;padding:12px 14px;width:100%}
 input:focus,select:focus,textarea:focus{outline:2px solid var(--mauve-d);outline-offset:1px;border-color:transparent}
 textarea{min-height:110px;resize:vertical}
@@ -311,7 +312,6 @@ textarea{min-height:110px;resize:vertical}
 .chips span{display:flex;align-items:center;justify-content:center;width:100%;min-height:46px;border-radius:999px;border:1px solid #cdb8bf;background:#fff;color:var(--ink);transition:background .3s,color .3s,border-color .3s}
 .chips input:checked + span{background:var(--plum);border-color:var(--plum);color:var(--ivory)}
 .chips input:focus-visible + span{outline:2px solid var(--mauve-d);outline-offset:3px}
-.off{opacity:.45}
 .err{color:#9b2c45;font-size:15px}
 .note{font-size:13px;color:var(--ink-2);text-align:center}
 form .btn{align-self:stretch;margin-top:4px}
@@ -599,7 +599,7 @@ html.lb-open{overflow:hidden}
         <div class="done" id="rsvpDone" tabindex="-1" hidden>
           <h3>Terima kasih</h3>
           <p id="rsvpMsg" role="status"></p>
-          <button class="btn line sm" type="button" id="rsvpEdit">Ubah jawaban</button>
+          <button class="btn line sm" type="button" id="rsvpEdit">Ubah Jawaban</button>
         </div>
       </div>
     </div>
@@ -623,7 +623,7 @@ html.lb-open{overflow:hidden}
         <div class="rv" style="--rd:.12s;display:flex;flex-direction:column">
           <p class="wcount"><b id="wCount"></b> ucapan masuk</p>
           <ul class="wl" id="wList" aria-live="polite"></ul>
-          <button class="btn line sm" type="button" id="wMore" hidden>Tampilkan lebih banyak</button>
+          <button class="btn line sm" type="button" id="wMore" hidden>Tampilkan Lebih Banyak</button>
         </div>
       </div>
     </div>
@@ -650,7 +650,7 @@ html.lb-open{overflow:hidden}
       <div class="ph rv" data-mk="a"><img src="../foto/galeri-5.jpg" alt="Laras dan Bima di depan pelaminan bunga putih" loading="lazy" style="object-position:50% 45%"></div>
       <p class="rv">Merupakan suatu kebahagiaan dan kehormatan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu.</p>
       <p class="wass rv" style="--rd:.1s">Wassalamu'alaikum Warahmatullahi Wabarakatuh</p>
-      <p class="kick rv" style="--rd:.15s">Kami yang berbahagia</p>
+      <p class="kick rv" style="--rd:.15s">Kami yang Berbahagia</p>
       <h2 id="h-close" class="sign split" style="--rd:.2s">Laras <span class="amp">&amp;</span> Bima</h2>
       <p class="fam rv" style="--rd:.25s">Keluarga Bapak Wiryo Hadi &amp; Ibu Sekar Arum<br>Keluarga Bapak Arif Hidayat &amp; Ibu Siti Aminah</p>
     </div>
@@ -854,7 +854,8 @@ if (params.has("open")) {
 function openInvite() {
   gate.style.pointerEvents = "none";
   Music.play();
-  askTilt();
+  // Izin kemiringan hanya diminta bila animasi aktif; pada mode tenang kelopak tidak bergerak.
+  if (FULL) askTilt();
   if (!FULL) {
     scrollTo(0, 0);
     unlock();
@@ -952,7 +953,8 @@ tick();
     text: `Pernikahan ${EVENT.bride.name} & ${EVENT.groom.name}`,
     dates: `${z(evs[0].startsAt)}/${z(evs[evs.length - 1].endsAt)}`,
     details: `Akad ${fmt(EVENT.events.akad.startsAt)} WITA di ${EVENT.events.akad.venue}. Resepsi ${fmt(EVENT.events.resepsi.startsAt)} WITA di ${EVENT.events.resepsi.venue}. ${location.href.split("?")[0]}`,
-    location: evs[evs.length - 1].address,
+    // Lokasi = tempat acara pertama (akad), karena entri kalender dimulai dari sana.
+    location: `${evs[0].venue}, ${evs[0].address}`,
   });
   $("#calBtn").href = `https://calendar.google.com/calendar/render?${q}`;
 })();
@@ -1023,7 +1025,7 @@ $$("[data-copy]").forEach((b) => b.addEventListener("click", async () => {
 const rsvpForm = $("#rsvpForm"), rsvpDone = $("#rsvpDone");
 const syncCount = () => {
   const no = rsvpForm.att.value === "Tidak hadir";
-  $("#fCount").classList.toggle("off", no);
+  $("#fCount").hidden = no;
   $("#rCount").disabled = no;
 };
 rsvpForm.addEventListener("change", syncCount);
@@ -1038,6 +1040,8 @@ function showDone(r, focus) {
     if (FULL) rsvpDone.animate([{ opacity: 0, transform: "translateY(14px)" }, { opacity: 1, transform: "none" }], { duration: 650, easing: "cubic-bezier(.2,.7,.1,1)" });
   }
 }
+// Pesan galat hilang begitu tamu memperbaiki isiannya.
+for (const ev of ["input", "change"]) rsvpForm.addEventListener(ev, () => { $("#rsvpErr").hidden = true; });
 rsvpForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const err = $("#rsvpErr");

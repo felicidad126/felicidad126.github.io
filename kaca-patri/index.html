@@ -421,8 +421,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .chips span{display:flex;align-items:center;justify-content:center;min-height:46px;border:1px solid rgba(90,58,34,.4);border-radius:999px;font:500 var(--fs-meta)/1 var(--f-t);letter-spacing:.14em;color:var(--ink);transition:background .3s,color .3s}
 .chips input:checked + span{background:var(--green);color:var(--ivory);border-color:var(--green)}
 .chips input:focus-visible + span{outline:2px solid var(--berry);outline-offset:2px}
-#fCount.off{opacity:.45}
-.err{color:#8e1f3f;font-size:var(--fs-small)}
+.err{color:var(--berry);font-size:var(--fs-small)}
 .note{font-size:var(--fs-meta);color:var(--ink-2);text-align:center}
 .done{text-align:center;align-items:center}
 .done h3{font-size:var(--fs-serif-l);font-style:italic;color:var(--teal)}
@@ -463,6 +462,8 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .closing .wrap{display:flex;flex-direction:column;align-items:center;gap:16px}
 .closing .win{width:min(84vw,420px);margin-bottom:26px}
 .closing p{max-width:32em;color:var(--ink-2)}
+/* Eyebrow penutup tetap merah beri seperti eyebrow lain (aturan di atas lebih spesifik daripada .kick). */
+.closing .kick{color:var(--berry)}
 .closing .wass{font:italic 400 var(--fs-serif-s)/1.5 var(--f-d);color:var(--teal)}
 .sign{font-size:clamp(44px,11vw,72px)}
 .sign .amp{font-style:italic;color:var(--berry)}
@@ -536,7 +537,7 @@ html.lb-open{overflow:hidden}
     <div class="light" style="--lx:66%;--ly:2%;--lw:clamp(300px,44vw,680px);--li:var(--l3);--lo:.3" data-k="-.7" aria-hidden="true"></div>
     <div class="wrap">
       <div class="fan-mini draw" data-fan="5"></div>
-      <h2 id="h-salam" class="rv">Assalamu'alaikum<small>Warahmatullahi Wabarakatuh</small></h2>
+      <h2 id="h-salam" class="rv">Assalamu'alaikum <small>Warahmatullahi Wabarakatuh</small></h2>
       <p class="rv" style="--rd:.15s">Dengan memohon rahmat dan ridho Allah SWT, kami bermaksud mengundang Bapak/Ibu/Saudara/i untuk hadir di hari pernikahan kami, ketika cahaya pagi jatuh di Denpasar.</p>
     </div>
   </section>
@@ -555,7 +556,7 @@ html.lb-open{overflow:hidden}
           <p class="kick rv">Mempelai Wanita</p>
           <p class="nick rv" aria-hidden="true">Laras</p>
           <h3 class="rv">Larasati Pramesti</h3>
-          <p class="par rv">Putri dari <span class="nw">Bapak Wiryo Hadi</span> &amp; <span class="nw">Ibu Sekar Arum</span></p>
+          <p class="par rv">Putri dari <span class="nw">Bapak Wiryo Hadi</span> <span class="nw">&amp; Ibu Sekar Arum</span></p>
           <p class="ig rv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"/></svg><span class="sr">Instagram </span>@laras.contoh</p>
         </article>
         <p class="amp rv" aria-hidden="true">&amp;</p>
@@ -566,7 +567,7 @@ html.lb-open{overflow:hidden}
           <p class="kick rv">Mempelai Pria</p>
           <p class="nick rv" aria-hidden="true">Bima</p>
           <h3 class="rv">Bima Arya Nugraha</h3>
-          <p class="par rv">Putra dari <span class="nw">Bapak Arif Hidayat</span> &amp; <span class="nw">Ibu Siti Aminah</span></p>
+          <p class="par rv">Putra dari <span class="nw">Bapak Arif Hidayat</span> <span class="nw">&amp; Ibu Siti Aminah</span></p>
           <p class="ig rv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"/></svg><span class="sr">Instagram </span>@bima.contoh</p>
         </article>
       </div>
@@ -683,16 +684,17 @@ html.lb-open{overflow:hidden}
               <label><input type="radio" name="att" value="Tidak hadir"><span>Berhalangan</span></label>
             </div>
           </fieldset>
-          <label id="fCount">Jumlah tamu<select id="rCount" name="count"><option value="1">1 orang</option><option value="2">2 orang</option><option value="3">3 orang</option><option value="4">4 orang</option><option value="5">5 orang</option></select></label>
+          <label id="fCount">Jumlah Tamu<select id="rCount" name="count"><option value="1">1 orang</option><option value="2">2 orang</option><option value="3">3 orang</option><option value="4">4 orang</option><option value="5">5 orang</option></select></label>
           <p class="err" id="rsvpErr" role="alert" hidden></p>
           <button class="btn" type="submit">Kirim Konfirmasi</button>
           <p class="note">Preview: data tersimpan di perangkat ini saja.</p>
         </form>
         <div class="done" id="rsvpDone" tabindex="-1" hidden>
           <div class="fan-mini draw" data-fan="61"></div>
-          <h3>Terima kasih</h3>
+          <h3>Terima Kasih</h3>
           <p id="rsvpMsg" role="status"></p>
-          <button class="btn line sm" type="button" id="rsvpEdit">Ubah jawaban</button>
+          <button class="btn line sm" type="button" id="rsvpEdit">Ubah Jawaban</button>
+          <p class="note">Preview: data tersimpan di perangkat ini saja.</p>
         </div>
       </div>
     </div>
@@ -715,7 +717,7 @@ html.lb-open{overflow:hidden}
         <div class="rv" style="--rd:.12s;display:flex;flex-direction:column">
           <p class="wcount"><b id="wCount"></b> ucapan masuk</p>
           <ul class="wl" id="wList" aria-live="polite"></ul>
-          <button class="btn line sm" type="button" id="wMore" hidden>Tampilkan lebih banyak</button>
+          <button class="btn line sm" type="button" id="wMore" hidden>Tampilkan Lebih Banyak</button>
         </div>
       </div>
     </div>
@@ -744,9 +746,9 @@ html.lb-open{overflow:hidden}
       </div>
       <p class="rv">Merupakan suatu kebahagiaan dan kehormatan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu.</p>
       <p class="wass rv" style="--rd:.1s">Wassalamu'alaikum Warahmatullahi Wabarakatuh</p>
-      <p class="kick rv" style="--rd:.15s">Kami yang berbahagia</p>
+      <p class="kick rv" style="--rd:.15s">Kami yang Berbahagia</p>
       <h2 id="h-close" class="sign rv" style="--rd:.2s">Laras <span class="amp">&amp;</span> Bima</h2>
-      <p class="fam rv" style="--rd:.25s">Keluarga <span class="nw">Bapak Wiryo Hadi</span> &amp; <span class="nw">Ibu Sekar Arum</span><br>Keluarga <span class="nw">Bapak Arif Hidayat</span> &amp; <span class="nw">Ibu Siti Aminah</span></p>
+      <p class="fam rv" style="--rd:.25s">Keluarga <span class="nw">Bapak Wiryo Hadi</span> <span class="nw">&amp; Ibu Sekar Arum</span><br>Keluarga <span class="nw">Bapak Arif Hidayat</span> <span class="nw">&amp; Ibu Siti Aminah</span></p>
     </div>
   </section>
 </main>
@@ -942,7 +944,8 @@ tick();
     text: `Pernikahan ${EVENT.bride.name} & ${EVENT.groom.name}`,
     dates: `${z(evs[0].startsAt)}/${z(evs[evs.length - 1].endsAt)}`,
     details: `Akad ${fmt(EVENT.events.akad.startsAt)} WITA di ${EVENT.events.akad.venue}, ${EVENT.events.akad.address}.\nResepsi ${fmt(EVENT.events.resepsi.startsAt)} WITA di ${EVENT.events.resepsi.venue}, ${EVENT.events.resepsi.address}.\n${location.href.split(/[?#]/)[0]}`,
-    location: evs[evs.length - 1].address,
+    // Lokasi = tempat acara pertama (akad), karena entri kalender dimulai dari sana.
+    location: `${evs[0].venue}, ${evs[0].address}`,
   });
   $("#calBtn").href = `https://calendar.google.com/calendar/render?${q}`;
 })();
@@ -1017,7 +1020,7 @@ $$("[data-copy]").forEach((b) => b.addEventListener("click", async () => {
 const rsvpForm = $("#rsvpForm"), rsvpDone = $("#rsvpDone");
 const syncCount = () => {
   const no = rsvpForm.att.value === "Tidak hadir";
-  $("#fCount").classList.toggle("off", no);
+  $("#fCount").hidden = no;
   $("#rCount").disabled = no;
 };
 rsvpForm.addEventListener("change", syncCount);
@@ -1033,6 +1036,8 @@ function showDone(r, focus) {
     if (FULL) rsvpDone.animate([{ opacity: 0, transform: "translateY(14px)" }, { opacity: 1, transform: "none" }], { duration: 650, easing: "cubic-bezier(.2,.7,.1,1)" });
   }
 }
+// Pesan galat hilang begitu tamu memperbaiki isiannya.
+for (const ev of ["input", "change"]) rsvpForm.addEventListener(ev, () => { $("#rsvpErr").hidden = true; });
 rsvpForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const err = $("#rsvpErr");
