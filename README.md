@@ -16,6 +16,7 @@ Halaman di folder [`HTML/`](HTML/) mengenalkan brand **Helonoia** sebelum ada pr
 
 - Lihat: https://felicidad126.github.io/HTML/ (dan https://invitation.helonoia.net/HTML/)
 - Animasi penuh (abaikan setting reduced-motion): `HTML/?motion=full`
+- Folder `HTML/` berdiri sendiri (`index.html`, `favicon.svg`, `logo.png`), jadi bisa disalin apa adanya ke server lain. Panduan langkah demi langkah ke server sendiri (Nginx + HTTPS, atau cPanel): [`DEPLOY-HELONOIA.md`](DEPLOY-HELONOIA.md).
 - Maskot dan tulisan HELONOIA di halaman ini dibuat dari [`helonoia/helonoia_monster.py`](helonoia/helonoia_monster.py), jadi bentuknya sama persis dengan logo. Bila logo berubah, potongan SVG di awal `<body>` perlu dibuat ulang dari generator itu.
 - Semua warna diambil dari logo: Malam `#120B1E`, Ungu Noia `#B26BFF`, Ungu Tua `#7C3FD6`, Lilac `#CDA6FF`, Lime `#C6FF3D`, Putih Halo `#F4EFFF`.
 - Interaksi: mata maskot mengikuti kursor (di HP ia melirik ke sana kemari sendiri), tombol "Sapa balik" membuat maskot melambai dan menjawab, kotak warna bisa diklik untuk menyalin kodenya.
