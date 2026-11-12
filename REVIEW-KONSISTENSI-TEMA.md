@@ -29,9 +29,9 @@ Putaran kedua diuji dengan cara yang sama, per tema, dengan pembanding versi seb
 | 4 | Truntum Terakota | 17 | 3 |
 | 5 | Edisi Monokrom | 14 | 1 |
 | 6 | Amplop Linen | 16 | 2 |
-| 7 | Biru Kabut | 9 | 2 |
+| 7 | Biru Kabut | 10 | 1 |
 | 8 | Riviera Kobalt | 18 | 0 |
-| 9 | Kaca Patri | 16 | 2 |
+| 9 | Kaca Patri | 17 | 1 |
 | 10 | Kelopak Mimpi | 16 | 0 |
 
 ---
@@ -59,6 +59,7 @@ Mayoritas tema sudah memakai standar ini sebelum review. Tabel berikut mencatat 
 | Nama tamu `?to=` yang panjang | Dipotong di batas kata, maksimal 60 karakter termasuk "…" | 10 tema (dipotong mentah di 60 karakter, kadang di tengah kata) | Sama di 10 tema |
 | Isian nama di form dari `?to=` | Nama utuh tanpa "…" (sebatas panjang maksimal isian) | 8 tema (memakai nama yang sudah dipotong) | Sama di 10 tema |
 | Tombol musik saat musik belum siap | Keadaan "memuat" | 10 tema (tanpa umpan balik; jeda 2 sampai 10 detik di mesin uji) | Sama di 10 tema |
+| Render musik dan perpindahan halaman | Render dipecah per detik audio, supaya muat ulang atau pindah halaman tidak menunggu render selesai | 10 tema (Chromium menahan muat ulang sampai render selesai: hingga 5,8 detik di Kaca Patri, 1 sampai 2,4 detik di empat tema lain) | Sama di 10 tema; bunyi identik dengan sebelumnya |
 
 ### Perbedaan antartema yang dibiarkan
 
@@ -307,10 +308,13 @@ Font: Gilda Display, Corinthia, Figtree. Judul, eyebrow, dan tombol Title Case; 
 4. Nama tamu dari `?to=` yang lebih dari 60 karakter dipotong di batas kata dan diberi "…"; isian nama di form memakai nama utuh.
 5. Tombol musik menampilkan keadaan "memuat" (`aria-busy` dan isyarat visual) sampai musik siap. Di mesin uji jedanya 3 sampai 4 detik. Ketukan kedua saat memuat sekarang membatalkan.
 
+**Diperbaiki setelah putaran kedua**
+
+1. Tombol musik yang mengambang tidak lagi menutupi kontrol. Masalahnya lebih luas dari pilihan "Tidak hadir": di 390×844 ada 28 posisi gulir (dicek tiap 24 px) di mana tombol menutupi kontrol, termasuk foto galeri dan isian form. Sekarang, setelah halaman berhenti digulir, tombol tetap menepi selama ada kontrol di bawahnya, dan muncul lagi begitu halaman digulir menjauh. Pemindaian yang sama sesudah perbaikan: 0 posisi.
+
 **Catatan terbuka**
 
 1. Di sampul 1440, tanggal menempel di bawah eyebrow dan nama besar terpisah di bawahnya. Tampak disengaja.
-2. Temuan baru: di 390×844, tombol musik yang mengambang bisa menutupi pilihan "Tidak hadir" pada posisi gulir tertentu. Perilaku lama; hilang begitu halaman digulir sedikit.
 
 ---
 
@@ -374,10 +378,13 @@ Font: Playfair Display, Spectral. Eyebrow, tombol, dan label kapital lewat CSS; 
 5. Warna yang sama dengan token memakai tokennya; ubin menit memakai token baru `--plum`.
 6. Nama tamu dari `?to=` yang lebih dari 60 karakter dipotong di batas kata dan diberi "…"; isian nama di form memakai nama utuh. Toast salin diberi titik.
 
+**Diperbaiki setelah putaran kedua**
+
+1. Memuat ulang halaman tidak lagi tertahan selama musik dirender. Penyebabnya: Chromium menunggu render musik selesai sebelum meninggalkan halaman, dan render Kaca Patri paling lambat dari semua tema (sekitar 7 detik). Dua perubahan: kedua senar santur kini dijumlahkan sebelum melewati satu filter yang sama (bunyinya identik, render sekitar 40% lebih cepat), dan render dipecah per detik audio. Muat ulang saat render berjalan turun dari sekitar 5,8 detik menjadi sekitar 0,1 detik. Pemecahan render diterapkan juga di sembilan tema lain (lihat "Standar antartema").
+
 **Catatan terbuka**
 
 1. Sepuluh ukuran Playfair. Ini hasil sengaja review sebelumnya.
-2. Temuan baru: selama musik masih dirender (sekitar 10 detik pertama), memuat ulang halaman di tab yang sama tertahan lama di Chromium tanpa tampilan. Sudah ada sebelum putaran ini; belum diperiksa di browser nyata, dan tema lain yang merender musik dengan cara sama mungkin terkena.
 
 ---
 

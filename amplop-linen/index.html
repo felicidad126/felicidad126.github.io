@@ -1479,6 +1479,8 @@ const Music = (() => {
       note(c1, t0 + BEAT, 0.09, 1.4); note(c2, t0 + BEAT, 0.09, 1.4);
       note(c1, t0 + 2 * BEAT, 0.08, 1.4); note(c2, t0 + 2 * BEAT, 0.08, 1.4);
     });
+    // Render dipecah per detik audio. Tanpa ini browser menahan pemuatan ulang atau perpindahan halaman sampai render selesai.
+    if (typeof off.suspend === "function") for (let x = 1; x < off.length / off.sampleRate; x++) off.suspend(x).then(() => off.resume(), () => {});
     const buf = await new Promise((res, rej) => { off.oncomplete = (e) => res(e.renderedBuffer); const p = off.startRendering(); if (p && p.catch) p.catch(rej); });
     // Ekor gema dilipat ke awal supaya putaran ulang tidak terputus.
     const d = buf.getChannelData(0), n = Math.round(LOOP * RATE), loop = d.slice(0, n);

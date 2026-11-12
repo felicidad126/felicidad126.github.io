@@ -937,6 +937,8 @@ const Music = (() => {
       for (const b of [1, 3]) { note(r + 12, t0 + b * BEAT, 0.035, 1.4, 0.25); note(r + 19, t0 + b * BEAT, 0.03, 1.4, 0.3); }
       MELODY[bar].forEach((m, i) => m && note(m, t0 + i * EIGHTH + 0.005, 0.11, 2.4, -0.05));
     }
+    // Render dipecah per detik audio. Tanpa ini browser menahan pemuatan ulang atau perpindahan halaman sampai render selesai.
+    if (typeof ctx.suspend === "function") for (let x = 1; x < ctx.length / ctx.sampleRate; x++) ctx.suspend(x).then(() => ctx.resume(), () => {});
     const buf = await new Promise((res, rej) => { ctx.oncomplete = (e) => res(e.renderedBuffer); const p = ctx.startRendering(); if (p && p.catch) p.catch(rej); });
     const start = Math.round(RATE * LOOP), len = Math.round(RATE * LOOP);
     return wavUrl([0, 1].map((c) => buf.getChannelData(c).slice(start, start + len)));

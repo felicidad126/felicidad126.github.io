@@ -1022,6 +1022,8 @@ const Music = (() => {
       note(ch[ARP[s]], t, 0.06, 1.8);
       const m = MEL[bar][s]; if (m) note(m, t + 0.01, 0.12, 2.4);
     }
+    // Render dipecah per detik audio. Tanpa ini browser menahan pemuatan ulang atau perpindahan halaman sampai render selesai.
+    if (typeof ctx.suspend === "function") for (let x = 1; x < ctx.length / ctx.sampleRate; x++) ctx.suspend(x).then(() => ctx.resume(), () => {});
     const buf = await new Promise((res, rej) => { ctx.oncomplete = (e) => res(e.renderedBuffer); const p = ctx.startRendering(); if (p && p.catch) p.catch(rej); });
     const st = Math.round(RATE * LOOP), len = st;
     return wav([0, 1].map((c) => buf.getChannelData(c).slice(st, st + len)));

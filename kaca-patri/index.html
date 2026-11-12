@@ -1165,15 +1165,19 @@ var Music = (() => {
     tone.connect(dl); dl.connect(dlf); dlf.connect(fb); fb.connect(dl); dlf.connect(wet); wet.connect(ctx.destination);
     const hz = (m) => 440 * 2 ** ((m - 69) / 12);
     // Santur: tiap nada dua senar yang sedikit berbeda nada, dipukul (serangan cepat, luruh panjang, nada atas samar).
+    // Kedua senar memakai filter dan selubung yang sama, jadi dijumlahkan dulu lalu lewat satu filter: bunyinya sama,
+    // tetapi jumlah filter separuhnya. Render jauh lebih cepat, dan selama render berjalan browser menahan pemuatan ulang halaman.
     const strike = (m, t, vel, dur = 1.7) => {
+      const g = ctx.createGain(), g2 = ctx.createGain(), fl = ctx.createBiquadFilter();
+      g2.gain.value = .32;
+      fl.type = "lowpass"; fl.frequency.setValueAtTime(6200, t); fl.frequency.exponentialRampToValueAtTime(900, t + dur * .6);
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vel, t + .003); g.gain.exponentialRampToValueAtTime(.0005, t + dur);
+      g2.connect(fl); fl.connect(g); g.connect(bus);
       for (const det of [-5, 5]) {
-        const o = ctx.createOscillator(), o2 = ctx.createOscillator(), g = ctx.createGain(), g2 = ctx.createGain(), fl = ctx.createBiquadFilter();
+        const o = ctx.createOscillator(), o2 = ctx.createOscillator();
         o.type = "triangle"; o.frequency.value = hz(m); o.detune.value = det;
         o2.type = "sine"; o2.frequency.value = hz(m) * 2.004; o2.detune.value = det;
-        g2.gain.value = .32;
-        fl.type = "lowpass"; fl.frequency.setValueAtTime(6200, t); fl.frequency.exponentialRampToValueAtTime(900, t + dur * .6);
-        g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vel, t + .003); g.gain.exponentialRampToValueAtTime(.0005, t + dur);
-        o.connect(fl); o2.connect(g2); g2.connect(fl); fl.connect(g); g.connect(bus);
+        o.connect(fl); o2.connect(g2);
         o.start(t); o2.start(t); o.stop(t + dur + .05); o2.stop(t + dur + .05);
       }
     };
@@ -1207,6 +1211,8 @@ var Music = (() => {
       let x = 0;
       bar.forEach(([m, d]) => { note(m, t0 + x * BEAT, d); x += d; });
     });
+    // Render dipecah per detik audio. Tanpa ini browser menahan pemuatan ulang atau perpindahan halaman sampai render selesai.
+    if (typeof ctx.suspend === "function") for (let x = 1; x < ctx.length / ctx.sampleRate; x++) ctx.suspend(x).then(() => ctx.resume(), () => {});
     const out = await ctx.startRendering();
     const data = out.getChannelData(0), n = Math.round(LEN * SR);
     // Ekor setelah putaran dilipat ke awal supaya sambungan loop tidak terdengar.
