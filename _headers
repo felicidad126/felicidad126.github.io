@@ -1,0 +1,25 @@
+# Aturan cache untuk Cloudflare Pages (diabaikan di GitHub Pages).
+# Bawaan Cloudflare Pages adalah "max-age=0, must-revalidate", jadi foto dan font
+# diperiksa ulang ke server di setiap kunjungan.
+#
+# Foto dan gambar katalog disimpan 30 hari. Bila foto diganti, pakai nama berkas
+# baru supaya tamu tidak melihat versi lama dari cache.
+# Font tidak pernah berubah isinya, jadi disimpan setahun.
+
+/foto/*
+  Cache-Control: public, max-age=2592000
+
+/katalog/*
+  Cache-Control: public, max-age=2592000
+
+/favicon.ico
+  Cache-Control: public, max-age=2592000
+
+/helonoia/*
+  Cache-Control: public, max-age=2592000
+
+/lengkung-sage/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/garis-editorial/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
