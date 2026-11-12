@@ -10,20 +10,9 @@ Halaman utama ([`index.html`](index.html)) adalah katalog untuk calon pengantin:
 
 ---
 
-# Helonoia — Halaman Perkenalan Brand
+# Helonoia
 
-Halaman di folder [`HTML/`](HTML/) mengenalkan brand **Helonoia** sebelum ada produk: arti nama (HELO dari "halo", NOIA dari "paranoia"), maskot monster ungu dan cerita tiap bagian tubuhnya, dan empat kebiasaan brand. Versi resminya ada di https://helonoia.com/ (aaPanel, lihat panduan deploy di bawah).
-
-- Lihat: https://felicidad126.github.io/HTML/ (dan https://invitation.helonoia.net/HTML/)
-- Animasi penuh (abaikan setting reduced-motion): `HTML/?motion=full`
-- Folder `HTML/` berdiri sendiri (`index.html`, `favicon.svg`, `logo.png`), jadi bisa disalin apa adanya ke server lain. Panduan langkah demi langkah ke server sendiri (aaPanel untuk banyak website di satu server, Nginx manual, atau cPanel): [`DEPLOY-HELONOIA.md`](DEPLOY-HELONOIA.md).
-- Maskot dan tulisan HELONOIA di halaman ini dibuat dari [`helonoia/helonoia_monster.py`](helonoia/helonoia_monster.py), jadi bentuknya sama persis dengan logo. Bila logo berubah, potongan SVG di awal `<body>` perlu dibuat ulang dari generator itu.
-- Semua warna diambil dari logo: Malam `#120B1E`, Ungu Noia `#B26BFF`, Ungu Tua `#7C3FD6`, Lilac `#CDA6FF`, Lime `#C6FF3D`, Putih Halo `#F4EFFF`. Palet dan huruf sengaja tidak ditampilkan di halaman publik; tempatnya di dokumen brand.
-- Interaksi: mata maskot mengikuti kursor (di HP ia melirik ke sana kemari sendiri), tombol "Sapa balik" membuat maskot melambai dan menjawab.
-- `canonical`, `og:url`, dan `og:image` mengarah ke `https://helonoia.com/`.
-- Kontak (WhatsApp, Instagram, email) diisi di objek `KONTAK` pada skrip di bagian bawah `HTML/index.html`. Selama kosong, tombol kontak tidak ditampilkan.
-- Bagian "Yang sudah bisa dilihat" menautkan ke katalog undangan digital di https://invitation.helonoia.net/.
-- Font Fredoka (huruf logo) dan Plus Jakarta Sans dimuat dari Google Fonts, berlisensi SIL Open Font License 1.1.
+Halaman brand Helonoia, maskot, logo, ikon, dan panduan deploy-nya sudah pindah ke repo sendiri: https://github.com/felicidad126/helonoia
 
 ---
 
