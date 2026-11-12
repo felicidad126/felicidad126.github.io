@@ -21,6 +21,8 @@ Halaman di folder [`HTML/`](HTML/) mengenalkan brand **Helonoia** sebelum ada pr
 - Semua warna diambil dari logo: Malam `#120B1E`, Ungu Noia `#B26BFF`, Ungu Tua `#7C3FD6`, Lilac `#CDA6FF`, Lime `#C6FF3D`, Putih Halo `#F4EFFF`. Palet dan huruf sengaja tidak ditampilkan di halaman publik; tempatnya di dokumen brand.
 - Interaksi: mata maskot mengikuti kursor (di HP ia melirik ke sana kemari sendiri), tombol "Sapa balik" membuat maskot melambai dan menjawab.
 - `canonical`, `og:url`, dan `og:image` mengarah ke `https://helonoia.com/`.
+- Kontak (WhatsApp, Instagram, email) diisi di objek `KONTAK` pada skrip di bagian bawah `HTML/index.html`. Selama kosong, tombol kontak tidak ditampilkan.
+- Bagian "Yang sudah bisa dilihat" menautkan ke katalog undangan digital di https://invitation.helonoia.net/.
 - Font Fredoka (huruf logo) dan Plus Jakarta Sans dimuat dari Google Fonts, berlisensi SIL Open Font License 1.1.
 
 ---
