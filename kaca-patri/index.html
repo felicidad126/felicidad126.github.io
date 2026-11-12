@@ -909,14 +909,38 @@ if (FULL) {
 }
 
 /* ---------- Tombol musik menepi saat halaman digulir, muncul lagi saat berhenti ---------- */
+/* Tidak muncul lagi selama ada kontrol (isian, pilihan, tombol, tautan) di bawahnya, supaya ketukan
+   di tepi kanan form tidak tertangkap tombol musik. Muncul lagi begitu halaman digulir menjauh. */
 {
   let idle = 0;
+  const CONTROL = "a[href],button,input,select,textarea,summary,[role=button],[tabindex]:not([tabindex='-1'])";
+  // Label dihitung hanya bila terhubung ke isian; label judul seperti "Kehadiran" tidak bisa diketuk.
+  const isControl = (el) => !!(el.closest(CONTROL) || el.closest("label")?.control);
+  const covers = () => {
+    const cs = getComputedStyle(musicBtn), de = document.documentElement;
+    const w = musicBtn.offsetWidth, h = musicBtn.offsetHeight;
+    const x0 = de.clientWidth - parseFloat(cs.right) - w, y0 = de.clientHeight - parseFloat(cs.bottom) - h;
+    for (const fx of [.15, .5, .85]) for (const fy of [.15, .5, .85]) {
+      for (const el of document.elementsFromPoint(x0 + w * fx, y0 + h * fy)) {
+        if (musicBtn.contains(el)) continue;
+        if (isControl(el)) return true;
+        break;
+      }
+    }
+    return false;
+  };
+  const settle = () => {
+    if (musicBtn.hidden || document.activeElement === musicBtn) return musicBtn.classList.remove("tuck");
+    musicBtn.classList.toggle("tuck", covers());
+  };
   addEventListener("scroll", () => {
     if (musicBtn.hidden || document.activeElement === musicBtn) return;
     musicBtn.classList.add("tuck");
     clearTimeout(idle);
-    idle = setTimeout(() => musicBtn.classList.remove("tuck"), 900);
+    idle = setTimeout(settle, 900);
   }, { passive: true });
+  // Form bisa berubah tinggi (pesan galat, "Jumlah tamu", "Ubah Jawaban") atau keyboard HP terbuka tanpa digulir.
+  for (const ev of ["resize", "input", "change", "click"]) addEventListener(ev, () => { clearTimeout(idle); idle = setTimeout(settle, 300); }, { passive: true });
 }
 
 /* ---------- Hitung mundur: angka berganti dengan memudar lembut ---------- */
