@@ -4,7 +4,9 @@ Halaman utama ([`index.html`](index.html)) adalah katalog untuk calon pengantin:
 
 - Lihat: https://invitation.helonoia.net/ (Cloudflare Pages, domain sendiri; juga tetap ada di https://felicidad126.github.io/)
 - Gambar pratinjau tautan (`og:image`) di katalog dan semua tema memakai `https://invitation.helonoia.net/`. Bila domain berganti, ganti alamat itu di setiap `index.html`.
-- Nama usaha dan nomor WhatsApp diisi di objek `TOKO` pada skrip di bagian bawah `index.html`. Selama nomornya kosong, tombol WhatsApp membuka WhatsApp dengan pesan terisi dan pengunjung memilih kontak sendiri.
+- Data usaha diisi di objek `TOKO` pada skrip di bagian bawah `index.html`: nama usaha, nomor WhatsApp, harga mulai, jumlah revisi, masa aktif tautan, waktu pengerjaan, cara kirim daftar tamu, batas tamu, pembayaran, Instagram, TikTok, kota, dan jam layanan. Bagian yang masih kosong tidak ditampilkan (bagian Harga, harga di pembuka, pertanyaan tambahan di tanya jawab, kontak di kaki halaman).
+- Nomor WhatsApp wajib diisi. Selama kosong, tombol WhatsApp membuka layar pilih kontak, bukan chat ke penjual.
+- `favicon.ico`, `icon.svg`, `apple-touch-icon.png`, `sitemap.xml`, `robots.txt`, dan `404.html` ada di folder utama. Bila tema ditambah atau domain berganti, perbarui `sitemap.xml` dan `robots.txt`.
 - Gambar sampul tiap tema dan gambar pratinjau tautan (`og.jpg`, 1200x630) ada di folder [`katalog/`](katalog/). Bila desain sampul berubah, gambarnya perlu dibuat ulang.
 - Tautan lama Lengkung Sage di alamat utama (`/?to=`, `/?open`, `/?motion=full`) otomatis diteruskan ke `/lengkung-sage/`.
 
@@ -24,7 +26,9 @@ Font (Great Vibes, Lora, Inter) di-embed di `lengkung-sage/index.html` dan berli
 
 ---
 
-# Parallax & Sway — Preview Undangan Digital
+# Melati Berayun — Preview Undangan Digital
+
+Dulu bernama "Parallax & Sway". Alamat foldernya tetap `parallax-sway/` supaya tautan lama tidak putus.
 
 Tema kedua, di subfolder [`parallax-sway/`](parallax-sway/): palet **Nila Senja** (indigo malam, krem kertas, emas hangat, aksen mawar), tanpa tone sage.
 
