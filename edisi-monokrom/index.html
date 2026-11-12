@@ -1300,6 +1300,8 @@ const Music = (() => {
       chords.forEach((c, b) => c.forEach((m, k) => note(m, t0 + (b * 4 + k * 0.06) * BEAT, 3.6 * BEAT, 0.085)));
       mel.forEach(([m, at]) => note(m, t0 + at * BEAT, 1.2 * BEAT, 0.11));
     }
+    // Render dipecah per detik audio. Tanpa ini browser menahan pemuatan ulang atau perpindahan halaman sampai render selesai.
+    if (typeof ctx.suspend === "function") for (let x = 1; x < ctx.length / ctx.sampleRate; x++) ctx.suspend(x).then(() => ctx.resume(), () => {});
     const buf = await new Promise((res, rej) => { ctx.oncomplete = (e) => res(e.renderedBuffer); const p = ctx.startRendering(); if (p && p.catch) p.catch(rej); });
     const len = Math.round(RATE * LOOP);
     return wavUrl(buf.getChannelData(0).slice(len, len * 2));

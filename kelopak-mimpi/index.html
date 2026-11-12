@@ -1211,6 +1211,8 @@ var Music = (() => {
       bell(MEL[i][0], t0 + BEAT * .02, .07);
       bell(MEL[i][1], t0 + BEAT * 2, .055);
     });
+    // Render dipecah per detik audio. Tanpa ini browser menahan pemuatan ulang atau perpindahan halaman sampai render selesai.
+    if (typeof ctx.suspend === "function") for (let x = 1; x < ctx.length / ctx.sampleRate; x++) ctx.suspend(x).then(() => ctx.resume(), () => {});
     const out = await ctx.startRendering();
     const data = out.getChannelData(0), n = Math.round(LEN * SR);
     // Ekor setelah putaran dilipat ke awal supaya sambungan loop tidak terdengar.

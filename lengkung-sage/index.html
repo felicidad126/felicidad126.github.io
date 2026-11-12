@@ -936,6 +936,8 @@ const Music = (() => {
       const m = pos % 2 === 0 && MELODY[Math.floor(step / 32) % 2][bar][pos / 2];
       if (m) note(m, t + 0.01, 0.13, 2.2, 0.5);
     }
+    // Render dipecah per detik audio. Tanpa ini browser menahan pemuatan ulang atau perpindahan halaman sampai render selesai.
+    if (typeof ctx.suspend === "function") for (let x = 1; x < ctx.length / ctx.sampleRate; x++) ctx.suspend(x).then(() => ctx.resume(), () => {});
     const buf = await new Promise((resolve, reject) => {
       ctx.oncomplete = (e) => resolve(e.renderedBuffer);
       const p = ctx.startRendering();
