@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demo Undangan Digital</title>
+<meta name="description" content="Demo undangan pernikahan digital. Lihat temanya, lalu pesan lewat WhatsApp.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#2a2420">
+<link rel="icon" type="image/svg+xml" href="../helonoia/helonoia_monster.svg">
+<link rel="apple-touch-icon" href="../helonoia/helonoia_logo.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Demo Undangan Pernikahan Digital">
+<meta property="og:description" content="Lihat demo undangannya langsung, dibuka dengan nama tamu.">
+<meta property="og:image" content="https://invitation.helonoia.net/katalog/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<!--
+  BILAH DEMO
+  Katalog membuka setiap demo lewat halaman ini: demo/?tema=<folder-tema>&to=<nama>.
+  Bilah di atas berisi tautan kembali ke katalog dan tombol "Pesan tema ini"; temanya sendiri tampil di bingkai di bawahnya,
+  jadi berkas tema tidak berubah dan undangan asli untuk tamu tidak pernah memuat bilah ini.
+  Parameter selain "tema" (to, motion, open) diteruskan apa adanya ke tema.
+  Tema baru: tambahkan folder dan namanya di objek TEMA di bawah, juga kartunya di katalog (index.html).
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Plus+Jakarta+Sans:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#2a2420;--cream:#faf6ef;--line:rgba(250,246,239,.12);--gold:#b8945c;--wa:#2a8256;--wa-d:#24734c;
+  --f-d:"Cormorant Garamond",Georgia,serif;--f-t:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;overflow:hidden}
+body{display:flex;flex-direction:column;height:100vh;height:100dvh;background:var(--ink);color:var(--cream);font:500 14px/1.3 var(--f-t);-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:999px}
+.sr,.order .opt{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+
+.bar{flex:none;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:10px;min-height:56px;padding:6px 10px;border-bottom:1px solid var(--line)}
+.back,.order{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:44px;min-width:44px;border-radius:999px;font-weight:600;transition:background .2s}
+.back{padding:0 12px 0 8px}
+.back:hover{background:rgba(250,246,239,.08)}
+.back svg,.order svg{width:18px;height:18px;flex:none}
+.label{margin:0;min-width:0;display:grid}
+.label small{font:600 10.5px/1.3 var(--f-t);letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+.label b{font:600 19px/1.15 var(--f-d);letter-spacing:.005em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.order{padding:0 16px 0 14px;background:var(--wa);color:#fff}
+.order:hover{background:var(--wa-d)}
+@media (max-width:399px){.label b{font-size:17px}}
+@media (max-width:359px){.back{padding:0}.back .txt{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}}
+@media (min-width:480px){.order .opt{position:static;width:auto;height:auto;overflow:visible;clip-path:none}}
+@media (min-width:768px){.bar{padding:6px 16px;gap:16px}.label{grid-auto-flow:column;justify-content:start;align-items:baseline;gap:12px}.label b{font-size:21px}}
+
+main{flex:1;min-height:0;position:relative;background:#f3ece1;color:#5f554c}
+.loading{position:absolute;inset:0;display:grid;place-items:center;margin:0;padding:24px;text-align:center}
+.loading[hidden]{display:none}
+.loading a{text-decoration:underline}
+iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+</style>
+</head>
+<body>
+<header class="bar">
+  <a class="back" id="back" href="../#tema"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg><span class="sr">Kembali ke </span><span class="txt">Katalog</span></a>
+  <p class="label"><small>Demo</small><b id="nama">Undangan digital</b></p>
+  <a class="order" id="order" href="https://wa.me/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1.4-4.2A8 8 0 1 1 8.6 19z"/><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5"/></svg><span>Pesan<span class="opt"> tema ini</span></span></a>
+</header>
+<main>
+  <p class="loading" id="loading">Memuat demo…</p>
+  <noscript><p class="loading">Demo membutuhkan JavaScript. <a href="../">Kembali ke katalog</a></p></noscript>
+</main>
+
+<script src="../toko.js"></script>
+<script>
+// Folder tema → nama tampilan. Hanya tema di daftar ini yang bisa dibuka lewat bilah demo.
+const TEMA = {
+  "lengkung-sage": "Lengkung Sage",
+  "parallax-sway": "Parallax & Sway",
+  "garis-editorial": "Garis Editorial",
+  "truntum-terakota": "Truntum Terakota",
+  "edisi-monokrom": "Edisi Monokrom",
+  "amplop-linen": "Amplop Linen",
+  "biru-kabut": "Biru Kabut",
+  "riviera-kobalt": "Riviera Kobalt",
+  "kaca-patri": "Kaca Patri",
+  "kelopak-mimpi": "Kelopak Mimpi",
+};
+const TOKO = window.TOKO || { nama: "", waLink: () => "https://wa.me/" };
+
+const q = new URLSearchParams(location.search);
+const folder = q.get("tema");
+if (!folder || !Object.prototype.hasOwnProperty.call(TEMA, folder)) {
+  location.replace("../#tema");
+} else {
+  const nama = TEMA[folder];
+  q.delete("tema");
+  const rest = q.toString();
+
+  document.title = `Demo ${nama} · ${TOKO.nama || "Undangan Digital"}`;
+  document.getElementById("nama").textContent = nama;
+  // Kembali ke kartu tema ini di katalog, bukan ke awal halaman.
+  document.getElementById("back").href = `../#${folder}`;
+  document.getElementById("order").href = TOKO.waLink(nama);
+
+  const frame = document.createElement("iframe");
+  frame.title = `Undangan contoh tema ${nama}`;
+  frame.allow = "autoplay; clipboard-write; accelerometer; gyroscope; fullscreen";
+  frame.src = `../${folder}/${rest ? "?" + rest : ""}`;
+  frame.addEventListener("load", () => { document.getElementById("loading").hidden = true; }, { once: true });
+  document.querySelector("main").append(frame);
+}
+</script>
+</body>
+</html>
