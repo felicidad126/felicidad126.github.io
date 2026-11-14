@@ -28,6 +28,8 @@ if (/[?&](to|open|motion)(=|&|$)/.test(location.search)) location.replace("lengk
 :root{
   --bg:#faf6ef;--bg-2:#f3ece1;--card:#fffdf9;--ink:#2a2420;--ink-2:#5f554c;--line:#e6dccd;
   --gold:#a8854f;--wa:#1d6b46;--wa-d:#155438;
+  /* Warna teks kecil & garis kolom yang lolos kontras WCAG AA. --gold (3.2:1) hanya untuk teks besar dan hiasan. */
+  --gold-t:#856536;--gold-on-ink:#b8945c;--wa-on-ink:#2a8256;--field:#9a8d7c;--placeholder:#7d7268;
   --f-d:"Cormorant Garamond",Georgia,serif;--f-t:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --wrap:1180px;--gut:clamp(16px,4vw,32px);--ease:cubic-bezier(.2,.7,.2,1);
 }
@@ -39,7 +41,7 @@ a{color:inherit}
 h1,h2,h3{font-family:var(--f-d);font-weight:500;line-height:1.08;margin:0;letter-spacing:-.005em;text-wrap:balance}
 p{margin:0;text-wrap:pretty}
 .wrap{max-width:var(--wrap);margin:0 auto;padding:0 var(--gut)}
-.kick{font:600 12px/1.4 var(--f-t);letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+.kick{font:600 12px/1.4 var(--f-t);letter-spacing:.22em;text-transform:uppercase;color:var(--gold-t)}
 :focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:6px}
 
 /* Tombol */
@@ -88,7 +90,8 @@ p{margin:0;text-wrap:pretty}
 .tryname p{color:var(--ink-2);font-size:15px}
 .tryname form{display:flex;flex-wrap:wrap;gap:10px}
 .tryname label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
-.tryname input{flex:1 1 220px;min-width:0;min-height:48px;padding:12px 16px;border:1px solid #cbbfae;border-radius:999px;background:#fff;color:var(--ink);font:400 16px/1.2 var(--f-t)}
+.tryname input{flex:1 1 220px;min-width:0;min-height:48px;padding:12px 16px;border:1px solid var(--field);border-radius:999px;background:#fff;color:var(--ink);font:400 16px/1.2 var(--f-t)}
+.tryname input::placeholder{color:var(--placeholder);opacity:1}
 .tryname input:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px rgba(168,133,79,.25)}
 .tryname .live{font-size:14px;color:var(--ink-2)}
 .tryname .live b{color:var(--ink);font-weight:600}
@@ -103,6 +106,7 @@ p{margin:0;text-wrap:pretty}
 .sec-hd{max-width:40em;margin-bottom:clamp(28px,4vw,44px)}
 .sec-hd h2{font-size:clamp(34px,5.6vw,52px);margin-top:10px}
 .sec-hd p{margin-top:12px;color:var(--ink-2)}
+.sec-hd .kick{color:var(--gold-t)}
 .alt{background:var(--bg-2)}
 
 /* Daftar tema */
@@ -110,7 +114,7 @@ p{margin:0;text-wrap:pretty}
 .card{display:grid;grid-template-columns:clamp(112px,34vw,150px) minmax(0,1fr);gap:16px;align-items:start;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:14px}
 .card .ph{border-radius:18px;padding:4px}
 .card .ph img{border-radius:14px}
-.card .num{font:600 12px/1 var(--f-t);letter-spacing:.18em;color:var(--gold)}
+.card .num{font:600 12px/1 var(--f-t);letter-spacing:.18em;color:var(--gold-t)}
 .card h3{font-size:clamp(26px,6.4vw,30px);margin:6px 0 8px}
 .card .desc{font-size:14.5px;line-height:1.6;color:var(--ink-2)}
 .tags{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 0;padding:0;list-style:none}
@@ -162,7 +166,8 @@ p{margin:0;text-wrap:pretty}
 .cta{background:var(--ink);color:var(--bg);border-radius:28px;padding:clamp(30px,6vw,60px);display:grid;gap:18px;justify-items:start}
 .cta h2{font-size:clamp(32px,5.4vw,50px)}
 .cta p{color:#d8cfc3;max-width:36em}
-.cta .btn-wa{background:#2e8a5c}
+.cta .kick{color:var(--gold-on-ink)}
+.cta .btn-wa{background:var(--wa-on-ink)}
 .cta .btn-wa:hover{background:#25734c}
 
 .foot{padding:36px 0 calc(40px + env(safe-area-inset-bottom));color:var(--ink-2);font-size:13.5px}
