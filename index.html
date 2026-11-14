@@ -23,7 +23,7 @@ if (/[?&](to|open|motion)(=|&|$)/.test(location.search)) location.replace("lengk
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Italiana&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#faf6ef;--bg-2:#f3ece1;--card:#fffdf9;--ink:#2a2420;--ink-2:#5f554c;--line:#e6dccd;
@@ -83,6 +83,13 @@ p{margin:0;text-wrap:pretty}
 /* Bingkai HP */
 .ph{border-radius:clamp(18px,4.2vw,30px);padding:clamp(4px,.9vw,7px);background:#1f1a17;box-shadow:0 30px 60px -28px rgba(42,36,32,.55),0 2px 6px rgba(42,36,32,.12)}
 .ph img{width:100%;height:auto;aspect-ratio:540/1169;object-fit:cover;border-radius:calc(clamp(18px,4.2vw,30px) - clamp(4px,.9vw,7px));background:var(--bg-2)}
+
+/* Nama tamu di HP tengah: sampul Kelopak Mimpi tanpa nama + teks SVG dengan huruf, ukuran, warna, dan posisi
+   yang sama dengan tema (diukur pada 390x844, skala gambar 540/390). Teks muncul setelah huruf Italiana termuat. */
+.scr{position:relative}
+.scr svg{position:absolute;inset:0;width:100%;height:100%;overflow:hidden;pointer-events:none}
+.scr text{font:400 44.41px Italiana,Didot,Georgia,serif;fill:#4a3340;text-anchor:middle;transition:opacity .4s}
+html.js .scr:not(.ready) text{opacity:0}
 
 /* Coba nama */
 .tryname{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:clamp(20px,3.4vw,30px);display:grid;gap:14px;box-shadow:0 18px 40px -30px rgba(42,36,32,.4)}
@@ -176,7 +183,7 @@ p{margin:0;text-wrap:pretty}
 /* Muncul saat digulir */
 html.js .rv{opacity:0;transform:translateY(18px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
 html.js .rv.in{opacity:1;transform:none}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}html.js .rv{opacity:1;transform:none;transition:none}.shot .ph{transition:none}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}html.js .rv{opacity:1;transform:none;transition:none}.shot .ph{transition:none}.scr text{transition:none}}
 </style>
 <script>document.documentElement.classList.add("js");</script>
 </head>
@@ -206,7 +213,7 @@ html.js .rv.in{opacity:1;transform:none}
       </div>
       <div class="fan" aria-hidden="true">
         <div class="ph"><img src="katalog/riviera-kobalt.jpg" alt="" width="540" height="1169" fetchpriority="high"></div>
-        <div class="ph"><img src="katalog/kelopak-mimpi.jpg" alt="" width="540" height="1169" fetchpriority="high"></div>
+        <div class="ph"><div class="scr"><img src="katalog/kelopak-mimpi-tanpa-nama.jpg" alt="" width="540" height="1169" fetchpriority="high"><svg viewBox="0 0 540 1169"><text id="heroGuest" x="270" y="1046">Nama Tamu</text></svg></div></div>
         <div class="ph"><img src="katalog/truntum-terakota.jpg" alt="" width="540" height="1169" fetchpriority="high"></div>
       </div>
     </div>
@@ -452,12 +459,72 @@ motionBtn.addEventListener("click", () => {
 });
 RM.addEventListener ? RM.addEventListener("change", () => { syncMotion(); applyName(); }) : RM.addListener(() => { syncMotion(); applyName(); });
 
+// Nama tamu di HP tengah pembuka, ikut nama yang diketik. Ukuran dalam satuan gambar sampul (lebar 540).
+// Ruang kosongnya di antara baris "Kepada Yth." dan tombol (tombol di gambar tidak bisa bergeser), lebar maks. 360.
+// Seperti tema: nama pendek satu baris ukuran 44,41; nama panjang dua baris (dipecah di spasi yang paling seimbang,
+// lebih suka sebelum "&") ukuran 30, dikecilkan sampai 22 bila perlu. Baru dipotong dengan "…" bila masih tidak muat.
+const heroScr = $(".fan .scr"), heroGuest = $("#heroGuest"), SVGNS = "http://www.w3.org/2000/svg";
+const HERO_MAX = 360, HERO_MID = 1031; // tengah ruang nama; baseline "Nama Tamu" di sampul = 1046
+let heroText = "Nama Tamu";
+function heroSet(lines, size) {
+  heroGuest.textContent = "";
+  heroGuest.style.fontSize = size + "px";
+  const lh = size * 1.15, y0 = HERO_MID - (lines.length - 1) * lh / 2 + size * 0.34;
+  lines.forEach((ln, i) => {
+    const t = document.createElementNS(SVGNS, "tspan");
+    t.setAttribute("x", "270");
+    t.setAttribute("y", (y0 + i * lh).toFixed(2));
+    t.textContent = ln;
+    heroGuest.append(t);
+  });
+  return Math.max(...[...heroGuest.children].map((t) => t.getComputedTextLength()));
+}
+function heroFitLines(lines, size, min) {
+  let w = heroSet(lines, size);
+  if (w > HERO_MAX) { size = Math.max(min, size * HERO_MAX / w); w = heroSet(lines, size); }
+  const cut = lines.map((l) => [...l]), short = lines.map(() => false);
+  const text = () => cut.map((c, i) => short[i] ? c.join("").replace(/[\s.,;:!?&/\-–—]+$/u, "") + "…" : c.join(""));
+  while (w > HERO_MAX) {
+    const ws = [...heroGuest.children].map((t) => t.getComputedTextLength());
+    const k = ws.indexOf(Math.max(...ws));
+    if (cut[k].length <= 1) break;
+    cut[k].pop(); short[k] = true;
+    w = heroSet(text(), size);
+  }
+}
+function heroName(name) {
+  heroText = name;
+  const w = heroSet([name], 44.41);
+  if (w <= HERO_MAX) return;
+  const words = name.split(" ");
+  if (44.41 * HERO_MAX / w >= 30 || words.length < 2) { heroFitLines([name], 44.41, 26); return; }
+  // "Bapak Ahmad Suryadi / & Keluarga": nama orangnya utuh di baris pertama, asal masih muat dengan ukuran 26 ke atas.
+  const amp = words.lastIndexOf("&");
+  if (amp > 0) {
+    const lines = [words.slice(0, amp).join(" "), words.slice(amp).join(" ")];
+    if (30 * HERO_MAX / heroSet(lines, 30) >= 26) { heroFitLines(lines, 30, 26); return; }
+  }
+  let best = null;
+  for (let i = 1; i < words.length; i++) {
+    const lines = [words.slice(0, i).join(" "), words.slice(i).join(" ")];
+    const score = heroSet(lines, 30);
+    if (!best || score < best.score) best = { score, lines };
+  }
+  heroFitLines(best.lines, 30, 22);
+}
+// Ukur ulang setelah Italiana termuat (sebelum itu lebarnya memakai huruf cadangan), lalu tampilkan teksnya.
+// Bila huruf belum datang setelah 3 detik, teks tetap ditampilkan dengan huruf cadangan dan diukur ulang saat Italiana tiba.
+const heroReady = () => { heroName(heroText); heroScr.classList.add("ready"); };
+(document.fonts ? document.fonts.load("400 44px Italiana") : Promise.resolve()).then(heroReady, heroReady);
+setTimeout(() => heroScr.classList.add("ready"), 3000);
+
 // Demo dibuka lewat demo/ (bilah "Katalog" + "Pesan tema ini" di atas tema); parameter selain "tema" diteruskan ke tema.
 // Nama yang diketik disimpan selama sesi, supaya tetap ada saat pengunjung kembali dari demo lewat tombol "Katalog".
 const input = $("#guestName"), live = $("#live b");
 try { input.value = sessionStorage.getItem("katalog-nama") || ""; } catch (e) {}
 function applyName() {
   const name = input.value.trim().replace(/\s+/g, " ") || "Nama Tamu";
+  heroName(name);
   const q = "&to=" + encodeURIComponent(name) + (RM.matches && fullMotion ? "&motion=full" : "");
   $$("[data-demo]").forEach((a) => { a.href = `demo/?tema=${a.dataset.demo}${q}`; });
   live.textContent = name;
