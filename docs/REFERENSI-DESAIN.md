@@ -170,13 +170,13 @@ Tujuh tema baru, masing-masing dibuat dari nol (tiga tema lama tidak diubah):
 
 | Tema | Konsep | Referensi yang dipakai | Palet |
 |---|---|---|---|
-| [**Truntum Terakota**](truntum-terakota/) | Bingkai foto dengan aksen motif truntum, panel menempel di desktop | Tema adat modern (bagian 3), palet berani (bagian 1) | Terakota tua + tinta putih |
-| [**Edisi Monokrom**](edisi-monokrom/) | Lookbook fashion sinematik: foto hitam-putih yang perlahan berwarna, tipografi Bodoni besar | Tipografi editorial, Joy (split-screen), Riley & Grey, Bliss & Bone (hitam-putih, marmer, flora) | Hitam-putih + aksen marmer |
-| [**Amplop Linen**](amplop-linen/) | Amplop bersegel lilin, lalu sembilan kartu die-cut yang digeser | Greenvelope/Paperless Post, vellum, die-cut, kertas bertekstur | Quiet luxury netral |
-| [**Biru Kabut**](biru-kabut/) | Pagi berkabut yang romantis: foto muncul dari kabut, panel kaca buram, ranting hydrangea | Riset Binus/ITB dan teknologi.id (modern simpel, tipografi elegan), lapisan transparan ala vellum | Biru pastel + abu |
-| [**Riviera Kobalt**](riviera-kobalt/) | Beach club Riviera Italia di Bali: ubin majolika lukisan tangan, ranting lemon, kanopi bergaris, potret di piring keramik | Riset tren 2027 (bagian 9): The Knot (beach club Italia, ilustrasi tangan), biru kobalt, palet Italia Paperlust | Kobalt + putih + lemon |
-| [**Kaca Patri**](kaca-patri/) | Cahaya pagi menembus jendela orsi: kisi kayu, kaca berwarna permata, pantulan cahaya yang bergerak | Riset lanjutan (bagian 10): detail kaca patri (The Knot 2027), hijau tua dan warna permata, jendela orsi Persia | Hijau tua + merah berry + safir + kunyit + lilac |
-| [**Kelopak Mimpi**](kelopak-mimpi/) | Taman kelopak abstrak yang melayang di bawah cahaya kubah: kelopak tembus pandang berkilau sampanye, komposisi asimetris | Riset lanjutan (bagian 11): Petal Dreamscape dan Charming Champagne dari Bridestory 2026, tekstur bunga kering | Blush, mauve, lilac, peach + sampanye |
+| [**Truntum Terakota**](../truntum-terakota/) | Bingkai foto dengan aksen motif truntum, panel menempel di desktop | Tema adat modern (bagian 3), palet berani (bagian 1) | Terakota tua + tinta putih |
+| [**Edisi Monokrom**](../edisi-monokrom/) | Lookbook fashion sinematik: foto hitam-putih yang perlahan berwarna, tipografi Bodoni besar | Tipografi editorial, Joy (split-screen), Riley & Grey, Bliss & Bone (hitam-putih, marmer, flora) | Hitam-putih + aksen marmer |
+| [**Amplop Linen**](../amplop-linen/) | Amplop bersegel lilin, lalu sembilan kartu die-cut yang digeser | Greenvelope/Paperless Post, vellum, die-cut, kertas bertekstur | Quiet luxury netral |
+| [**Biru Kabut**](../biru-kabut/) | Pagi berkabut yang romantis: foto muncul dari kabut, panel kaca buram, ranting hydrangea | Riset Binus/ITB dan teknologi.id (modern simpel, tipografi elegan), lapisan transparan ala vellum | Biru pastel + abu |
+| [**Riviera Kobalt**](../riviera-kobalt/) | Beach club Riviera Italia di Bali: ubin majolika lukisan tangan, ranting lemon, kanopi bergaris, potret di piring keramik | Riset tren 2027 (bagian 9): The Knot (beach club Italia, ilustrasi tangan), biru kobalt, palet Italia Paperlust | Kobalt + putih + lemon |
+| [**Kaca Patri**](../kaca-patri/) | Cahaya pagi menembus jendela orsi: kisi kayu, kaca berwarna permata, pantulan cahaya yang bergerak | Riset lanjutan (bagian 10): detail kaca patri (The Knot 2027), hijau tua dan warna permata, jendela orsi Persia | Hijau tua + merah berry + safir + kunyit + lilac |
+| [**Kelopak Mimpi**](../kelopak-mimpi/) | Taman kelopak abstrak yang melayang di bawah cahaya kubah: kelopak tembus pandang berkilau sampanye, komposisi asimetris | Riset lanjutan (bagian 11): Petal Dreamscape dan Charming Champagne dari Bridestory 2026, tekstur bunga kering | Blush, mauve, lilac, peach + sampanye |
 
 Semua tema baru punya motion yang menyesuaikan konsepnya dan tetap menghormati `prefers-reduced-motion` (`?motion=full` memaksa animasi penuh).
 
