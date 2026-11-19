@@ -4,7 +4,7 @@ Penjelasan lengkap kesepuluh tema undangan: konsep, motion, musik, alamat demo, 
 
 Semua tema memakai foto dari folder [`foto/`](../foto/) yang sama; nama, tanggal, alamat, dan rekening adalah data contoh. Foto contoh dibuat dengan AI (Gemini), bukan foto mempelai sebenarnya. RSVP dan ucapan hanya tersimpan di perangkat pengunjung.
 
-Alamat demo di bawah memakai https://felicidad126.github.io/; semuanya juga bisa dibuka di https://invitation.helonoia.net/ dengan jalur yang sama.
+Alamat demo di bawah memakai https://felicidad126.github.io/; semuanya juga bisa dibuka di https://invitation.helonoia.com/ dengan jalur yang sama.
 
 ---
 
