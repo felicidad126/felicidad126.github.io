@@ -4,11 +4,22 @@ Halaman utama ([`index.html`](index.html)) adalah katalog untuk calon pengantin:
 
 - Lihat: https://invitation.helonoia.net/ (Cloudflare Pages, domain sendiri; juga tetap ada di https://felicidad126.github.io/)
 - Gambar pratinjau tautan (`og:image`) di katalog dan semua tema memakai `https://invitation.helonoia.net/`. Bila domain berganti, ganti alamat itu di setiap `index.html`.
-- Nama usaha dan nomor WhatsApp diisi di objek `TOKO` pada skrip di bagian bawah `index.html`. Selama nomornya kosong, tombol WhatsApp membuka WhatsApp dengan pesan terisi dan pengunjung memilih kontak sendiri.
+- Nama usaha dan nomor WhatsApp diisi di [`toko.js`](toko.js), dipakai katalog dan bilah demo. Selama nomornya kosong, tombol WhatsApp membuka WhatsApp dengan pesan terisi dan pengunjung memilih kontak sendiri.
+- Nama yang diketik di "Coba dengan nama Anda" disimpan selama sesi browser, jadi tetap terisi saat pengunjung kembali dari demo.
+- HP tengah di pembuka ikut menampilkan nama itu. Gambarnya [`katalog/kelopak-mimpi-tanpa-nama.jpg`](katalog/kelopak-mimpi-tanpa-nama.jpg) (sampul Kelopak Mimpi tanpa nama tamu), dan namanya ditulis di atasnya sebagai teks SVG berhuruf Italiana, dengan ukuran, warna, dan posisi yang sama dengan tema. Nama panjang dibuat dua baris seperti di tema (lebih suka dipecah sebelum "&"). Bila sampul Kelopak Mimpi berubah, buat ulang gambar ini juga dan cocokkan lagi posisi namanya (`HERO_MID` di skrip `index.html`).
 - Gambar sampul tiap tema dan gambar pratinjau tautan (`og.jpg`, 1200x630) ada di folder [`katalog/`](katalog/). Bila desain sampul berubah, gambarnya perlu dibuat ulang.
 - Foto tersedia juga dalam format WebP di `foto/webp/` (nama sama; sampul punya versi 480 px untuk HP). Lengkung Sage dan Garis Editorial memakai WebP dengan JPG sebagai cadangan. Bila foto diganti, buat ulang versi WebP-nya.
 - Aturan cache Cloudflare Pages ada di [`_headers`](_headers): foto dan gambar katalog disimpan 30 hari, jadi foto yang diganti sebaiknya memakai nama berkas baru.
 - Tautan lama Lengkung Sage di alamat utama (`/?to=`, `/?open`, `/?motion=full`) otomatis diteruskan ke `/lengkung-sage/`.
+
+## Bilah demo
+
+Katalog membuka setiap demo lewat [`demo/`](demo/index.html), misalnya `demo/?tema=lengkung-sage&to=Nama%20Tamu`. Di atas undangan ada bilah tipis: tombol "Katalog" (kembali ke kartu tema itu di katalog), label "Demo" dengan nama tema, dan tombol "Pesan tema ini" (WhatsApp dengan nama tema di pesannya). Undangannya sendiri tampil di bingkai di bawah bilah.
+
+- Berkas tema tidak berubah. Undangan asli untuk tamu (`<tema>/?to=<nama>`) tidak pernah memuat bilah ini.
+- Bila calon pengantin meneruskan tautan demo ke pasangannya, bilahnya ikut tampil, jadi pasangannya juga bisa membuka katalog atau memesan.
+- Parameter selain `tema` (`to`, `motion`, `open`) diteruskan apa adanya ke tema. Alamat tanpa `tema` atau dengan tema yang tidak dikenal diarahkan kembali ke katalog.
+- Tema baru: tambahkan folder dan namanya di objek `TEMA` di `demo/index.html`, dan kartunya di katalog dengan `id` sama dengan nama folder.
 
 ---
 

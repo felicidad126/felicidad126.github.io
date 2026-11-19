@@ -23,11 +23,13 @@ if (/[?&](to|open|motion)(=|&|$)/.test(location.search)) location.replace("lengk
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Italiana&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#faf6ef;--bg-2:#f3ece1;--card:#fffdf9;--ink:#2a2420;--ink-2:#5f554c;--line:#e6dccd;
   --gold:#a8854f;--wa:#1d6b46;--wa-d:#155438;
+  /* Warna teks kecil & garis kolom yang lolos kontras WCAG AA. --gold (3.2:1) hanya untuk teks besar dan hiasan. */
+  --gold-t:#856536;--gold-on-ink:#b8945c;--wa-on-ink:#2a8256;--field:#9a8d7c;--placeholder:#7d7268;
   --f-d:"Cormorant Garamond",Georgia,serif;--f-t:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --wrap:1180px;--gut:clamp(16px,4vw,32px);--ease:cubic-bezier(.2,.7,.2,1);
 }
@@ -39,7 +41,7 @@ a{color:inherit}
 h1,h2,h3{font-family:var(--f-d);font-weight:500;line-height:1.08;margin:0;letter-spacing:-.005em;text-wrap:balance}
 p{margin:0;text-wrap:pretty}
 .wrap{max-width:var(--wrap);margin:0 auto;padding:0 var(--gut)}
-.kick{font:600 12px/1.4 var(--f-t);letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+.kick{font:600 12px/1.4 var(--f-t);letter-spacing:.22em;text-transform:uppercase;color:var(--gold-t)}
 :focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:6px}
 
 /* Tombol */
@@ -82,13 +84,21 @@ p{margin:0;text-wrap:pretty}
 .ph{border-radius:clamp(18px,4.2vw,30px);padding:clamp(4px,.9vw,7px);background:#1f1a17;box-shadow:0 30px 60px -28px rgba(42,36,32,.55),0 2px 6px rgba(42,36,32,.12)}
 .ph img{width:100%;height:auto;aspect-ratio:540/1169;object-fit:cover;border-radius:calc(clamp(18px,4.2vw,30px) - clamp(4px,.9vw,7px));background:var(--bg-2)}
 
+/* Nama tamu di HP tengah: sampul Kelopak Mimpi tanpa nama + teks SVG dengan huruf, ukuran, warna, dan posisi
+   yang sama dengan tema (diukur pada 390x844, skala gambar 540/390). Teks muncul setelah huruf Italiana termuat. */
+.scr{position:relative}
+.scr svg{position:absolute;inset:0;width:100%;height:100%;overflow:hidden;pointer-events:none}
+.scr text{font:400 44.41px Italiana,Didot,Georgia,serif;fill:#4a3340;text-anchor:middle;transition:opacity .4s}
+html.js .scr:not(.ready) text{opacity:0}
+
 /* Coba nama */
 .tryname{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:clamp(20px,3.4vw,30px);display:grid;gap:14px;box-shadow:0 18px 40px -30px rgba(42,36,32,.4)}
 .tryname h2{font-size:clamp(26px,4vw,32px)}
 .tryname p{color:var(--ink-2);font-size:15px}
 .tryname form{display:flex;flex-wrap:wrap;gap:10px}
 .tryname label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
-.tryname input{flex:1 1 220px;min-width:0;min-height:48px;padding:12px 16px;border:1px solid #cbbfae;border-radius:999px;background:#fff;color:var(--ink);font:400 16px/1.2 var(--f-t)}
+.tryname input{flex:1 1 220px;min-width:0;min-height:48px;padding:12px 16px;border:1px solid var(--field);border-radius:999px;background:#fff;color:var(--ink);font:400 16px/1.2 var(--f-t)}
+.tryname input::placeholder{color:var(--placeholder);opacity:1}
 .tryname input:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px rgba(168,133,79,.25)}
 .tryname .live{font-size:14px;color:var(--ink-2)}
 .tryname .live b{color:var(--ink);font-weight:600}
@@ -103,6 +113,7 @@ p{margin:0;text-wrap:pretty}
 .sec-hd{max-width:40em;margin-bottom:clamp(28px,4vw,44px)}
 .sec-hd h2{font-size:clamp(34px,5.6vw,52px);margin-top:10px}
 .sec-hd p{margin-top:12px;color:var(--ink-2)}
+.sec-hd .kick{color:var(--gold-t)}
 .alt{background:var(--bg-2)}
 
 /* Daftar tema */
@@ -110,7 +121,7 @@ p{margin:0;text-wrap:pretty}
 .card{display:grid;grid-template-columns:clamp(112px,34vw,150px) minmax(0,1fr);gap:16px;align-items:start;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:14px}
 .card .ph{border-radius:18px;padding:4px}
 .card .ph img{border-radius:14px}
-.card .num{font:600 12px/1 var(--f-t);letter-spacing:.18em;color:var(--gold)}
+.card .num{font:600 12px/1 var(--f-t);letter-spacing:.18em;color:var(--gold-t)}
 .card h3{font-size:clamp(26px,6.4vw,30px);margin:6px 0 8px}
 .card .desc{font-size:14.5px;line-height:1.6;color:var(--ink-2)}
 .tags{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 0;padding:0;list-style:none}
@@ -162,7 +173,8 @@ p{margin:0;text-wrap:pretty}
 .cta{background:var(--ink);color:var(--bg);border-radius:28px;padding:clamp(30px,6vw,60px);display:grid;gap:18px;justify-items:start}
 .cta h2{font-size:clamp(32px,5.4vw,50px)}
 .cta p{color:#d8cfc3;max-width:36em}
-.cta .btn-wa{background:#2e8a5c}
+.cta .kick{color:var(--gold-on-ink)}
+.cta .btn-wa{background:var(--wa-on-ink)}
 .cta .btn-wa:hover{background:#25734c}
 
 .foot{padding:36px 0 calc(40px + env(safe-area-inset-bottom));color:var(--ink-2);font-size:13.5px}
@@ -171,13 +183,13 @@ p{margin:0;text-wrap:pretty}
 /* Muncul saat digulir */
 html.js .rv{opacity:0;transform:translateY(18px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
 html.js .rv.in{opacity:1;transform:none}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}html.js .rv{opacity:1;transform:none;transition:none}.shot .ph{transition:none}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}html.js .rv{opacity:1;transform:none;transition:none}.shot .ph{transition:none}.scr text{transition:none}}
 </style>
 <script>document.documentElement.classList.add("js");</script>
 </head>
 <body>
 <!--
-  PENGATURAN TOKO: isi nama usaha dan nomor WhatsApp di objek TOKO pada skrip di bagian bawah halaman ini.
+  PENGATURAN TOKO: isi nama usaha dan nomor WhatsApp di berkas toko.js (dipakai juga oleh bilah demo di demo/).
 -->
 <header class="top" id="top">
   <div class="wrap">
@@ -201,7 +213,7 @@ html.js .rv.in{opacity:1;transform:none}
       </div>
       <div class="fan" aria-hidden="true">
         <div class="ph"><img src="katalog/riviera-kobalt.jpg" alt="" width="540" height="1169" fetchpriority="high"></div>
-        <div class="ph"><img src="katalog/kelopak-mimpi.jpg" alt="" width="540" height="1169" fetchpriority="high"></div>
+        <div class="ph"><div class="scr"><img src="katalog/kelopak-mimpi-tanpa-nama.jpg" alt="" width="540" height="1169" fetchpriority="high"><svg viewBox="0 0 540 1169"><text id="heroGuest" x="270" y="1046">Nama Tamu</text></svg></div></div>
         <div class="ph"><img src="katalog/truntum-terakota.jpg" alt="" width="540" height="1169" fetchpriority="high"></div>
       </div>
     </div>
@@ -232,104 +244,104 @@ html.js .rv.in{opacity:1;transform:none}
       </div>
 
       <ul class="grid">
-        <li class="card rv">
-          <a class="shot" data-demo="lengkung-sage" href="lengkung-sage/?to=Nama%20Tamu" aria-label="Lihat demo Lengkung Sage"><div class="ph"><img src="katalog/lengkung-sage.jpg" alt="Sampul tema Lengkung Sage" width="540" height="1169" loading="lazy" decoding="async"></div></a>
+        <li class="card rv" id="lengkung-sage">
+          <a class="shot" data-demo="lengkung-sage" href="demo/?tema=lengkung-sage&amp;to=Nama%20Tamu" aria-label="Lihat demo Lengkung Sage"><div class="ph"><img src="katalog/lengkung-sage.jpg" alt="Sampul tema Lengkung Sage" width="540" height="1169" loading="lazy" decoding="async"></div></a>
           <div>
             <p class="num">01</p>
             <h3>Lengkung Sage</h3>
             <p class="desc">Hijau sage dan gading dalam bingkai lengkung, dihiasi ranting botani dan aksen sampanye. Klasik dan menenangkan.</p>
             <ul class="tags"><li>Klasik</li><li>Botani</li></ul>
-            <div class="acts"><a class="btn btn-line btn-sm" data-demo="lengkung-sage" href="lengkung-sage/?to=Nama%20Tamu">Lihat demo</a><a class="btn btn-wa btn-sm" data-wa="Lengkung Sage" href="https://wa.me/" target="_blank" rel="noopener">Pesan tema ini</a></div>
+            <div class="acts"><a class="btn btn-line btn-sm" data-demo="lengkung-sage" href="demo/?tema=lengkung-sage&amp;to=Nama%20Tamu">Lihat demo</a><a class="btn btn-wa btn-sm" data-wa="Lengkung Sage" href="https://wa.me/" target="_blank" rel="noopener">Pesan tema ini</a></div>
           </div>
         </li>
-        <li class="card rv">
-          <a class="shot" data-demo="parallax-sway" href="parallax-sway/?to=Nama%20Tamu" aria-label="Lihat demo Parallax &amp; Sway"><div class="ph"><img src="katalog/parallax-sway.jpg" alt="Sampul tema Parallax &amp; Sway" width="540" height="1169" loading="lazy" decoding="async"></div></a>
+        <li class="card rv" id="parallax-sway">
+          <a class="shot" data-demo="parallax-sway" href="demo/?tema=parallax-sway&amp;to=Nama%20Tamu" aria-label="Lihat demo Parallax &amp; Sway"><div class="ph"><img src="katalog/parallax-sway.jpg" alt="Sampul tema Parallax &amp; Sway" width="540" height="1169" loading="lazy" decoding="async"></div></a>
           <div>
             <p class="num">02</p>
             <h3>Parallax &amp; Sway</h3>
             <p class="desc">Malam indigo dan emas hangat. Untaian melati dan bulan berayun, foto bergerak berlapis saat halaman digulir.</p>
             <ul class="tags"><li>Malam</li><li>Animasi berayun</li></ul>
-            <div class="acts"><a class="btn btn-line btn-sm" data-demo="parallax-sway" href="parallax-sway/?to=Nama%20Tamu">Lihat demo</a><a class="btn btn-wa btn-sm" data-wa="Parallax &amp; Sway" href="https://wa.me/" target="_blank" rel="noopener">Pesan tema ini</a></div>
+            <div class="acts"><a class="btn btn-line btn-sm" data-demo="parallax-sway" href="demo/?tema=parallax-sway&amp;to=Nama%20Tamu">Lihat demo</a><a class="btn btn-wa btn-sm" data-wa="Parallax &amp; Sway" href="https://wa.me/" target="_blank" rel="noopener">Pesan tema ini</a></div>
           </div>
         </li>
-        <li class="card rv">
-          <a class="shot" data-demo="garis-editorial" href="garis-editorial/?to=Nama%20Tamu" aria-label="Lihat demo Garis Editorial"><div class="ph"><img src="katalog/garis-editorial.jpg" alt="Sampul tema Garis Editorial" width="540" height="1169" loading="lazy" decoding="async"></div></a>
+        <li class="card rv" id="garis-editorial">
+          <a class="shot" data-demo="garis-editorial" href="demo/?tema=garis-editorial&amp;to=Nama%20Tamu" aria-label="Lihat demo Garis Editorial"><div class="ph"><img src="katalog/garis-editorial.jpg" alt="Sampul tema Garis Editorial" width="540" height="1169" loading="lazy" decoding="async"></div></a>
           <div>
             <p class="num">03</p>
             <h3>Garis Editorial</h3>
             <p class="desc">Rangkaian alat tulis pernikahan: polaroid, surat pembuka, kartu balasan, dan kartu pos, dijalin dua garis emas.</p>
             <ul class="tags"><li>Editorial</li><li>Polaroid</li></ul>
-            <div class="acts"><a class="btn btn-line btn-sm" data-demo="garis-editorial" href="garis-editorial/?to=Nama%20Tamu">Lihat demo</a><a class="btn btn-wa btn-sm" data-wa="Garis Editorial" href="https://wa.me/" target="_blank" rel="noopener">Pesan tema ini</a></div>
+            <div class="acts"><a class="btn btn-line btn-sm" data-demo="garis-editorial" href="demo/?tema=garis-editorial&amp;to=Nama%20Tamu">Lihat demo</a><a class="btn btn-wa btn-sm" data-wa="Garis Editorial" href="https://wa.me/" target="_blank" rel="noopener">Pesan tema ini</a></div>
           </div>
         </li>
-        <li class="card rv">
-          <a class="shot" data-demo="truntum-terakota" href="truntum-terakota/?to=Nama%20Tamu" aria-label="Lihat demo Truntum Terakota"><div class="ph"><img src="katalog/truntum-terakota.jpg" alt="Sampul tema Truntum Terakota" width="540" height="1169" loading="lazy" decoding="async"></div></a>
+        <li class="card rv" id="truntum-terakota">
+          <a class="shot" data-demo="truntum-terakota" href="demo/?tema=truntum-terakota&amp;to=Nama%20Tamu" aria-label="Lihat demo Truntum Terakota"><div class="ph"><img src="katalog/truntum-terakota.jpg" alt="Sampul tema Truntum Terakota" width="540" height="1169" loading="lazy" decoding="async"></div></a>
           <div>
             <p class="num">04</p>
             <h3>Truntum Terakota</h3>
             <p class="desc">Terakota tua dan tinta putih dengan aksen batik truntum, motif Jawa yang melambangkan cinta yang terus bersemi.</p>
             <ul class="tags"><li>Adat modern</li><li>Batik</li></ul>
-            <div class="acts"><a class="btn btn-line btn-sm" data-demo="truntum-terakota" href="truntum-terakota/?to=Nama%20Tamu">Lihat demo</a><a class="btn btn-wa btn-sm" data-wa="Truntum Terakota" href="https://wa.me/" target="_blank" rel="noopener">Pesan tema ini</a></div>
+            <div class="acts"><a class="btn btn-line btn-sm" data-demo="truntum-terakota" href="demo/?tema=truntum-terakota&amp;to=Nama%20Tamu">Lihat demo</a><a class="btn btn-wa btn-sm" data-wa="Truntum Terakota" href="https://wa.me/" target="_blank" rel="noopener">Pesan tema ini</a></div>
           </div>
         </li>
-        <li class="card rv">
-          <a class="shot" data-demo="edisi-monokrom" href="edisi-monokrom/?to=Nama%20Tamu" aria-label="Lihat demo Edisi Monokrom"><div class="ph"><img src="katalog/edisi-monokrom.jpg" alt="Sampul tema Edisi Monokrom" width="540" height="1169" loading="lazy" decoding="async"></div></a>
+        <li class="card rv" id="edisi-monokrom">
+          <a class="shot" data-demo="edisi-monokrom" href="demo/?tema=edisi-monokrom&amp;to=Nama%20Tamu" aria-label="Lihat demo Edisi Monokrom"><div class="ph"><img src="katalog/edisi-monokrom.jpg" alt="Sampul tema Edisi Monokrom" width="540" height="1169" loading="lazy" decoding="async"></div></a>
           <div>
             <p class="num">05</p>
             <h3>Edisi Monokrom</h3>
             <p class="desc">Lookbook fashion hitam-putih yang sinematik. Foto perlahan berwarna saat sampai di tengah layar.</p>
             <ul class="tags"><li>Fashion</li><li>Sinematik</li></ul>
-            <div class="acts"><a class="btn btn-line btn-sm" data-demo="edisi-monokrom" href="edisi-monokrom/?to=Nama%20Tamu">Lihat demo</a><a class="btn btn-wa btn-sm" data-wa="Edisi Monokrom" href="https://wa.me/" target="_blank" rel="noopener">Pesan tema ini</a></div>
+            <div class="acts"><a class="btn btn-line btn-sm" data-demo="edisi-monokrom" href="demo/?tema=edisi-monokrom&amp;to=Nama%20Tamu">Lihat demo</a><a class="btn btn-wa btn-sm" data-wa="Edisi Monokrom" href="https://wa.me/" target="_blank" rel="noopener">Pesan tema ini</a></div>
           </div>
         </li>
-        <li class="card rv">
-          <a class="shot" data-demo="amplop-linen" href="amplop-linen/?to=Nama%20Tamu" aria-label="Lihat demo Amplop Linen"><div class="ph"><img src="katalog/amplop-linen.jpg" alt="Sampul tema Amplop Linen" width="540" height="1169" loading="lazy" decoding="async"></div></a>
+        <li class="card rv" id="amplop-linen">
+          <a class="shot" data-demo="amplop-linen" href="demo/?tema=amplop-linen&amp;to=Nama%20Tamu" aria-label="Lihat demo Amplop Linen"><div class="ph"><img src="katalog/amplop-linen.jpg" alt="Sampul tema Amplop Linen" width="540" height="1169" loading="lazy" decoding="async"></div></a>
           <div>
             <p class="num">06</p>
             <h3>Amplop Linen</h3>
             <p class="desc">Amplop bersegel lilin di atas taplak linen. Setelah segel diketuk, undangan dibaca sebagai sembilan kartu yang digeser.</p>
             <ul class="tags"><li>Mewah</li><li>Kartu geser</li></ul>
-            <div class="acts"><a class="btn btn-line btn-sm" data-demo="amplop-linen" href="amplop-linen/?to=Nama%20Tamu">Lihat demo</a><a class="btn btn-wa btn-sm" data-wa="Amplop Linen" href="https://wa.me/" target="_blank" rel="noopener">Pesan tema ini</a></div>
+            <div class="acts"><a class="btn btn-line btn-sm" data-demo="amplop-linen" href="demo/?tema=amplop-linen&amp;to=Nama%20Tamu">Lihat demo</a><a class="btn btn-wa btn-sm" data-wa="Amplop Linen" href="https://wa.me/" target="_blank" rel="noopener">Pesan tema ini</a></div>
           </div>
         </li>
-        <li class="card rv">
-          <a class="shot" data-demo="biru-kabut" href="biru-kabut/?to=Nama%20Tamu" aria-label="Lihat demo Biru Kabut"><div class="ph"><img src="katalog/biru-kabut.jpg" alt="Sampul tema Biru Kabut" width="540" height="1169" loading="lazy" decoding="async"></div></a>
+        <li class="card rv" id="biru-kabut">
+          <a class="shot" data-demo="biru-kabut" href="demo/?tema=biru-kabut&amp;to=Nama%20Tamu" aria-label="Lihat demo Biru Kabut"><div class="ph"><img src="katalog/biru-kabut.jpg" alt="Sampul tema Biru Kabut" width="540" height="1169" loading="lazy" decoding="async"></div></a>
           <div>
             <p class="num">07</p>
             <h3>Biru Kabut</h3>
             <p class="desc">Pagi berkabut biru pastel: foto muncul dari balik kabut, panel kaca buram, dan ranting hydrangea.</p>
             <ul class="tags"><li>Romantis</li><li>Pastel</li></ul>
-            <div class="acts"><a class="btn btn-line btn-sm" data-demo="biru-kabut" href="biru-kabut/?to=Nama%20Tamu">Lihat demo</a><a class="btn btn-wa btn-sm" data-wa="Biru Kabut" href="https://wa.me/" target="_blank" rel="noopener">Pesan tema ini</a></div>
+            <div class="acts"><a class="btn btn-line btn-sm" data-demo="biru-kabut" href="demo/?tema=biru-kabut&amp;to=Nama%20Tamu">Lihat demo</a><a class="btn btn-wa btn-sm" data-wa="Biru Kabut" href="https://wa.me/" target="_blank" rel="noopener">Pesan tema ini</a></div>
           </div>
         </li>
-        <li class="card rv">
-          <a class="shot" data-demo="riviera-kobalt" href="riviera-kobalt/?to=Nama%20Tamu" aria-label="Lihat demo Riviera Kobalt"><div class="ph"><img src="katalog/riviera-kobalt.jpg" alt="Sampul tema Riviera Kobalt" width="540" height="1169" loading="lazy" decoding="async"></div></a>
+        <li class="card rv" id="riviera-kobalt">
+          <a class="shot" data-demo="riviera-kobalt" href="demo/?tema=riviera-kobalt&amp;to=Nama%20Tamu" aria-label="Lihat demo Riviera Kobalt"><div class="ph"><img src="katalog/riviera-kobalt.jpg" alt="Sampul tema Riviera Kobalt" width="540" height="1169" loading="lazy" decoding="async"></div></a>
           <div>
             <p class="num">08</p>
             <h3>Riviera Kobalt</h3>
             <p class="desc">Pesta ala beach club di Bali: kobalt, kuning lemon, dan ubin majolika yang terasa dilukis tangan.</p>
             <ul class="tags"><li>Ceria</li><li>Pantai</li></ul>
-            <div class="acts"><a class="btn btn-line btn-sm" data-demo="riviera-kobalt" href="riviera-kobalt/?to=Nama%20Tamu">Lihat demo</a><a class="btn btn-wa btn-sm" data-wa="Riviera Kobalt" href="https://wa.me/" target="_blank" rel="noopener">Pesan tema ini</a></div>
+            <div class="acts"><a class="btn btn-line btn-sm" data-demo="riviera-kobalt" href="demo/?tema=riviera-kobalt&amp;to=Nama%20Tamu">Lihat demo</a><a class="btn btn-wa btn-sm" data-wa="Riviera Kobalt" href="https://wa.me/" target="_blank" rel="noopener">Pesan tema ini</a></div>
           </div>
         </li>
-        <li class="card rv">
-          <a class="shot" data-demo="kaca-patri" href="kaca-patri/?to=Nama%20Tamu" aria-label="Lihat demo Kaca Patri"><div class="ph"><img src="katalog/kaca-patri.jpg" alt="Sampul tema Kaca Patri" width="540" height="1169" loading="lazy" decoding="async"></div></a>
+        <li class="card rv" id="kaca-patri">
+          <a class="shot" data-demo="kaca-patri" href="demo/?tema=kaca-patri&amp;to=Nama%20Tamu" aria-label="Lihat demo Kaca Patri"><div class="ph"><img src="katalog/kaca-patri.jpg" alt="Sampul tema Kaca Patri" width="540" height="1169" loading="lazy" decoding="async"></div></a>
           <div>
             <p class="num">09</p>
             <h3>Kaca Patri</h3>
             <p class="desc">Cahaya pagi menembus jendela kaca patri berwarna permata, lalu memantulkan warnanya di halaman.</p>
             <ul class="tags"><li>Warna permata</li><li>Hangat</li></ul>
-            <div class="acts"><a class="btn btn-line btn-sm" data-demo="kaca-patri" href="kaca-patri/?to=Nama%20Tamu">Lihat demo</a><a class="btn btn-wa btn-sm" data-wa="Kaca Patri" href="https://wa.me/" target="_blank" rel="noopener">Pesan tema ini</a></div>
+            <div class="acts"><a class="btn btn-line btn-sm" data-demo="kaca-patri" href="demo/?tema=kaca-patri&amp;to=Nama%20Tamu">Lihat demo</a><a class="btn btn-wa btn-sm" data-wa="Kaca Patri" href="https://wa.me/" target="_blank" rel="noopener">Pesan tema ini</a></div>
           </div>
         </li>
-        <li class="card rv">
-          <a class="shot" data-demo="kelopak-mimpi" href="kelopak-mimpi/?to=Nama%20Tamu" aria-label="Lihat demo Kelopak Mimpi"><div class="ph"><img src="katalog/kelopak-mimpi.jpg" alt="Sampul tema Kelopak Mimpi" width="540" height="1169" loading="lazy" decoding="async"></div></a>
+        <li class="card rv" id="kelopak-mimpi">
+          <a class="shot" data-demo="kelopak-mimpi" href="demo/?tema=kelopak-mimpi&amp;to=Nama%20Tamu" aria-label="Lihat demo Kelopak Mimpi"><div class="ph"><img src="katalog/kelopak-mimpi.jpg" alt="Sampul tema Kelopak Mimpi" width="540" height="1169" loading="lazy" decoding="async"></div></a>
           <div>
             <p class="num">10</p>
             <h3>Kelopak Mimpi</h3>
             <p class="desc">Taman kelopak tembus pandang di bawah cahaya kubah, dari tren Petal Dreamscape 2026 bernuansa sampanye.</p>
             <ul class="tags"><li>Tren 2026</li><li>Lembut</li></ul>
-            <div class="acts"><a class="btn btn-line btn-sm" data-demo="kelopak-mimpi" href="kelopak-mimpi/?to=Nama%20Tamu">Lihat demo</a><a class="btn btn-wa btn-sm" data-wa="Kelopak Mimpi" href="https://wa.me/" target="_blank" rel="noopener">Pesan tema ini</a></div>
+            <div class="acts"><a class="btn btn-line btn-sm" data-demo="kelopak-mimpi" href="demo/?tema=kelopak-mimpi&amp;to=Nama%20Tamu">Lihat demo</a><a class="btn btn-wa btn-sm" data-wa="Kelopak Mimpi" href="https://wa.me/" target="_blank" rel="noopener">Pesan tema ini</a></div>
           </div>
         </li>
       </ul>
@@ -406,11 +418,10 @@ html.js .rv.in{opacity:1;transform:none}
   </div>
 </footer>
 
+<script src="toko.js"></script>
 <script>
-// ===== PENGATURAN TOKO =====
-// nama: nama usaha yang tampil di kepala halaman. whatsapp: nomor format internasional tanpa "+" dan spasi, mis. "6281234567890".
-// Selama whatsapp masih kosong, tombol membuka WhatsApp dengan pesan terisi dan pengunjung memilih kontak sendiri.
-const TOKO = { nama: "", whatsapp: "" };
+// Nama usaha dan nomor WhatsApp diisi di toko.js (dipakai juga oleh bilah demo).
+const TOKO = window.TOKO || { nama: "", waLink: () => "https://wa.me/" };
 
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
@@ -423,14 +434,7 @@ if (TOKO.nama) {
 }
 
 // Tautan WhatsApp dengan pesan yang sudah terisi
-const waNum = String(TOKO.whatsapp || "").replace(/\D/g, "");
-function waLink(theme) {
-  const text = theme === "umum"
-    ? "Halo, saya tertarik dengan undangan pernikahan digital. Boleh minta info harga dan cara pesannya?"
-    : `Halo, saya tertarik dengan undangan digital tema ${theme}. Boleh minta info harga dan cara pesannya?`;
-  return `https://wa.me/${waNum}?text=${encodeURIComponent(text)}`;
-}
-$$("[data-wa]").forEach((a) => { a.href = waLink(a.dataset.wa); });
+$$("[data-wa]").forEach((a) => { a.href = TOKO.waLink(a.dataset.wa); });
 
 // Coba dengan nama: semua tautan demo ikut memakai nama yang diketik
 // Di perangkat dengan setelan "kurangi animasi", tema tampil tanpa gerakan. Pengunjung katalog bisa memilih melihat
@@ -455,14 +459,80 @@ motionBtn.addEventListener("click", () => {
 });
 RM.addEventListener ? RM.addEventListener("change", () => { syncMotion(); applyName(); }) : RM.addListener(() => { syncMotion(); applyName(); });
 
+// Nama tamu di HP tengah pembuka, ikut nama yang diketik. Ukuran dalam satuan gambar sampul (lebar 540).
+// Ruang kosongnya di antara baris "Kepada Yth." dan tombol (tombol di gambar tidak bisa bergeser), lebar maks. 360.
+// Seperti tema: nama pendek satu baris ukuran 44,41; nama panjang dua baris (dipecah di spasi yang paling seimbang,
+// lebih suka sebelum "&") ukuran 30, dikecilkan sampai 22 bila perlu. Baru dipotong dengan "…" bila masih tidak muat.
+const heroScr = $(".fan .scr"), heroGuest = $("#heroGuest"), SVGNS = "http://www.w3.org/2000/svg";
+const HERO_MAX = 360, HERO_MID = 1031; // tengah ruang nama; baseline "Nama Tamu" di sampul = 1046
+let heroText = "Nama Tamu";
+function heroSet(lines, size) {
+  heroGuest.textContent = "";
+  heroGuest.style.fontSize = size + "px";
+  const lh = size * 1.15, y0 = HERO_MID - (lines.length - 1) * lh / 2 + size * 0.34;
+  lines.forEach((ln, i) => {
+    const t = document.createElementNS(SVGNS, "tspan");
+    t.setAttribute("x", "270");
+    t.setAttribute("y", (y0 + i * lh).toFixed(2));
+    t.textContent = ln;
+    heroGuest.append(t);
+  });
+  return Math.max(...[...heroGuest.children].map((t) => t.getComputedTextLength()));
+}
+function heroFitLines(lines, size, min) {
+  let w = heroSet(lines, size);
+  if (w > HERO_MAX) { size = Math.max(min, size * HERO_MAX / w); w = heroSet(lines, size); }
+  const cut = lines.map((l) => [...l]), short = lines.map(() => false);
+  const text = () => cut.map((c, i) => short[i] ? c.join("").replace(/[\s.,;:!?&/\-–—]+$/u, "") + "…" : c.join(""));
+  while (w > HERO_MAX) {
+    const ws = [...heroGuest.children].map((t) => t.getComputedTextLength());
+    const k = ws.indexOf(Math.max(...ws));
+    if (cut[k].length <= 1) break;
+    cut[k].pop(); short[k] = true;
+    w = heroSet(text(), size);
+  }
+}
+function heroName(name) {
+  heroText = name;
+  const w = heroSet([name], 44.41);
+  if (w <= HERO_MAX) return;
+  const words = name.split(" ");
+  if (44.41 * HERO_MAX / w >= 30 || words.length < 2) { heroFitLines([name], 44.41, 26); return; }
+  // "Bapak Ahmad Suryadi / & Keluarga": nama orangnya utuh di baris pertama, asal masih muat dengan ukuran 26 ke atas.
+  const amp = words.lastIndexOf("&");
+  if (amp > 0) {
+    const lines = [words.slice(0, amp).join(" "), words.slice(amp).join(" ")];
+    if (30 * HERO_MAX / heroSet(lines, 30) >= 26) { heroFitLines(lines, 30, 26); return; }
+  }
+  let best = null;
+  for (let i = 1; i < words.length; i++) {
+    const lines = [words.slice(0, i).join(" "), words.slice(i).join(" ")];
+    const score = heroSet(lines, 30);
+    if (!best || score < best.score) best = { score, lines };
+  }
+  heroFitLines(best.lines, 30, 22);
+}
+// Ukur ulang setelah Italiana termuat (sebelum itu lebarnya memakai huruf cadangan), lalu tampilkan teksnya.
+// Bila huruf belum datang setelah 3 detik, teks tetap ditampilkan dengan huruf cadangan dan diukur ulang saat Italiana tiba.
+const heroReady = () => { heroName(heroText); heroScr.classList.add("ready"); };
+(document.fonts ? document.fonts.load("400 44px Italiana") : Promise.resolve()).then(heroReady, heroReady);
+setTimeout(() => heroScr.classList.add("ready"), 3000);
+
+// Demo dibuka lewat demo/ (bilah "Katalog" + "Pesan tema ini" di atas tema); parameter selain "tema" diteruskan ke tema.
+// Nama yang diketik disimpan selama sesi, supaya tetap ada saat pengunjung kembali dari demo lewat tombol "Katalog".
 const input = $("#guestName"), live = $("#live b");
+try { input.value = sessionStorage.getItem("katalog-nama") || ""; } catch (e) {}
 function applyName() {
   const name = input.value.trim().replace(/\s+/g, " ") || "Nama Tamu";
-  const q = "?to=" + encodeURIComponent(name) + (RM.matches && fullMotion ? "&motion=full" : "");
-  $$("[data-demo]").forEach((a) => { a.href = `${a.dataset.demo}/${q}`; });
+  heroName(name);
+  const q = "&to=" + encodeURIComponent(name) + (RM.matches && fullMotion ? "&motion=full" : "");
+  $$("[data-demo]").forEach((a) => { a.href = `demo/?tema=${a.dataset.demo}${q}`; });
   live.textContent = name;
 }
-input.addEventListener("input", applyName);
+input.addEventListener("input", () => {
+  applyName();
+  try { sessionStorage.setItem("katalog-nama", input.value); } catch (e) {}
+});
 // Enter / "Selesai" di keyboard HP: tutup keyboard lalu gulir ke daftar tema, pengunjung memilih temanya sendiri.
 $("#nameForm").addEventListener("submit", (e) => { e.preventDefault(); input.blur(); $(".grid").scrollIntoView({ behavior: RM.matches ? "auto" : "smooth", block: "start" }); });
 syncMotion();
