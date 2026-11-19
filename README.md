@@ -49,6 +49,9 @@ Contoh: https://invitation.helonoia.net/kaca-patri/?to=Nama%20Tamu
 
 ```
 index.html          katalog
+404.html            halaman "tidak ditemukan" dengan Noi, untuk semua alamat yang tidak ada
+robots.txt          izin untuk mesin pencari, menunjuk ke sitemap.xml
+sitemap.xml         daftar halaman untuk Google (hanya katalog)
 toko.js             nama usaha dan nomor WhatsApp (dipakai katalog dan bilah demo)
 demo/               bilah demo yang membungkus tema saat dibuka dari katalog
 brand/              halaman brand Helonoia
@@ -58,7 +61,7 @@ foto/               foto contoh yang dipakai semua tema
   hd/               versi besar untuk tampilan layar penuh dan lightbox
   webp/             versi WebP (dipakai Lengkung Sage dan Garis Editorial)
 katalog/            gambar sampul tiap tema, og.jpg, dan sampul Kelopak Mimpi tanpa nama untuk pembuka katalog
-helonoia/           logo dan maskot Helonoia, beserta generatornya
+helonoia/           logo dan maskot Helonoia beserta generatornya, dan noi.webp (Noi untuk halaman 404)
 licenses/           lisensi font yang disimpan di repo
 docs/               catatan desain dan review (tidak dipakai situs)
 _headers            aturan cache Cloudflare Pages
@@ -82,8 +85,16 @@ Katalog membuka setiap demo lewat [`demo/`](demo/index.html), misalnya `demo/?te
 - Parameter selain `tema` (`to`, `motion`, `open`) diteruskan apa adanya ke tema. Alamat tanpa `tema` atau dengan tema yang tidak dikenal diarahkan kembali ke katalog.
 - Tema baru: tambahkan folder dan namanya di objek `TEMA` di `demo/index.html`, dan kartunya di katalog dengan `id` sama dengan nama folder.
 
+### Halaman 404, robots.txt, dan sitemap.xml
+- [`404.html`](404.html) tampil untuk setiap alamat yang tidak ada, dengan status 404. Sebelum berkas ini ada, Cloudflare Pages menjawab alamat yang tidak ada dengan katalog dan status 200, termasuk `/robots.txt` dan `/sitemap.xml`.
+- Halaman ini bisa tampil di folder mana pun, jadi semua tautan dan asetnya memakai alamat absolut (`/...`). Pertahankan itu saat menyunting.
+- Tautan tamu yang alamatnya salah tetapi membawa `?to=`, `?open`, atau `?motion` diteruskan ke `/lengkung-sage/` sebelum halamannya tampil, sama seperti beranda. Bedanya, alamat tujuannya absolut, jadi alamat seperti `/apa/?to=Nama` tidak lagi berputar tanpa henti.
+- Noi diambil dari [`helonoia/noi.webp`](helonoia/noi.webp), versi 560 px dari maskot di halaman helonoia.com. Diketuk, Noi melompat kecil dan mengganti kalimatnya. Semua gerak mati bila perangkat memakai setelan kurangi-animasi.
+- Nama usaha dan nomor WhatsApp diambil dari [`toko.js`](toko.js), jadi ikut berubah bila `toko.js` diubah.
+- [`sitemap.xml`](sitemap.xml) hanya berisi katalog, karena halaman tema memakai `noindex, nofollow` dan `demo/` memakai `noindex`. [`robots.txt`](robots.txt) tidak memblokir apa pun, supaya Google tetap bisa membaca tag `noindex` itu.
+
 ### Domain
-- Gambar pratinjau tautan (`og:image`) di katalog, halaman brand, dan semua tema memakai `https://invitation.helonoia.net/`. Bila domain berganti, ganti alamat itu di setiap `index.html`.
+- Gambar pratinjau tautan (`og:image`) di katalog, halaman brand, dan semua tema memakai `https://invitation.helonoia.net/`. Bila domain berganti, ganti alamat itu di setiap `index.html`, dan juga di `robots.txt` dan `sitemap.xml`. `404.html` tidak perlu diubah.
 
 ### Foto
 - Nama, tanggal, alamat, dan rekening di semua tema adalah data contoh. Foto contoh dibuat dengan AI (Gemini), bukan foto mempelai sebenarnya.

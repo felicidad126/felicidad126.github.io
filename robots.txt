@@ -1,0 +1,8 @@
+# Semua mesin pencari boleh membaca seluruh katalog.
+# Halaman tema dan demo sengaja tidak diblokir di sini: mereka sudah memakai tag noindex,
+# dan Google hanya bisa membaca tag itu kalau halamannya boleh dibuka.
+# Saat pindah domain (Fase 3), ganti alamat sitemap di bawah ke https://invitation.helonoia.com/sitemap.xml.
+User-agent: *
+Allow: /
+
+Sitemap: https://invitation.helonoia.net/sitemap.xml
