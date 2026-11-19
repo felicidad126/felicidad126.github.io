@@ -2,9 +2,11 @@
 // Dipakai katalog (index.html) dan bilah demo (demo/index.html), jadi cukup diisi di sini.
 // nama: nama usaha yang tampil di kepala halaman. whatsapp: nomor format internasional, mis. "6281234567890".
 // Awalan "0" (mis. "081234567890") otomatis diubah menjadi "62"; spasi, "+", dan "-" diabaikan.
+// Judul halaman dan pratinjau tautan (<title>, og:title) di index.html dan demo/index.html ditulis terpisah
+// karena pratinjau tautan tidak menjalankan JavaScript; ganti juga di sana bila nama berubah.
 // Selama whatsapp masih kosong, tombol membuka WhatsApp dengan pesan terisi dan pengunjung memilih kontak sendiri.
 window.TOKO = {
-  nama: "",
+  nama: "Mengundang by Helonoia",
   whatsapp: "62812900433",
 };
 

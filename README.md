@@ -68,7 +68,7 @@ favicon.ico         ikon bawaan untuk halaman tanpa ikon sendiri
 ## Catatan perawatan
 
 ### Katalog
-- Nama usaha dan nomor WhatsApp diisi di [`toko.js`](toko.js), dipakai katalog dan bilah demo. Selama nomornya kosong, tombol WhatsApp membuka WhatsApp dengan pesan terisi dan pengunjung memilih kontak sendiri.
+- Nama usaha dan nomor WhatsApp diisi di [`toko.js`](toko.js), dipakai katalog dan bilah demo. Selama nomornya kosong, tombol WhatsApp membuka WhatsApp dengan pesan terisi dan pengunjung memilih kontak sendiri. Bila nama usaha berubah, ganti juga `<title>` dan `og:title` di `index.html` dan `demo/index.html`, karena pratinjau tautan tidak menjalankan JavaScript.
 - Nama yang diketik di "Coba dengan nama Anda" disimpan selama sesi browser, jadi tetap terisi saat pengunjung kembali dari demo.
 - HP tengah di pembuka ikut menampilkan nama itu. Gambarnya [`katalog/kelopak-mimpi-tanpa-nama.jpg`](katalog/kelopak-mimpi-tanpa-nama.jpg) (sampul Kelopak Mimpi tanpa nama tamu), dan namanya ditulis di atasnya sebagai teks SVG berhuruf Italiana, dengan ukuran, warna, dan posisi yang sama dengan tema. Nama panjang dibuat dua baris seperti di tema (lebih suka dipecah sebelum "&"). Bila sampul Kelopak Mimpi berubah, buat ulang gambar ini juga dan cocokkan lagi posisi namanya (`HERO_MID` di skrip `index.html`).
 - Gambar sampul tiap tema dan gambar pratinjau tautan (`og.jpg`, 1200x630) ada di [`katalog/`](katalog/). Bila desain sampul berubah, gambarnya perlu dibuat ulang.
