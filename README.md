@@ -13,6 +13,7 @@ Setiap halaman adalah satu berkas `index.html` di foldernya sendiri, dan situs d
 |---|---|---|
 | Katalog | [`/`](index.html) | Etalase untuk calon pengantin: 10 tema dalam bingkai HP, kolom "Coba dengan nama Anda", tombol demo dan pesan via WhatsApp, fitur, cara pesan, tanya jawab |
 | Brand Helonoia | [`brand/`](brand/) | Perkenalan brand sebelum ada produk: arti nama, maskot, sifat brand, palet warna dan huruf |
+| Demo | [`demo/`](demo/index.html) | Pembungkus demo yang dibuka dari katalog: bilah "Katalog" dan "Pesan tema ini" di atas undangan (lihat [Bilah demo](#bilah-demo)) |
 
 ### Tema undangan
 
@@ -40,6 +41,7 @@ Font yang tidak ditandai "disimpan di repo" dimuat dari Google Fonts. Semua font
 | `?to=Nama%20Tamu` | Menampilkan nama tamu di sampul dan mengisi form RSVP | Semua tema |
 | `?motion=full` | Animasi penuh, mengabaikan setelan kurangi-animasi di perangkat | Semua tema dan halaman brand |
 | `?open` | Langsung membuka undangan, melewati sampul | Semua tema kecuali Parallax & Sway, Garis Editorial, dan Biru Kabut |
+| `?tema=<folder>` | Memilih tema yang ditampilkan di bilah demo. Parameter lain (`to`, `motion`, `open`) diteruskan ke tema | Hanya `demo/` |
 
 Contoh: https://invitation.helonoia.net/kaca-patri/?to=Nama%20Tamu
 
@@ -47,13 +49,15 @@ Contoh: https://invitation.helonoia.net/kaca-patri/?to=Nama%20Tamu
 
 ```
 index.html          katalog
+toko.js             nama usaha dan nomor WhatsApp (dipakai katalog dan bilah demo)
+demo/               bilah demo yang membungkus tema saat dibuka dari katalog
 brand/              halaman brand Helonoia
 HTML/               penerus alamat lama /HTML/ ke /brand/
 <nama-tema>/        satu folder per tema (lihat tabel di atas)
 foto/               foto contoh yang dipakai semua tema
   hd/               versi besar untuk tampilan layar penuh dan lightbox
   webp/             versi WebP (dipakai Lengkung Sage dan Garis Editorial)
-katalog/            gambar sampul tiap tema dan og.jpg untuk katalog
+katalog/            gambar sampul tiap tema, og.jpg, dan sampul Kelopak Mimpi tanpa nama untuk pembuka katalog
 helonoia/           logo dan maskot Helonoia, beserta generatornya
 licenses/           lisensi font yang disimpan di repo
 docs/               catatan desain dan review (tidak dipakai situs)
@@ -64,9 +68,19 @@ favicon.ico         ikon bawaan untuk halaman tanpa ikon sendiri
 ## Catatan perawatan
 
 ### Katalog
-- Nama usaha dan nomor WhatsApp diisi di objek `TOKO` pada skrip di bagian bawah `index.html`. Selama nomornya kosong, tombol WhatsApp membuka WhatsApp dengan pesan terisi dan pengunjung memilih kontak sendiri.
+- Nama usaha dan nomor WhatsApp diisi di [`toko.js`](toko.js), dipakai katalog dan bilah demo. Selama nomornya kosong, tombol WhatsApp membuka WhatsApp dengan pesan terisi dan pengunjung memilih kontak sendiri.
+- Nama yang diketik di "Coba dengan nama Anda" disimpan selama sesi browser, jadi tetap terisi saat pengunjung kembali dari demo.
+- HP tengah di pembuka ikut menampilkan nama itu. Gambarnya [`katalog/kelopak-mimpi-tanpa-nama.jpg`](katalog/kelopak-mimpi-tanpa-nama.jpg) (sampul Kelopak Mimpi tanpa nama tamu), dan namanya ditulis di atasnya sebagai teks SVG berhuruf Italiana, dengan ukuran, warna, dan posisi yang sama dengan tema. Nama panjang dibuat dua baris seperti di tema (lebih suka dipecah sebelum "&"). Bila sampul Kelopak Mimpi berubah, buat ulang gambar ini juga dan cocokkan lagi posisi namanya (`HERO_MID` di skrip `index.html`).
 - Gambar sampul tiap tema dan gambar pratinjau tautan (`og.jpg`, 1200x630) ada di [`katalog/`](katalog/). Bila desain sampul berubah, gambarnya perlu dibuat ulang.
 - Tautan lama Lengkung Sage di alamat utama (`/?to=`, `/?open`, `/?motion=full`) otomatis diteruskan ke `/lengkung-sage/`.
+
+### Bilah demo
+Katalog membuka setiap demo lewat [`demo/`](demo/index.html), misalnya `demo/?tema=lengkung-sage&to=Nama%20Tamu`. Di atas undangan ada bilah tipis: tombol "Katalog" (kembali ke kartu tema itu di katalog), label "Demo" dengan nama tema, dan tombol "Pesan tema ini" (WhatsApp dengan nama tema di pesannya). Undangannya sendiri tampil di bingkai di bawah bilah.
+
+- Berkas tema tidak berubah. Undangan asli untuk tamu (`<tema>/?to=<nama>`) tidak pernah memuat bilah ini.
+- Bila calon pengantin meneruskan tautan demo ke pasangannya, bilahnya ikut tampil, jadi pasangannya juga bisa membuka katalog atau memesan.
+- Parameter selain `tema` (`to`, `motion`, `open`) diteruskan apa adanya ke tema. Alamat tanpa `tema` atau dengan tema yang tidak dikenal diarahkan kembali ke katalog.
+- Tema baru: tambahkan folder dan namanya di objek `TEMA` di `demo/index.html`, dan kartunya di katalog dengan `id` sama dengan nama folder.
 
 ### Domain
 - Gambar pratinjau tautan (`og:image`) di katalog, halaman brand, dan semua tema memakai `https://invitation.helonoia.net/`. Bila domain berganti, ganti alamat itu di setiap `index.html`.
