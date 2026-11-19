@@ -1,6 +1,6 @@
 # Revisi Tema Amplop Linen
 
-Daftar revisi untuk [`amplop-linen/index.html`](amplop-linen/index.html), hasil review 30 Oktober 2026. Nomor baris merujuk ke file pada commit `1996f61`.
+Daftar revisi untuk [`amplop-linen/index.html`](../amplop-linen/index.html), hasil review 30 Oktober 2026. Nomor baris merujuk ke file pada commit `1996f61`.
 
 > **Status:** kedua belas poin di bawah sudah diterapkan lewat [PR #9](https://github.com/felicidad126/felicidad126.github.io/pull/9) (commit `ca87b80` di `main`). Dokumen ini disimpan sebagai catatan review; nomor baris di dalamnya merujuk ke versi lama file.
 

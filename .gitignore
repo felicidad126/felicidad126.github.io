@@ -1,0 +1,16 @@
+# Berkas sistem operasi dan editor
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+.vscode/
+.idea/
+
+# Python (generator logo di helonoia/)
+__pycache__/
+*.pyc
+
+# Hasil uji lokal
+node_modules/
+test-results/
+playwright-report/
