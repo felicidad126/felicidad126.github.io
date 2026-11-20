@@ -486,6 +486,7 @@ html.lb-open{overflow:hidden}
   .d-my{justify-self:start;text-align:left;max-width:5.4em}
 }
 </style>
+<script src="/acara.js"></script>
 </head>
 <body class="locked">
 <header class="gate" id="gate" aria-label="Sampul undangan">
@@ -668,14 +669,14 @@ html.lb-open{overflow:hidden}
           <label class="field" id="fCount"><span>Jumlah tamu</span><select class="inp" id="rCount" name="count"><option value="1">1 orang</option><option value="2">2 orang</option><option value="3">3 orang</option><option value="4">4 orang</option><option value="5">5 orang</option></select></label>
           <p class="err" id="rsvpErr" role="alert" hidden></p>
           <button class="btn" type="submit">Kirim Reservasi</button>
-          <p class="note">Preview: data tersimpan di perangkat ini saja.</p>
+          <p class="note" data-catatan="rsvp">Preview: data tersimpan di perangkat ini saja.</p>
         </form>
         <div class="done" id="rsvpDone" tabindex="-1" hidden>
           <div class="stamp" aria-hidden="true">Grazie</div>
           <h3 class="menu-name" style="margin:0">Terima kasih</h3>
           <p id="rsvpMsg" role="status"></p>
           <button class="btn btn-line sm" type="button" id="rsvpEdit">Ubah Jawaban</button>
-          <p class="note">Preview: data tersimpan di perangkat ini saja.</p>
+          <p class="note" data-catatan="rsvp">Preview: data tersimpan di perangkat ini saja.</p>
         </div>
       </div>
     </div>
@@ -690,7 +691,7 @@ html.lb-open{overflow:hidden}
           <label class="field"><span>Ucapan</span><textarea class="inp" name="msg" maxlength="500" placeholder="Tulis doa dan ucapan" required></textarea></label>
           <p class="err" id="wishErr" role="alert" hidden></p>
           <button class="btn" type="submit">Kirim Ucapan</button>
-          <p class="note">Preview: data tersimpan di perangkat ini saja.</p>
+          <p class="note" data-catatan="ucapan">Preview: data tersimpan di perangkat ini saja.</p>
         </form>
         <div class="wlist rv" style="--d:.12">
           <p class="wcount"><b id="wCount"></b>ucapan masuk</p>
@@ -759,9 +760,12 @@ const FULL = html.classList.contains("motion");
 const { f } = RK;
 
 // Penyimpanan lokal (prefix rk- agar tidak bentrok dengan tema lain di domain yang sama).
+// Undangan klien (<meta name="acara">): RSVP dan ucapan dikirim ke server lewat /acara.js;
+// tanpa tag itu (demo), semuanya tetap tersimpan di perangkat ini saja.
+const ACARA = window.Acara ?? { aktif: false, kunci: (k) => k };
 const store = {
-  get(k, d) { try { return JSON.parse(localStorage.getItem("rk-" + k)) ?? d; } catch { return d; } },
-  set(k, v) { try { localStorage.setItem("rk-" + k, JSON.stringify(v)); } catch {} },
+  get(k, d) { try { return JSON.parse(localStorage.getItem(ACARA.kunci("rk-" + k))) ?? d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem(ACARA.kunci("rk-" + k), JSON.stringify(v)); } catch {} },
 };
 
 // Nama tamu dari ?to=Nama: spasi di ujung dibuang, maksimal 60 karakter. Nama yang lebih panjang dipotong di batas kata
@@ -1100,7 +1104,7 @@ function showDone(r, focus) {
 }
 // Pesan galat hilang begitu tamu memperbaiki isiannya.
 for (const ev of ["input", "change"]) rsvpForm.addEventListener(ev, () => { $("#rsvpErr").hidden = true; });
-rsvpForm.addEventListener("submit", (e) => {
+rsvpForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const err = $("#rsvpErr");
   const name = rsvpForm.name.value.trim(), att = rsvpForm.att.value;
@@ -1112,6 +1116,14 @@ rsvpForm.addEventListener("submit", (e) => {
   }
   err.hidden = true;
   const r = { name: name.slice(0, 80), att, count: att === "Hadir" ? Number(rsvpForm.count.value) : 0, at: Date.now() };
+  if (ACARA.aktif) {
+    const btn = rsvpForm.querySelector("[type=submit]");
+    btn.disabled = true;
+    try {
+      await ACARA.kirimRsvp({ nama: r.name, kehadiran: ACARA.kehadiran(att), jumlah: r.count, telepon: rsvpForm.elements.phone?.value.trim(), pesan: rsvpForm.elements.msg?.value.trim() }, rsvpForm);
+    } catch (x) { err.textContent = x.message; err.hidden = false; return; }
+    finally { btn.disabled = false; }
+  }
   store.set("rsvp", r);
   showDone(r, true);
 });
@@ -1144,7 +1156,7 @@ const ago = (t) => {
 };
 let shown = 5;
 function renderWishes(fresh) {
-  const all = [...store.get("wishes", []), ...SEED];
+  const all = ACARA.aktif ? ACARA.ucapan : [...store.get("wishes", []), ...SEED];
   $("#wList").replaceChildren(...all.slice(0, shown).map((w, i) => {
     const li = document.createElement("li");
     li.className = "wish";
@@ -1157,11 +1169,17 @@ function renderWishes(fresh) {
     if (fresh && i === 0 && FULL) li.animate([{ opacity: 0, transform: "translateY(-24px) rotate(-3deg)" }, { opacity: 1, transform: "rotate(-.4deg)" }], { duration: 750, easing: "cubic-bezier(.2,.9,.3,1.15)" });
     return li;
   }));
-  swap($("#wCount"), String(all.length));
-  $("#wMore").hidden = all.length <= shown;
+  swap($("#wCount"), String(ACARA.aktif ? ACARA.jumlahUcapan : all.length));
+  $("#wMore").hidden = all.length <= shown && !(ACARA.aktif && ACARA.adaLagi);
 }
-$("#wMore").addEventListener("click", () => { shown += 5; renderWishes(); });
-$("#wishForm").addEventListener("submit", (e) => {
+$("#wMore").addEventListener("click", async () => {
+  shown += 5;
+  if (ACARA.aktif && shown > ACARA.ucapan.length && ACARA.adaLagi) {
+    try { await ACARA.muatLagi(); } catch (x) { toast(x.message); }
+  }
+  renderWishes();
+});
+$("#wishForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   const fm = e.target, err = $("#wishErr");
   const name = fm.name.value.trim(), msg = fm.msg.value.trim();
@@ -1172,14 +1190,26 @@ $("#wishForm").addEventListener("submit", (e) => {
     return;
   }
   err.hidden = true;
-  const mine = store.get("wishes", []);
-  mine.unshift({ name: name.slice(0, 80), msg: msg.slice(0, 500), at: Date.now() });
-  store.set("wishes", mine.slice(0, 30));
+  if (ACARA.aktif) {
+    const btn = fm.querySelector("[type=submit]");
+    btn.disabled = true;
+    try { await ACARA.kirimUcapan({ nama: name.slice(0, 80), pesan: msg.slice(0, 500) }, fm); }
+    catch (x) { err.textContent = x.message; err.hidden = false; return; }
+    finally { btn.disabled = false; }
+  } else {
+    const mine = store.get("wishes", []);
+    mine.unshift({ name: name.slice(0, 80), msg: msg.slice(0, 500), at: Date.now() });
+    store.set("wishes", mine.slice(0, 30));
+  }
   fm.msg.value = "";
   renderWishes(true);
   toast("Ucapan terkirim. Terima kasih!");
 });
 renderWishes();
+if (ACARA.aktif) {
+  swap($("#wCount"), "…");
+  ACARA.muatUcapan().then(() => renderWishes(), () => toast("Ucapan belum bisa dimuat. Muat ulang halaman untuk mencoba lagi."));
+}
 
 /* ---------- Musik: waltz mandolin & gitar ala Riviera, dirender di browser (tanpa file audio) lalu diputar berulang ---------- */
 var Music = (() => {
