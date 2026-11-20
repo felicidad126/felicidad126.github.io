@@ -408,6 +408,7 @@ main:focus{outline:none}
 }
 .music.dodge{opacity:0!important;pointer-events:none!important}
 </style>
+<script src="/acara.js"></script>
 </head>
 <body class="locked">
 
@@ -561,7 +562,7 @@ main:focus{outline:none}
         <p class="sr" id="rLive" role="status" aria-live="polite"></p>
         <p class="after"><span id="rThanks">Balasan Anda sudah kami terima. Sampai jumpa di hari bahagia.</span> <button type="button" id="rEdit">Ubah jawaban</button></p>
       </form>
-      <p class="preview rv">Preview: data tersimpan di perangkat ini saja.</p>
+      <p class="preview rv" data-catatan="rsvp-doa">Preview: data tersimpan di perangkat ini saja.</p>
     </section>
 
     <!-- Ucapan -->
@@ -630,9 +631,12 @@ if (MOTION) root.classList.add("anim");
 const $ = (q, el = document) => el.querySelector(q);
 const $$ = (q, el = document) => [...el.querySelectorAll(q)];
 const esc = (t) => String(t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+// Undangan klien (<meta name="acara">): RSVP dan ucapan dikirim ke server lewat /acara.js;
+// tanpa tag itu (demo), semuanya tetap tersimpan di perangkat ini saja.
+const ACARA = window.Acara ?? { aktif: false, kunci: (k) => k };
 const store = {
-  get(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } },
-  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+  get(k, d) { try { return JSON.parse(localStorage.getItem(ACARA.kunci(k))) ?? d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem(ACARA.kunci(k), JSON.stringify(v)); } catch {} },
 };
 const AKAD = "2026-12-12T09:00:00+08:00", RESEPSI_END = "2026-12-12T21:30:00+08:00";
 
@@ -943,12 +947,25 @@ function showSent(r) {
     $("#rThanks").textContent = "Balasan Anda sudah kami terima. " + ({ tidak: "Terima kasih atas doa dan perhatian Anda.", ragu: "Mohon kabari kami lagi bila sudah pasti." }[r.att] || "Sampai jumpa di hari bahagia.");
   }
 }
-reply.addEventListener("submit", (e) => {
+reply.addEventListener("submit", async (e) => {
   e.preventDefault();
   const name = $("#rName").value.trim();
   $("#rErr").hidden = !!name;
-  if (!name) { $("#rName").focus(); return; }
+  if (!name) { $("#rErr").textContent = "Mohon tulis nama Anda di kartu."; $("#rName").focus(); return; }
   const r = { name, att: reply.att.value, pax: $("#rPax").value, msg: $("#rMsg").value.trim(), at: Date.now() };
+  if (ACARA.aktif) {
+    const btn = $("#rSend");
+    btn.disabled = true;
+    try {
+      await ACARA.kirimRsvp({ nama: name, kehadiran: r.att, jumlah: r.pax, pesan: r.msg }, reply);
+      // Di tema ini doa di kartu balasan juga tampil di bagian "Doa & ucapan" (sekali per isi doa).
+      if (r.msg && r.msg !== store.get("ge-doa-terkirim", "")) {
+        await ACARA.kirimUcapan({ nama: name, pesan: r.msg }, reply);
+        store.set("ge-doa-terkirim", r.msg);
+      }
+    } catch (x) { $("#rErr").textContent = x.message; $("#rErr").hidden = false; return; }
+    finally { btn.disabled = false; }
+  }
   store.set("ge-reply", r);
   showSent(r);
   renderWishes();
@@ -963,11 +980,17 @@ syncReply();
 
 function renderWishes() {
   const mine = store.get("ge-reply", null);
-  const all = [...(mine && mine.msg ? [mine] : []), ...WISH_SEED];
+  const all = ACARA.aktif ? ACARA.ucapan : [...(mine && mine.msg ? [mine] : []), ...WISH_SEED];
   $("#notes").innerHTML = all.map((w, i) => `<div class="note-slip" style="--r:${[-1.2, 0.8, -0.4, 1.1][i % 4]}deg"><p>${esc(w.msg)}</p><div class="from"><b>${esc(w.name)}</b><small>${ATT[w.att] || ""}</small></div></div>`).join("");
-  $("#wCount").textContent = `${all.length} doa sudah masuk · doa Anda bisa dikirim lewat kartu balasan`;
+  $("#wCount").textContent = `${ACARA.aktif ? ACARA.jumlahUcapan : all.length} doa sudah masuk · doa Anda bisa dikirim lewat kartu balasan`;
 }
 renderWishes();
+if (ACARA.aktif) {
+  $("#wCount").textContent = "Memuat doa…";
+  ACARA.muatUcapan().then(() => { renderWishes(); if (typeof relayout === "function") relayout(); }, () => {
+    $("#wCount").textContent = "Doa belum bisa dimuat. Muat ulang halaman untuk mencoba lagi.";
+  });
+}
 
 /* ---------- amplop ---------- */
 const env = $("#envelope");
