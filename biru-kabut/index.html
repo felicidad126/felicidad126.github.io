@@ -395,6 +395,7 @@ html.calm:not(.force) .music.on::before{animation:none;opacity:0}
 html.lb-open{overflow:hidden}
 </style>
 <noscript><style>.gate{display:none}body.locked{overflow:auto;height:auto}.rv,.focus,.emerge,.sprig{opacity:1!important;transform:none!important;filter:none!important}.music{display:none}</style></noscript>
+<script src="/acara.js"></script>
 </head>
 <body class="locked">
 
@@ -584,13 +585,13 @@ html.lb-open{overflow:hidden}
         <div class="f" id="fCount"><label for="rCount">Jumlah tamu</label><select id="rCount" name="count"><option value="1">1 orang</option><option value="2">2 orang</option><option value="3">3 orang</option><option value="4">4 orang</option><option value="5">5 orang</option></select></div>
         <p class="err" id="rsvpErr" role="alert" hidden></p>
         <button class="btn btn-ink" type="submit">Kirim Konfirmasi</button>
-        <p class="note">Preview: data tersimpan di perangkat ini saja.</p>
+        <p class="note" data-catatan="rsvp">Preview: data tersimpan di perangkat ini saja.</p>
       </form>
       <div class="done" id="rsvpDone" tabindex="-1" hidden>
         <p class="big">Terima kasih</p>
         <p class="msg" id="rsvpMsg"></p>
         <button class="btn btn-line sm" id="rsvpEdit" type="button">Ubah Jawaban</button>
-        <p class="note">Preview: data tersimpan di perangkat ini saja.</p>
+        <p class="note" data-catatan="rsvp">Preview: data tersimpan di perangkat ini saja.</p>
       </div>
     </div>
   </section>
@@ -610,7 +611,7 @@ html.lb-open{overflow:hidden}
           <div class="f"><label for="wMsg">Ucapan</label><textarea id="wMsg" name="msg" maxlength="500" placeholder="Tulis doa dan ucapan" required></textarea></div>
           <p class="err" id="wishErr" role="alert" hidden></p>
           <button class="btn btn-ink" type="submit">Kirim Ucapan</button>
-          <p class="note">Preview: data tersimpan di perangkat ini saja.</p>
+          <p class="note" data-catatan="ucapan">Preview: data tersimpan di perangkat ini saja.</p>
         </form>
         <div>
           <p class="wcount rv"><b id="wCount"><span>0</span></b><span>ucapan &amp; doa</span></p>
@@ -681,9 +682,12 @@ const FULL = html.classList.contains("motion");
 if (params.get("motion") === "full") html.classList.add("force");
 
 // Penyimpanan lokal (prefix bk- agar tidak bentrok dengan tema lain di domain yang sama).
+// Undangan klien (<meta name="acara">): RSVP dan ucapan dikirim ke server lewat /acara.js;
+// tanpa tag itu (demo), semuanya tetap tersimpan di perangkat ini saja.
+const ACARA = window.Acara ?? { aktif: false, kunci: (k) => k };
 const store = {
-  get(k, d) { try { return JSON.parse(localStorage.getItem("bk-" + k)) ?? d; } catch { return d; } },
-  set(k, v) { try { localStorage.setItem("bk-" + k, JSON.stringify(v)); } catch {} },
+  get(k, d) { try { return JSON.parse(localStorage.getItem(ACARA.kunci("bk-" + k))) ?? d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem(ACARA.kunci("bk-" + k), JSON.stringify(v)); } catch {} },
 };
 
 // Nama tamu dari ?to=Nama: spasi di ujung dibuang, maksimal 60 karakter. Nama yang lebih panjang dipotong di batas kata
@@ -973,7 +977,7 @@ function showDone(r, focus) {
 }
 // Pesan galat hilang begitu tamu memperbaiki isiannya.
 for (const ev of ["input", "change"]) rsvpForm.addEventListener(ev, () => { $("#rsvpErr").hidden = true; });
-rsvpForm.addEventListener("submit", (e) => {
+rsvpForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const err = $("#rsvpErr");
   const name = rsvpForm.name.value.trim(), att = rsvpForm.att.value;
@@ -985,6 +989,13 @@ rsvpForm.addEventListener("submit", (e) => {
   }
   err.hidden = true;
   const r = { name, att, count: att === "Hadir" ? Number(rsvpForm.count.value) : 0, at: Date.now() };
+  if (ACARA.aktif) {
+    const btn = rsvpForm.querySelector("[type=submit]");
+    btn.disabled = true;
+    try { await ACARA.kirimRsvp({ nama: name, kehadiran: ACARA.kehadiran(att), jumlah: r.count }, rsvpForm); }
+    catch (x) { err.textContent = x.message; err.hidden = false; return; }
+    finally { btn.disabled = false; }
+  }
   store.set("rsvp", r);
   showDone(r, true);
 });
@@ -1017,7 +1028,7 @@ const ago = (t) => {
 };
 let shown = 5;
 function renderWishes(fresh) {
-  const all = [...store.get("wishes", []), ...SEED];
+  const all = ACARA.aktif ? ACARA.ucapan : [...store.get("wishes", []), ...SEED];
   $("#wList").replaceChildren(...all.slice(0, shown).map((w, i) => {
     const li = document.createElement("li");
     li.className = "wish";
@@ -1030,10 +1041,16 @@ function renderWishes(fresh) {
     if (fresh && i === 0 && FULL) li.animate([{ opacity: 0, transform: "translateY(-14px)", filter: "blur(6px)" }, { opacity: 1, transform: "none", filter: "blur(0)" }], { duration: 750, easing: "cubic-bezier(.2,.7,.1,1)" });
     return li;
   }));
-  swap($("#wCount"), String(all.length));
-  $("#wMore").hidden = all.length <= shown;
+  swap($("#wCount"), String(ACARA.aktif ? ACARA.jumlahUcapan : all.length));
+  $("#wMore").hidden = all.length <= shown && !(ACARA.aktif && ACARA.adaLagi);
 }
-$("#wMore").addEventListener("click", () => { shown += 5; renderWishes(); });
+$("#wMore").addEventListener("click", async () => {
+  shown += 5;
+  if (ACARA.aktif && shown > ACARA.ucapan.length && ACARA.adaLagi) {
+    try { await ACARA.muatLagi(); } catch (x) { toast(x.message); }
+  }
+  renderWishes();
+});
 // Pembaca layar: umumkan satu ucapan baru saja, lalu kosongkan supaya tidak terbaca dua kali saat halaman dijelajahi.
 let liveT;
 function announceWish(w) {
@@ -1042,7 +1059,7 @@ function announceWish(w) {
   clearTimeout(liveT);
   liveT = setTimeout(() => { live.textContent = ""; }, 6000);
 }
-$("#wishForm").addEventListener("submit", (e) => {
+$("#wishForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   const f = e.target, err = $("#wishErr");
   const name = f.name.value.trim(), msg = f.msg.value.trim();
@@ -1053,15 +1070,29 @@ $("#wishForm").addEventListener("submit", (e) => {
     return;
   }
   err.hidden = true;
-  const mine = store.get("wishes", []);
-  mine.unshift({ name: name.slice(0, 80), msg: msg.slice(0, 500), at: Date.now() });
-  store.set("wishes", mine.slice(0, 30));
+  let baru;
+  if (ACARA.aktif) {
+    const btn = f.querySelector("[type=submit]");
+    btn.disabled = true;
+    try { baru = await ACARA.kirimUcapan({ nama: name.slice(0, 80), pesan: msg.slice(0, 500) }, f); }
+    catch (x) { err.textContent = x.message; err.hidden = false; return; }
+    finally { btn.disabled = false; }
+  } else {
+    const mine = store.get("wishes", []);
+    mine.unshift({ name: name.slice(0, 80), msg: msg.slice(0, 500), at: Date.now() });
+    store.set("wishes", mine.slice(0, 30));
+    baru = mine[0];
+  }
   f.msg.value = "";
   renderWishes(true);
-  announceWish(mine[0]);
+  announceWish(baru);
   toast("Ucapan terkirim. Terima kasih!");
 });
 renderWishes();
+if (ACARA.aktif) {
+  swap($("#wCount"), "…");
+  ACARA.muatUcapan().then(() => renderWishes(), () => toast("Ucapan belum bisa dimuat. Muat ulang halaman untuk mencoba lagi."));
+}
 
 /* ---------- Musik: piano lembut di atas pad, dirender di browser (tanpa file audio) lalu diputar berulang ---------- */
 var Music = (() => {
