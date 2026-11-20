@@ -396,6 +396,7 @@ textarea.inp{min-height:110px;resize:vertical}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 </style>
 <noscript><style>.cover{display:none}.music{display:none}</style></noscript>
+<script src="/acara.js"></script>
 </head>
 <body>
 <!-- ============ Sampul ============ -->
@@ -592,7 +593,7 @@ textarea.inp{min-height:110px;resize:vertical}
             <p id="rsvpMsg"></p>
             <button class="btn ghost" id="rsvpEdit" type="button">Ubah jawaban</button>
           </div>
-          <p class="note">Preview: data tersimpan di perangkat ini saja.</p>
+          <p class="note" data-catatan="rsvp">Preview: data tersimpan di perangkat ini saja.</p>
         </div>
       </div>
     </div>
@@ -610,7 +611,7 @@ textarea.inp{min-height:110px;resize:vertical}
             <label class="fld"><span>Ucapan</span><textarea class="inp" name="msg" maxlength="500" placeholder="Tulis doa dan ucapan" required></textarea></label>
             <p class="err" id="wishErr" role="alert" hidden></p>
             <button class="btn" type="submit">Kirim ucapan</button>
-            <p class="note">Preview: data tersimpan di perangkat ini saja.</p>
+            <p class="note" data-catatan="ucapan">Preview: data tersimpan di perangkat ini saja.</p>
           </form>
         </div>
         <div>
@@ -680,9 +681,12 @@ const params = new URLSearchParams(location.search);
 const MOTION = root.classList.contains("motion");
 const cover = $("#cover"), main = $("#main"), foot = $("#foot"), musicBtn = $("#musicBtn");
 // Penyimpanan lokal (preview). Prefiks em- agar tidak bentrok dengan tema lain di domain yang sama.
+// Undangan klien (<meta name="acara">): RSVP dan ucapan dikirim ke server lewat /acara.js;
+// tanpa tag itu (demo), semuanya tetap tersimpan di perangkat ini saja.
+const ACARA = window.Acara ?? { aktif: false, kunci: (k) => k };
 const store = {
-  get(k, d) { try { return JSON.parse(localStorage.getItem("em-" + k)) ?? d; } catch { return d; } },
-  set(k, v) { try { localStorage.setItem("em-" + k, JSON.stringify(v)); } catch {} },
+  get(k, d) { try { return JSON.parse(localStorage.getItem(ACARA.kunci("em-" + k))) ?? d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem(ACARA.kunci("em-" + k), JSON.stringify(v)); } catch {} },
 };
 // Nama tamu dari ?to=Nama: spasi di ujung dibuang, maksimal 60 karakter, ditulis sebagai teks biasa.
 // Nama yang lebih panjang dipotong di batas kata terakhir dan diberi "…" (hasilnya tetap paling banyak 60 karakter);
@@ -1175,7 +1179,7 @@ function showRsvp(r) {
 }
 // Pesan galat hilang begitu tamu memperbaiki isiannya.
 for (const ev of ["input", "change"]) rsvpForm.addEventListener(ev, () => { $("#rsvpErr").hidden = true; });
-rsvpForm.addEventListener("submit", (e) => {
+rsvpForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const name = rsvpForm.name.value.trim(), att = rsvpForm.att.value, err = $("#rsvpErr");
   const msg = !name ? "Mohon isi nama Anda." : !att ? "Mohon pilih kehadiran Anda." : "";
@@ -1183,6 +1187,13 @@ rsvpForm.addEventListener("submit", (e) => {
   err.textContent = msg;
   if (msg) return (!name ? rsvpForm.name : rsvpForm.att[0]).focus();
   const r = { name, att, count: att === "hadir" ? Number(rsvpForm.count.value) : 0, phone: rsvpForm.phone.value.trim(), guest: GUEST, at: Date.now() };
+  if (ACARA.aktif) {
+    const btn = rsvpForm.querySelector("[type=submit]");
+    btn.disabled = true;
+    try { await ACARA.kirimRsvp({ nama: name, kehadiran: att === "hadir" ? "hadir" : "tidak", jumlah: r.count, telepon: r.phone }, rsvpForm); }
+    catch (x) { err.textContent = x.message; err.hidden = false; return; }
+    finally { btn.disabled = false; }
+  }
   store.set("rsvp", r);
   showRsvp(r);
   $("#rsvpDone").focus();
@@ -1212,8 +1223,8 @@ const ago = (t) => {
   return m < 1 ? "Baru saja" : m < 60 ? `${m} menit lalu` : m < 1440 ? `${Math.round(m / 60)} jam lalu` : `${Math.round(m / 1440)} hari lalu`;
 };
 function renderWishes(fresh) {
-  const list = [...store.get("wishes", []), ...SAMPLE];
-  $("#wishCount").textContent = `${list.length} ucapan`;
+  const list = ACARA.aktif ? ACARA.ucapan : [...store.get("wishes", []), ...SAMPLE];
+  $("#wishCount").textContent = `${ACARA.aktif ? ACARA.jumlahUcapan : list.length} ucapan`;
   const box = $("#wishList");
   box.textContent = "";
   list.forEach((w, i) => {
@@ -1227,15 +1238,32 @@ function renderWishes(fresh) {
   });
 }
 renderWishes();
-$("#wishForm").addEventListener("submit", (e) => {
+if (ACARA.aktif) {
+  // Tema ini menampilkan semua ucapan tanpa tombol "lebih banyak": muat sampai 200 ucapan terbaru.
+  $("#wishCount").textContent = "Memuat ucapan…";
+  (async () => {
+    await ACARA.muatUcapan();
+    renderWishes();
+    while (ACARA.adaLagi && ACARA.ucapan.length < 200) { await ACARA.muatLagi(); renderWishes(); }
+  })().catch(() => toast("Ucapan belum bisa dimuat. Muat ulang halaman untuk mencoba lagi."));
+}
+$("#wishForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   const f = e.target, name = f.name.value.trim(), msg = f.msg.value.trim(), err = $("#wishErr");
   const m = !name ? "Mohon isi nama Anda." : !msg ? "Mohon tulis ucapan Anda." : "";
   err.hidden = !m;
   err.textContent = m;
   if (m) return (!name ? f.name : f.msg).focus();
-  const r = store.get("rsvp", null);
-  store.set("wishes", [{ name, msg, att: r ? (r.att === "hadir" ? "Akan hadir" : "Berhalangan") : "", at: Date.now() }, ...store.get("wishes", [])].slice(0, 50));
+  if (ACARA.aktif) {
+    const btn = f.querySelector("[type=submit]");
+    btn.disabled = true;
+    try { await ACARA.kirimUcapan({ nama: name, pesan: msg }, f); }
+    catch (x) { err.textContent = x.message; err.hidden = false; return; }
+    finally { btn.disabled = false; }
+  } else {
+    const r = store.get("rsvp", null);
+    store.set("wishes", [{ name, msg, att: r ? (r.att === "hadir" ? "Akan hadir" : "Berhalangan") : "", at: Date.now() }, ...store.get("wishes", [])].slice(0, 50));
+  }
   f.msg.value = "";
   renderWishes(true);
   toast("Ucapan Anda sudah terkirim. Terima kasih!");
