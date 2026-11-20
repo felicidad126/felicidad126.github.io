@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Hanya beranda katalog. Halaman tema (noindex, nofollow) dan /demo/ (noindex) sengaja tidak dicantumkan.
-     Saat pindah domain (Fase 3), ganti alamat di bawah ke https://invitation.helonoia.com/. -->
+<!-- Hanya beranda katalog. Halaman tema (noindex, nofollow) dan /demo/ (noindex) sengaja tidak dicantumkan. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://invitation.helonoia.net/</loc>
+    <loc>https://invitation.helonoia.com/</loc>
   </url>
 </urlset>

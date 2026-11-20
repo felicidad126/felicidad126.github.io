@@ -2,7 +2,8 @@
 
 Situs statis (HTML, CSS, dan JavaScript biasa, tanpa proses build) berisi katalog 10 tema undangan pernikahan digital dan halaman perkenalan brand Helonoia.
 
-- Alamat utama: https://invitation.helonoia.net/ (Cloudflare Pages, domain sendiri)
+- Alamat utama: https://invitation.helonoia.com/ (Cloudflare Pages, domain sendiri)
+- Alamat lama: https://invitation.helonoia.net/, dialihkan permanen (301) ke alamat utama dengan jalur dan parameter yang sama
 - Cadangan: https://felicidad126.github.io/ (GitHub Pages)
 
 Setiap halaman adalah satu berkas `index.html` di foldernya sendiri, dan situs dilayani langsung dari isi repo. Untuk mengubah halaman, sunting berkas itu langsung.
@@ -43,7 +44,7 @@ Font yang tidak ditandai "disimpan di repo" dimuat dari Google Fonts. Semua font
 | `?open` | Langsung membuka undangan, melewati sampul | Semua tema kecuali Parallax & Sway, Garis Editorial, dan Biru Kabut |
 | `?tema=<folder>` | Memilih tema yang ditampilkan di bilah demo. Parameter lain (`to`, `motion`, `open`) diteruskan ke tema | Hanya `demo/` |
 
-Contoh: https://invitation.helonoia.net/kaca-patri/?to=Nama%20Tamu
+Contoh: https://invitation.helonoia.com/kaca-patri/?to=Nama%20Tamu
 
 ## Struktur folder
 
@@ -94,7 +95,8 @@ Katalog membuka setiap demo lewat [`demo/`](demo/index.html), misalnya `demo/?te
 - [`sitemap.xml`](sitemap.xml) hanya berisi katalog, karena halaman tema memakai `noindex, nofollow` dan `demo/` memakai `noindex`. [`robots.txt`](robots.txt) tidak memblokir apa pun, supaya Google tetap bisa membaca tag `noindex` itu.
 
 ### Domain
-- Gambar pratinjau tautan (`og:image`) di katalog, halaman brand, dan semua tema memakai `https://invitation.helonoia.net/`. Bila domain berganti, ganti alamat itu di setiap `index.html`, dan juga di `robots.txt` dan `sitemap.xml`. `404.html` tidak perlu diubah.
+- Gambar pratinjau tautan (`og:image`) di katalog, halaman brand, dan semua tema memakai `https://invitation.helonoia.com/`. Bila domain berganti, ganti alamat itu di setiap `index.html`, dan juga di `robots.txt` dan `sitemap.xml`. `404.html` tidak perlu diubah.
+- Katalog pindah dari `invitation.helonoia.net` ke `invitation.helonoia.com` pada November 2026. Pengalihan dari alamat lama diatur lewat Redirect Rule di zona Cloudflare `helonoia.net`, bukan di repo ini. Jangan matikan aturan itu dan jangan biarkan domain `helonoia.net` kedaluwarsa selama link lama masih beredar.
 
 ### Foto
 - Nama, tanggal, alamat, dan rekening di semua tema adalah data contoh. Foto contoh dibuat dengan AI (Gemini), bukan foto mempelai sebenarnya.
