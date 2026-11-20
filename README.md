@@ -3,7 +3,7 @@
 Situs statis (HTML, CSS, dan JavaScript biasa, tanpa proses build) berisi katalog 10 tema undangan pernikahan digital dan halaman perkenalan brand Helonoia.
 
 - Alamat utama: https://invitation.helonoia.com/ (Cloudflare Pages, domain sendiri)
-- Alamat lama: https://invitation.helonoia.net/, dialihkan permanen (301) ke alamat utama dengan jalur dan parameter yang sama
+- Alamat lama: https://invitation.helonoia.net/, dialihkan permanen (301) ke alamat utama dengan jalur dan parameter yang sama. Domain `helonoia.net` tidak dipakai lagi dan berlaku sampai 12 Mei 2027
 - Cadangan: https://felicidad126.github.io/ (GitHub Pages)
 
 Setiap halaman adalah satu berkas `index.html` di foldernya sendiri, dan situs dilayani langsung dari isi repo. Untuk mengubah halaman, sunting berkas itu langsung.
@@ -96,7 +96,7 @@ Katalog membuka setiap demo lewat [`demo/`](demo/index.html), misalnya `demo/?te
 
 ### Domain
 - Gambar pratinjau tautan (`og:image`) di katalog, halaman brand, dan semua tema memakai `https://invitation.helonoia.com/`. Bila domain berganti, ganti alamat itu di setiap `index.html`, dan juga di `robots.txt` dan `sitemap.xml`. `404.html` tidak perlu diubah.
-- Katalog pindah dari `invitation.helonoia.net` ke `invitation.helonoia.com` pada November 2026. Pengalihan dari alamat lama diatur lewat Redirect Rule di zona Cloudflare `helonoia.net`, bukan di repo ini. Jangan matikan aturan itu dan jangan biarkan domain `helonoia.net` kedaluwarsa selama link lama masih beredar.
+- Katalog pindah dari `invitation.helonoia.net` ke `invitation.helonoia.com` pada November 2026. Pengalihan dari alamat lama diatur lewat Redirect Rule di zona Cloudflare `helonoia.net`, bukan di repo ini. Domain `helonoia.net` tidak dipakai lagi dan berlaku sampai 12 Mei 2027. Sampai tanggal itu, jangan matikan aturan pengalihannya. Keputusan perpanjangan domain menyusul, dan dicatat di `RENCANA-PINDAH-DOMAIN.md` di repo `felicidad126/helonoia`.
 
 ### Foto
 - Nama, tanggal, alamat, dan rekening di semua tema adalah data contoh. Foto contoh dibuat dengan AI (Gemini), bukan foto mempelai sebenarnya.
