@@ -540,6 +540,7 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
   html:not(.force-motion) .print,html:not(.force-motion) .tabs{transition:none;scroll-behavior:auto}
 }
 </style>
+<script src="/acara.js"></script>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
@@ -748,13 +749,13 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
             <label class="field" id="paxField">Jumlah tamu<select name="jumlah"><option>1</option><option>2</option><option>3</option><option>4</option></select></label>
             <p class="err" role="alert" hidden></p>
             <button class="btn" type="submit">Kirim balasan</button>
-            <p class="note">Preview: data tersimpan di perangkat ini saja.</p>
+            <p class="note" data-catatan="rsvp">Preview: data tersimpan di perangkat ini saja.</p>
           </form>
           <div class="replied" id="replied" hidden>
             <p class="thanks">Terima kasih</p>
             <p id="repliedMsg"></p>
             <button class="btn line" type="button" id="replyEdit">Ubah jawaban</button>
-            <p class="note">Preview: data tersimpan di perangkat ini saja.</p>
+            <p class="note" data-catatan="rsvp">Preview: data tersimpan di perangkat ini saja.</p>
           </div>
         </div></div></div>
       </article>
@@ -777,7 +778,7 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
             <label class="field">Ucapan<textarea name="pesan" maxlength="300" placeholder="Tulis doa dan ucapan"></textarea></label>
             <p class="err" role="alert" hidden></p>
             <button class="btn" type="submit">Ikatkan ucapan</button>
-            <p class="note">Preview: data tersimpan di perangkat ini saja.</p>
+            <p class="note" data-catatan="ucapan">Preview: data tersimpan di perangkat ini saja.</p>
           </form>
           <button class="link to-wishes" type="button" id="toWishes">Baca ucapan tamu <span id="wcountBtn"></span> <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M2 6h8M7 3l3 3-3 3"/></svg></button>
         </div></div></div>
@@ -874,9 +875,12 @@ const TZ_ABBR = { "Asia/Jakarta": "WIB", "Asia/Makassar": "WITA", "Asia/Jayapura
 const fmtTime = (iso, tz) => new Intl.DateTimeFormat("id-ID", { hour: "2-digit", minute: "2-digit", timeZone: tz }).format(new Date(iso)).replace(":", ".");
 const fmtDate = (ev) => new Intl.DateTimeFormat("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: ev.timezone }).format(new Date(ev.startsAt));
 const mapsUrl = (ev) => `https://www.google.com/maps/search/?api=1&query=${ev.lat},${ev.lng}`;
+// Undangan klien (<meta name="acara">): RSVP dan ucapan dikirim ke server lewat /acara.js;
+// tanpa tag itu (demo), semuanya tetap tersimpan di perangkat ini saja.
+const ACARA = window.Acara ?? { aktif: false, kunci: (k) => k };
 const store = {
-  get(k, d) { try { return JSON.parse(localStorage.getItem("al-" + k)) ?? d; } catch { return d; } },
-  set(k, v) { try { localStorage.setItem("al-" + k, JSON.stringify(v)); } catch {} },
+  get(k, d) { try { return JSON.parse(localStorage.getItem(ACARA.kunci("al-" + k))) ?? d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem(ACARA.kunci("al-" + k), JSON.stringify(v)); } catch {} },
 };
 
 if (GUEST) $$(".guest").forEach((n) => (n.textContent = GUEST));
@@ -1359,13 +1363,20 @@ function showReply(r) {
   const form = $("#rsvp"), err = $(".err", form);
   const sync = () => ($("#paxField").hidden = form.hadir.value === "Tidak hadir");
   form.addEventListener("change", sync);
-  form.addEventListener("submit", (e) => {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const nama = form.nama.value.trim(), hadir = form.hadir.value;
     err.hidden = !!(nama && hadir);
     if (!nama) return (err.textContent = "Mohon isi nama Anda."), form.nama.focus();
     if (!hadir) return (err.textContent = "Mohon pilih kehadiran."), $(".opt input", form).focus();
     const r = { nama, hadir, jumlah: hadir === "Tidak hadir" ? 0 : +form.jumlah.value, waktu: Date.now() };
+    if (ACARA.aktif) {
+      const btn = form.querySelector("[type=submit]");
+      btn.disabled = true;
+      try { await ACARA.kirimRsvp({ nama, kehadiran: ACARA.kehadiran(hadir), jumlah: r.jumlah }, form); }
+      catch (x) { err.textContent = x.message; err.hidden = false; return; }
+      finally { btn.disabled = false; }
+    }
     store.set("rsvp", r);
     showReply(r);
     $("#replyEdit").focus();
@@ -1393,20 +1404,29 @@ const SAMPLE_WISHES = [
 ];
 function renderWishes() {
   const mine = store.get("wishes", []);
-  const all = [...mine.slice().reverse().map((w) => ({ ...w, ket: stampDate(w.waktu) })), ...SAMPLE_WISHES];
-  $("#wcount").textContent = `${all.length} ucapan`;
-  $("#wcountBtn").textContent = `(${all.length})`;
+  const all = ACARA.aktif
+    ? ACARA.ucapan.map((w) => ({ nama: w.name, pesan: w.msg, ket: stampDate(w.at) }))
+    : [...mine.slice().reverse().map((w) => ({ ...w, ket: stampDate(w.waktu) })), ...SAMPLE_WISHES];
+  const jumlah = ACARA.aktif ? ACARA.jumlahUcapan : all.length;
+  $("#wcount").textContent = `${jumlah} ucapan`;
+  $("#wcountBtn").textContent = `(${jumlah})`;
   $("#wlist").innerHTML = all.map((w) => `<div class="wish"><b>${esc(w.nama)}</b><p>${esc(w.pesan)}</p><small>${esc(w.ket)}</small></div>`).join("");
 }
 {
   const form = $("#wishForm"), err = $(".err", form);
-  form.addEventListener("submit", (e) => {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const nama = form.nama.value.trim(), pesan = form.pesan.value.trim();
     err.hidden = !!(nama && pesan);
     if (!nama) return (err.textContent = "Mohon isi nama Anda."), form.nama.focus();
     if (!pesan) return (err.textContent = "Mohon tulis ucapan Anda."), form.pesan.focus();
-    store.set("wishes", [...store.get("wishes", []), { nama, pesan, waktu: Date.now() }]);
+    if (ACARA.aktif) {
+      const btn = form.querySelector("[type=submit]");
+      btn.disabled = true;
+      try { await ACARA.kirimUcapan({ nama, pesan }, form); }
+      catch (x) { err.textContent = x.message; err.hidden = false; return; }
+      finally { btn.disabled = false; }
+    } else store.set("wishes", [...store.get("wishes", []), { nama, pesan, waktu: Date.now() }]);
     form.pesan.value = "";
     renderWishes();
     // Tampilkan ucapan yang baru terikat di kartu Kiriman doa.
@@ -1420,6 +1440,15 @@ function renderWishes() {
   };
   $("#toWishes").addEventListener("click", showWishes);
   renderWishes();
+  if (ACARA.aktif) {
+    // Kartu ini menampilkan semua ucapan (bergulir): muat sampai 200 ucapan terbaru.
+    $("#wcount").textContent = "Memuat ucapan…";
+    (async () => {
+      await ACARA.muatUcapan();
+      renderWishes();
+      while (ACARA.adaLagi && ACARA.ucapan.length < 200) { await ACARA.muatLagi(); renderWishes(); }
+    })().catch(() => toast("Ucapan belum bisa dimuat. Muat ulang halaman untuk mencoba lagi."));
+  }
 }
 
 /* ---------- Musik: kotak musik 3/4 yang dirender di browser (tanpa file audio) ---------- */

@@ -429,6 +429,7 @@ footer a{color:var(--ink)}
 }
 .music.dodge{opacity:0!important;pointer-events:none!important}
 </style>
+<script src="/acara.js"></script>
 </head>
 <body class="locked">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
@@ -557,7 +558,7 @@ footer a{color:var(--ink)}
           <div class="f"><label for="rPax">Jumlah tamu</label><select id="rPax" name="pax"><option>1</option><option selected>2</option><option>3</option><option>4</option></select></div>
           <div class="f"><label for="rPhone">Nomor WhatsApp (opsional)</label><input id="rPhone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="08xx"></div>
           <button class="btn btn-tera" type="submit">Kirim Konfirmasi</button>
-          <p class="note">Preview: data tersimpan di perangkat ini saja.</p>
+          <p class="note" data-catatan="rsvp">Preview: data tersimpan di perangkat ini saja.</p>
         </form>
         <div class="thanks" id="rsvpThanks" role="status" hidden><h3>Terima Kasih</h3><p id="rsvpMsg"></p><button class="btn btn-brown sm" type="button" id="rsvpEdit">Ubah Jawaban</button></div>
       </div>
@@ -571,7 +572,7 @@ footer a{color:var(--ink)}
         <div class="f"><label for="wName">Nama</label><input id="wName" maxlength="80" autocomplete="name" placeholder="Nama Anda"></div>
         <div class="f"><label for="wMsg">Ucapan</label><textarea id="wMsg" maxlength="500" placeholder="Tulis doa dan ucapan"></textarea><p class="err" id="wErr" role="alert" hidden></p></div>
         <button class="btn btn-tera" type="submit">Kirim Ucapan</button>
-        <p class="note">Preview: data tersimpan di perangkat ini saja.</p>
+        <p class="note" data-catatan="ucapan">Preview: data tersimpan di perangkat ini saja.</p>
       </form>
       <div class="kicker count" id="wCount"></div>
       <div class="wlist" id="wList"></div>
@@ -641,9 +642,12 @@ const MOTION = root.classList.contains("motion");
 const $ = (q, el = document) => el.querySelector(q);
 const $$ = (q, el = document) => [...el.querySelectorAll(q)];
 const esc = (t) => String(t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+// Undangan klien (<meta name="acara">): RSVP dan ucapan dikirim ke server lewat /acara.js;
+// tanpa tag itu (demo), semuanya tetap tersimpan di perangkat ini saja.
+const ACARA = window.Acara ?? { aktif: false, kunci: (k) => k };
 const store = {
-  get(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } },
-  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+  get(k, d) { try { return JSON.parse(localStorage.getItem(ACARA.kunci(k))) ?? d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem(ACARA.kunci(k), JSON.stringify(v)); } catch {} },
 };
 
 const EVENT = {
@@ -1057,13 +1061,20 @@ const paxField = $("#rPax").closest(".f");
 const syncPax = () => { paxField.hidden = rsvpForm.att.value === "Tidak hadir"; };
 rsvpForm.addEventListener("change", syncPax);
 syncPax();
-rsvpForm.addEventListener("submit", (e) => {
+rsvpForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const name = $("#rName").value.trim();
   const rErr = $("#rErr");
   rErr.hidden = !!name;
   if (!name) { rErr.textContent = "Nama wajib diisi."; $("#rName").focus(); return; }
   const r = { name, att: rsvpForm.att.value, pax: $("#rPax").value, phone: $("#rPhone").value.trim() };
+  if (ACARA.aktif) {
+    const btn = rsvpForm.querySelector("[type=submit]");
+    btn.disabled = true;
+    try { await ACARA.kirimRsvp({ nama: name, kehadiran: ACARA.kehadiran(r.att), jumlah: r.pax, telepon: r.phone }, rsvpForm); }
+    catch (x) { rErr.textContent = x.message; rErr.hidden = false; return; }
+    finally { btn.disabled = false; }
+  }
   store.set("tt-rsvp", r);
   showRsvp(r);
   $("#rsvpEdit").focus();
@@ -1077,19 +1088,36 @@ const SEED = [
 ];
 const ago = (t) => { const m = Math.floor((Date.now() - t) / 60000); return m < 1 ? "Baru saja" : m < 60 ? `${m} menit lalu` : m < 1440 ? `${Math.floor(m / 60)} jam lalu` : m < 2880 ? "Kemarin" : `${Math.floor(m / 1440)} hari lalu`; };
 function renderWishes(fresh) {
-  const all = [...store.get("tt-wishes", []), ...SEED];
-  $("#wCount").textContent = `${all.length} ucapan`;
+  const all = ACARA.aktif ? ACARA.ucapan : [...store.get("tt-wishes", []), ...SEED];
+  $("#wCount").textContent = `${ACARA.aktif ? ACARA.jumlahUcapan : all.length} ucapan`;
   $("#wList").innerHTML = all.map((w, i) => `<div class="wish${fresh && !i ? " new" : ""}"><b>${esc(w.name)}</b>${w.att ? `<span class="badge">${esc(w.att)}</span>` : ""}<p>${esc(w.msg)}</p><small>${ago(w.at)}</small></div>`).join("");
 }
 renderWishes();
-$("#wishForm").addEventListener("submit", (e) => {
+if (ACARA.aktif) {
+  // Daftar ucapan tema ini bergulir dan menampilkan semuanya: muat sampai 200 ucapan terbaru.
+  $("#wCount").textContent = "Memuat ucapan…";
+  (async () => {
+    await ACARA.muatUcapan();
+    renderWishes();
+    while (ACARA.adaLagi && ACARA.ucapan.length < 200) { await ACARA.muatLagi(); renderWishes(); }
+  })().catch(() => toast("Ucapan belum bisa dimuat. Muat ulang halaman untuk mencoba lagi."));
+}
+$("#wishForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   const name = $("#wName").value.trim(), msg = $("#wMsg").value.trim(), err = $("#wErr");
   err.hidden = !!(name && msg);
   if (!name || !msg) { err.textContent = "Nama dan ucapan wajib diisi."; return; }
-  const mine = store.get("tt-wishes", []);
-  mine.unshift({ name, msg, att: store.get("tt-rsvp", null)?.att, at: Date.now() });
-  store.set("tt-wishes", mine.slice(0, 30));
+  if (ACARA.aktif) {
+    const btn = $("#wishForm [type=submit]");
+    btn.disabled = true;
+    try { await ACARA.kirimUcapan({ nama: name, pesan: msg }, $("#wishForm")); }
+    catch (x) { err.textContent = x.message; err.hidden = false; return; }
+    finally { btn.disabled = false; }
+  } else {
+    const mine = store.get("tt-wishes", []);
+    mine.unshift({ name, msg, att: store.get("tt-rsvp", null)?.att, at: Date.now() });
+    store.set("tt-wishes", mine.slice(0, 30));
+  }
   $("#wMsg").value = "";
   renderWishes(true);
   $("#wList").scrollTop = 0;

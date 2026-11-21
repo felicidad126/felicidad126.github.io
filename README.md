@@ -2,9 +2,9 @@
 
 Situs statis (HTML, CSS, dan JavaScript biasa, tanpa proses build) berisi katalog 10 tema undangan pernikahan digital dan halaman perkenalan brand Helonoia.
 
-- Alamat utama: https://invitation.helonoia.com/ (Cloudflare Pages, domain sendiri)
+- Alamat utama: https://invitation.helonoia.com/ (VM Helonoia, nginx lewat aaPanel). Isi branch `main` disalin ke server setiap 5 menit; lihat [Hosting](#hosting)
 - Alamat lama: https://invitation.helonoia.net/, dialihkan permanen (301) ke alamat utama dengan jalur dan parameter yang sama. Domain `helonoia.net` tidak dipakai lagi dan berlaku sampai 12 Mei 2027
-- Cadangan: https://felicidad126.github.io/ (GitHub Pages)
+- Cadangan: https://felicidad126-github-io.pages.dev/ (Cloudflare Pages) dan https://felicidad126.github.io/ (GitHub Pages)
 
 Setiap halaman adalah satu berkas `index.html` di foldernya sendiri, dan situs dilayani langsung dari isi repo. Untuk mengubah halaman, sunting berkas itu langsung.
 
@@ -54,6 +54,7 @@ index.html          katalog
 robots.txt          izin untuk mesin pencari, menunjuk ke sitemap.xml
 sitemap.xml         daftar halaman untuk Google (hanya katalog)
 toko.js             nama usaha dan nomor WhatsApp (dipakai katalog dan bilah demo)
+acara.js            penghubung RSVP dan ucapan ke server untuk undangan klien (lihat Undangan klien)
 demo/               bilah demo yang membungkus tema saat dibuka dari katalog
 brand/              halaman brand Helonoia
 HTML/               penerus alamat lama /HTML/ ke /brand/
@@ -65,7 +66,7 @@ katalog/            gambar sampul tiap tema, og.jpg, dan sampul Kelopak Mimpi ta
 helonoia/           logo dan maskot Helonoia beserta generatornya, dan noi.webp (Noi untuk halaman 404)
 licenses/           lisensi font yang disimpan di repo
 docs/               catatan desain dan review (tidak dipakai situs)
-_headers            aturan cache Cloudflare Pages
+_headers            aturan cache Cloudflare Pages (cadangan); di VM aturan yang sama dipasang di nginx
 favicon.ico         ikon bawaan untuk halaman tanpa ikon sendiri
 ```
 
@@ -85,6 +86,23 @@ Katalog membuka setiap demo lewat [`demo/`](demo/index.html), misalnya `demo/?te
 - Bila calon pengantin meneruskan tautan demo ke pasangannya, bilahnya ikut tampil, jadi pasangannya juga bisa membuka katalog atau memesan.
 - Parameter selain `tema` (`to`, `motion`, `open`) diteruskan apa adanya ke tema. Alamat tanpa `tema` atau dengan tema yang tidak dikenal diarahkan kembali ke katalog.
 - Tema baru: tambahkan folder dan namanya di objek `TEMA` di `demo/index.html`, dan kartunya di katalog dengan `id` sama dengan nama folder.
+
+### Undangan klien: RSVP dan ucapan tersimpan di server
+Demo tema di katalog menyimpan RSVP dan ucapan di HP tamu saja (keterangan "Preview" di bawah form). Undangan klien sungguhan mengirimnya ke server, ke API [`felicidad126/mengundang-api`](https://github.com/felicidad126/mengundang-api) di `/api/` pada domain yang sama.
+
+- Undangan klien menandai dirinya dengan satu tag di `<head>`: `<meta name="acara" content="<slug>">`. Slug dibuat admin di server dengan `acara:buat` (lihat `docs/operasi.md` di repo API), yang sekaligus mencetak tag ini.
+- Tanpa tag itu, tema bekerja persis seperti sebelumnya dan tidak memanggil server sama sekali. Jangan pernah menambahkan tag acara ke folder tema demo.
+- Semua tema memuat [`acara.js`](acara.js) di `<head>`. Skrip itu menyediakan `window.Acara` (kirim RSVP, muat dan kirim ucapan), mengganti keterangan "Preview" dengan keterangan ke mana data dikirim (atribut `data-catatan`), dan menambahkan kolom jebakan anti-bot yang tidak terlihat ke setiap form.
+- Satu HP satu jawaban RSVP per acara: kirim ulang dari HP yang sama memperbarui jawaban sebelumnya. Data yang diingat di HP diberi awalan slug, jadi tamu yang diundang ke dua pernikahan tidak melihat jawaban undangan lain.
+- RSVP (termasuk nomor WhatsApp) hanya dibaca mempelai dan admin. Ucapan tampil untuk semua tamu undangan itu. Di Garis Editorial, doa di kartu balasan juga dikirim sebagai ucapan karena tema ini menampilkannya di bagian "Doa & ucapan".
+- Server menghapus RSVP dan ucapan 90 hari setelah tanggal acara.
+- Mengubah alur RSVP atau ucapan di sebuah tema: pertahankan kedua jalur (dengan dan tanpa `ACARA.aktif`), dan uji keduanya.
+
+### Hosting
+- Situs dilayani nginx di VM Helonoia (aaPanel, situs `invitation.helonoia.com`, folder `/www/wwwroot/invitation.helonoia.com`). Tugas Cron aaPanel "Deploy invitation.helonoia.com dari GitHub" menjalankan `/www/deploy/deploy-invitation.sh` setiap 5 menit: menarik `main` ke `/www/deploy/invitation-src` (di luar folder situs, jadi `.git` tidak pernah terbuka ke publik) lalu menyalinnya dengan rsync.
+- DNS `invitation` di zona Cloudflare `helonoia.com` berupa A record ke IP VM (DNS only). Sertifikat Let's Encrypt dipasang dan diperpanjang aaPanel.
+- Aturan cache dari `_headers` dipasang juga di nginx (URL rewrite situs di aaPanel). Bila `_headers` berubah, salin perubahannya ke sana.
+- Kembali ke Cloudflare Pages bila VM bermasalah: ubah record `invitation` menjadi CNAME `felicidad126-github-io.pages.dev` dengan proxy aktif, lalu di proyek Pages `felicidad126-github-io` buka **Custom domains** dan klik **Reactivate** (atau **Check DNS records**) pada `invitation.helonoia.com`. Sejak DNS dipindah ke VM, domain itu berstatus Inactive di Pages. Project Pages-nya tetap tersambung ke repo ini. Catatan: di Pages tidak ada `/api/`, jadi undangan klien hanya bisa menampilkan undangan, tanpa RSVP dan ucapan.
 
 ### Halaman 404, robots.txt, dan sitemap.xml
 - [`404.html`](404.html) tampil untuk setiap alamat yang tidak ada, dengan status 404. Sebelum berkas ini ada, Cloudflare Pages menjawab alamat yang tidak ada dengan katalog dan status 200, termasuk `/robots.txt` dan `/sitemap.xml`.
