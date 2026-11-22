@@ -66,33 +66,51 @@ h2 em,.salam h2 small,.wass{word-spacing:.16em}
 /* Kilau sampanye metalik yang lewat sesekali di tombol utama. */
 .btn:not(.line)::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 30%,rgba(232,211,166,.0) 36%,rgba(244,228,194,.55) 48%,rgba(232,211,166,.0) 60%,transparent 66%);transform:translateX(-110%);pointer-events:none}
 html.motion .btn:not(.line)::after{animation:glint 7s 2.6s ease-in-out infinite}
+/* Kilau ditahan selama tombolnya belum tampak (di bagian yang belum muncul, atau undangan masih tertutup sampul):
+   animasi pada elemen yang tak tampak dihitung di thread utama tiap frame, bukan di compositor. */
+html.motion .rv:not(.in) .btn::after,html.motion .btn.rv:not(.in)::after,html.motion body.locked main .btn::after{animation-play-state:paused}
 @keyframes glint{0%,64%{transform:translateX(-110%)}88%,100%{transform:translateX(110%)}}
 
 /* ---------- Kelopak abstrak ---------- */
 .petals{position:absolute;inset:0;pointer-events:none;z-index:0}
 .pe{position:absolute;width:calc(var(--s) * var(--pu));aspect-ratio:100/140;translate:-50% -50%}
 .pf,.pu{display:block;width:100%;height:100%}
+.pf{position:relative}
 .pu{overflow:visible;transform-origin:50% 96%}
+/* Kilau yang berjalan di tepi kelopak: garis tepi dipakai sebagai masker (.pr), dan di baliknya sebuah baji cahaya
+   (.pr i) berputar. Hanya transform dan opacity yang berubah, jadi dijalankan compositor tanpa menggambar ulang.
+   Sebelumnya kilau ini animasi stroke-dashoffset: tiap frame kelopak digambar ulang di thread utama, termasuk bayangan
+   blur (filter SVG) di dalamnya. Masker tiap bentuk (.pr-a s.d. .pr-d) dibuat skrip dari jalur kelopak. */
+.pr{position:absolute;inset:0;-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+.pr i{position:absolute;inset:-50%;opacity:0;background:conic-gradient(from 172deg,rgba(255,248,232,0),#fff8e8 8deg,rgba(255,248,232,0) 16deg,rgba(255,248,232,0))}
 .orb{position:absolute;width:calc(var(--s) * var(--pu));aspect-ratio:1;translate:-50% -50%}
-.orb .pf{border-radius:50%;background:radial-gradient(circle at 40% 38%,#fffdf8,rgba(244,228,194,.85) 38%,rgba(232,211,166,.28) 62%,rgba(232,211,166,0) 74%)}
-.edge-run{stroke-dasharray:14 400;stroke-dashoffset:414;opacity:0}
+.orb .pf::before{content:"";position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 40% 38%,#fffdf8,rgba(244,228,194,.85) 38%,rgba(232,211,166,.28) 62%,rgba(232,211,166,0) 74%)}
 /* Kelopak mekar dari pangkalnya saat bagiannya masuk layar, lalu melayang pelan. */
 html.motion .pu{animation:unfurl 1.9s var(--ease) var(--ud,0s) both}
-html.motion .orb .pf{animation:orbIn 1.6s ease var(--ud,0s) both,breathe 6s ease-in-out calc(var(--ud,0s) + 1.6s) infinite alternate}
-html.motion .petals:not(.in) :is(.pu,.orb .pf){animation-play-state:paused}
+/* Muncul (.pf) dan bernapas (::before) di elemen berbeda: dua animasi transform/opacity pada satu elemen tidak bisa
+   dijalankan compositor, sehingga dihitung ulang di thread utama tiap frame. Di luar layar napasnya berhenti. */
+html.motion .orb .pf{animation:orbIn 1.6s ease var(--ud,0s) both}
+html.motion .orb .pf::before{animation:breathe 6s ease-in-out calc(var(--ud,0s) + 1.6s) infinite alternate}
 html.motion .pe .pf{animation:drift var(--dur,15s) ease-in-out var(--del,0s) infinite alternate}
-html.motion .petals:not(.vis) .pe .pf{animation-play-state:paused}
-html.motion .petals.vis .edge-run{animation:edgeRun 9s ease-in-out calc(var(--ud,0s) + 2s) infinite}
+html.motion .petals.vis .pr i{animation:edgeRun 9s ease-in-out calc(var(--ud,0s) + 2s) infinite}
+/* Sebelum bagiannya terlihat, kelopak tak tampak (opacity 0); animasi di dalamnya juga ditahan, karena animasi pada
+   elemen yang tak tampak tidak dijalankan compositor dan justru dihitung di thread utama tiap frame.
+   (Aturan penahan harus sesudah aturan animasinya: shorthand animation mengembalikan play-state ke running.) */
+html.motion .petals:not(.in) :is(.pu,.pf,.pr i),html.motion .petals:not(.in) .orb .pf::before{animation-play-state:paused}
+html.motion .petals:not(.vis) .pe .pf,html.motion .petals:not(.vis) .orb .pf::before{animation-play-state:paused}
 @keyframes unfurl{from{opacity:0;transform:scale(.3) rotate(-28deg)}}
 @keyframes orbIn{from{opacity:0;transform:scale(.2)}}
 @keyframes breathe{to{opacity:.55;transform:scale(1.2)}}
 @keyframes drift{to{transform:translate(var(--dx,10px),var(--dy,-14px)) rotate(var(--dr,6deg))}}
-@keyframes edgeRun{0%{stroke-dashoffset:414;opacity:0}12%{opacity:.95}60%{opacity:.95}78%,100%{stroke-dashoffset:0;opacity:0}}
+@keyframes edgeRun{0%{transform:none;opacity:0}12%{opacity:.95}60%{opacity:.95}78%,100%{transform:rotate(360deg);opacity:0}}
 html.calm .petals :is(.pu,.orb .pf){opacity:0;transition:opacity 1.2s ease var(--ud,0s)}
 html.calm .petals.in :is(.pu,.orb .pf){opacity:1}
 
 /* ---------- Kubah cahaya (skylight dome) ---------- */
-.dome{position:absolute;left:50%;top:0;width:min(170vw,1500px);aspect-ratio:2/1;translate:-50% -50%;pointer-events:none;z-index:0}
+/* overflow:hidden: glow yang bernapas (membesar 5%) tidak melewati kotak kubah. Tanpa ini luas gulir sampul (dan
+   bagian) ikut berubah tiap frame, sehingga seluruh sampul digambar ulang terus-menerus. Gradasinya sudah transparan
+   jauh sebelum tepi kotak, jadi tidak ada yang terpotong. */
+.dome{position:absolute;left:50%;top:0;width:min(170vw,1500px);aspect-ratio:2/1;translate:-50% -50%;pointer-events:none;z-index:0;overflow:hidden}
 .dome .glow{position:absolute;inset:0;border-radius:50%;background:radial-gradient(closest-side,#fffdf8,rgba(255,250,238,.95) 22%,rgba(244,224,190,.5) 48%,rgba(236,211,207,.2) 66%,rgba(236,211,207,0) 82%)}
 .dome svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
 .dome .rib{fill:none;stroke:var(--champ);stroke-width:1;opacity:.32;vector-effect:non-scaling-stroke}
@@ -103,19 +121,28 @@ html.calm .petals.in :is(.pu,.orb .pf){opacity:1}
   -webkit-mask-image:linear-gradient(#000,rgba(0,0,0,.6) 45%,transparent 92%);mask-image:linear-gradient(#000,rgba(0,0,0,.6) 45%,transparent 92%)}
 html.motion .dome .glow{animation:domeBreath 9s ease-in-out infinite alternate}
 html.motion .rays{animation:rayBreath 11s ease-in-out infinite alternate}
+html.motion body.locked main :is(.dome .glow,.rays){animation-play-state:paused}
 @keyframes domeBreath{to{opacity:.82;transform:scale(1.05)}}
 @keyframes rayBreath{to{opacity:.55}}
 
 /* ---------- Foto berbentuk kelopak ---------- */
-.ph{position:relative;display:block;filter:drop-shadow(0 22px 26px rgba(74,51,64,.22))}
+.ph{position:relative;display:block}
+/* Bayangan foto adalah elemen sendiri (.ps) di bawah foto: bentuk kelopak berwarna bayangan yang digeser 22px dan
+   di-blur 13px, sama dengan drop-shadow(0 22px 26px) yang dulu dipasang di .ph. Bayangan ini digambar sekali; dulu
+   drop-shadow di .ph dihitung ulang setiap kali isi foto berubah (foto muncul, kilau bingkai berjalan). */
+.ps{position:absolute;inset:0;display:block;filter:blur(13px);pointer-events:none}
+.ps i{position:absolute;inset:0;transform:translateY(22px);background:rgba(74,51,64,.22);-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
 /* Foto dipotong berbentuk kelopak (masker SVG), dibingkai garis sampanye metalik yang sedikit melayang di luarnya. */
 .pm{position:absolute;inset:0;display:block;overflow:hidden;background:var(--blush);-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
 .ph img{width:100%;height:100%;object-fit:cover}
 .ph-edge{position:absolute;left:-3%;top:-2.5%;width:106%;height:105%;overflow:visible;pointer-events:none}
 .ph-edge path{fill:none;stroke:url(#g-edge);stroke-width:1.3;vector-effect:non-scaling-stroke}
-.ph-edge .run{stroke:#fff8e8;stroke-width:2;stroke-linecap:round;stroke-dasharray:40 1000;stroke-dashoffset:1040;opacity:0}
-html.motion .ph.in .ph-edge .run,html.motion .gate .ph-edge .run{animation:edgeRun2 10s ease-in-out 2.4s infinite}
-@keyframes edgeRun2{0%{stroke-dashoffset:1040;opacity:0}10%{opacity:.9}55%{opacity:.9}70%,100%{stroke-dashoffset:0;opacity:0}}
+/* Kilau yang berjalan di bingkai foto: cara yang sama dengan kilau tepi kelopak (masker garis bingkai + baji berputar).
+   --a0 (sudut awal) dan --turn (arah) diisi skrip dari titik awal jalur bingkai. */
+.ph-run{position:absolute;left:-3%;top:-2.5%;width:106%;height:105%;pointer-events:none;-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+.ph-run i{position:absolute;inset:-50%;opacity:0;background:conic-gradient(from calc(var(--a0,180deg) - 8deg),rgba(255,248,232,0),#fff8e8 8deg,rgba(255,248,232,0) 16deg,rgba(255,248,232,0))}
+html.motion .ph.in .ph-run i,html.motion .gate .ph-run i{animation:edgeRun2 10s ease-in-out 2.4s infinite}
+@keyframes edgeRun2{0%{transform:none;opacity:0}10%{opacity:.9}55%{opacity:.9}70%,100%{transform:rotate(var(--turn,360deg));opacity:0}}
 html.motion .ph.rv .ph-edge{transition:opacity 1.4s ease calc(var(--rd,0s) + .6s)}
 html.motion .ph.rv:not(.in) .ph-edge{opacity:0}
 /* Foto muncul dari jendela kelopak yang membesar, sekali kabur lalu tajam. */
@@ -123,6 +150,17 @@ html.motion .ph.rv img{transition:clip-path 1.6s var(--ease) var(--rd,0s),transf
 html.motion .ph.rv:not(.in) img{clip-path:inset(32% 30% 32% 30% round 50%);transform:scale(1.14);filter:blur(6px)}
 html.motion .ph.rv{transition:opacity 1s ease var(--rd,0s)}
 html.motion .ph.rv:not(.in){opacity:.001}
+/* Bayangan ikut tumbuh bersama jendela foto. */
+html.motion .ph.rv .ps{transition:opacity 1.4s ease var(--rd,0s),transform 1.6s var(--ease) var(--rd,0s)}
+html.motion .ph.rv:not(.in) .ps{opacity:0;transform:scale(.5)}
+/* HP: jendela foto membesar lewat transform (dijalankan compositor), tanpa clip-path dan blur yang membuat foto
+   digambar ulang tiap frame selama 1,6 detik. */
+@media (pointer:coarse){
+  html.motion .ph.rv img{transition:transform 1.8s var(--ease) var(--rd,0s)}
+  html.motion .ph.rv:not(.in) img{clip-path:none;filter:none}
+  html.motion .ph.rv .pm{transition:transform 1.6s var(--ease) var(--rd,0s)}
+  html.motion .ph.rv:not(.in) .pm{transform:scale(.5)}
+}
 
 /* ---------- Sampul ---------- */
 .gate{position:fixed;inset:0;z-index:50;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;background:
@@ -172,6 +210,9 @@ html.motion .gate .dome,html.motion .gate .rays{animation:fadeIn 2.4s ease both}
 @keyframes rise{from{opacity:0;transform:translateY(16px)}}
 @keyframes fadeIn{from{opacity:0}}
 @keyframes phIn{from{opacity:0;transform:scale(.9);filter:blur(8px)}}
+/* HP: foto sampul muncul tanpa blur; blur tidak bisa dijalankan compositor, jadi foto beserta bayangannya digambar
+   ulang tiap frame selama 2 detik saat halaman baru dimuat. */
+@media (pointer:coarse){@keyframes phIn{from{opacity:0;transform:scale(.9)}}}
 /* Nama ditulis kata demi kata. */
 .split .w{display:inline-block}
 html.motion .split .w{transition:opacity 1.1s ease calc(var(--rd,0s) + var(--i) * 140ms),transform 1.3s var(--ease) calc(var(--rd,0s) + var(--i) * 140ms),filter 1.1s ease calc(var(--rd,0s) + var(--i) * 140ms)}
@@ -390,7 +431,7 @@ html.calm .music.tuck{transform:none}
 @media (hover:none){#lbPrev,#lbNext{display:none}}
 html.lb-open{overflow:hidden}
 </style>
-<noscript><style>.gate{display:none}body.locked{overflow:auto;height:auto}.rv,.split .w,.ph img{opacity:1!important;transform:none!important;filter:none!important;clip-path:none!important}.music{display:none}</style></noscript>
+<noscript><style>.gate{display:none}body.locked{overflow:auto;height:auto}.rv,.split .w,.ph img{opacity:1!important;transform:none!important;filter:none!important;clip-path:none!important}.ph{filter:drop-shadow(0 22px 26px rgba(74,51,64,.22))}.music{display:none}</style></noscript>
 <script src="/acara.js"></script>
 </head>
 <body class="locked">
@@ -686,6 +727,8 @@ const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const html = document.documentElement;
 const params = new URLSearchParams(location.search);
 const FULL = html.classList.contains("motion");
+// Layar sentuh (HP/tablet): beberapa efek blur yang tidak bisa dijalankan compositor dilewati.
+const COARSE = matchMedia("(pointer: coarse)").matches;
 const f = (v) => Math.round(v * 10) / 10;
 
 // Penyimpanan lokal (prefix km- agar tidak bentrok dengan tema lain di domain yang sama).
@@ -738,8 +781,15 @@ const SETS = {
 };
 // Acak dengan benih tetap supaya gerak melayang sama tiap kali dibuka.
 const rand = (seed) => () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646;
-const petalSvg = (k, c, edge) => `<svg class="pu" viewBox="0 0 100 140" aria-hidden="true" focusable="false"><use href="#p-${k}" fill="#6e3f52" opacity=".16" transform="translate(4 8)" filter="url(#soft)"/><use href="#p-${k}" fill="url(#g-${c})"/><use href="#p-${k}" fill="url(#g-base)"/><use href="#h-${k}" fill="url(#g-sheen)"/><use href="#c-${k}" fill="none" stroke="url(#g-crease)" stroke-width=".9"/>${
-  edge ? `<use href="#p-${k}" fill="none" stroke="url(#g-edge)" stroke-width="1.1"/><use class="edge-run" href="#p-${k}" fill="none" stroke="#fff8e8" stroke-width="1.6" stroke-linecap="round"/>` : ""}</svg>`;
+// shadow=false: tanpa bayangan blur (dipakai kelopak pembuka di HP, yang besar dan cepat menghilang).
+const petalSvg = (k, c, edge, shadow = true) => `<svg class="pu" viewBox="0 0 100 140" aria-hidden="true" focusable="false">${shadow ? `<use href="#p-${k}" fill="#6e3f52" opacity=".16" transform="translate(4 8)" filter="url(#soft)"/>` : ""}<use href="#p-${k}" fill="url(#g-${c})"/><use href="#p-${k}" fill="url(#g-base)"/><use href="#h-${k}" fill="url(#g-sheen)"/><use href="#c-${k}" fill="none" stroke="url(#g-crease)" stroke-width=".9"/>${
+  edge ? `<use href="#p-${k}" fill="none" stroke="url(#g-edge)" stroke-width="1.1"/>` : ""}</svg>${edge ? `<span class="pu pr pr-${k}"><i></i></span>` : ""}`;
+// Masker garis tepi (untuk kilau yang berjalan di tepi kelopak dan bingkai foto).
+const strokeMask = (d, vb, w, extra = "") => `url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='${vb}' preserveAspectRatio='none'><path d='${d}' fill='none' stroke='#000' stroke-width='${w}' stroke-linecap='round'${extra}/></svg>`)}")`;
+document.head.insertAdjacentHTML("beforeend", `<style>${["a", "b", "c", "d"].map((k) => {
+  const u = strokeMask($("#p-" + k).getAttribute("d"), "0 0 100 140", 1.6);
+  return `.pr-${k}{-webkit-mask-image:${u};mask-image:${u}}`;
+}).join("")}</style>`);
 const PE = [];
 $$(".petals").forEach((box, bi) => {
   const r = rand(bi * 977 + 31);
@@ -750,7 +800,7 @@ $$(".petals").forEach((box, bi) => {
     return `<div class="pe" data-k="${depth}" style="left:${x}%;top:${y}%;--s:${s};--ud:${ud}s"><div class="pf" style="${fl}">${petalSvg(k, c, o.e)}</div></div>`;
   }).join("");
   // Putaran dipasang lewat properti rotate supaya tidak bertabrakan dengan animasi transform.
-  $$(".pe", box).forEach((p, i) => { $(".pu", p).style.rotate = `${SETS[box.dataset.set].filter((d) => d[0] !== "o")[i][5]}deg`; });
+  $$(".pe", box).forEach((p, i) => { for (const u of $$(".pu", p)) u.style.rotate = `${SETS[box.dataset.set].filter((d) => d[0] !== "o")[i][5]}deg`; });
   PE.push(box);
 });
 
@@ -770,7 +820,18 @@ $$(".ph[data-mk]").forEach((ph) => {
   m.style.webkitMaskImage = m.style.maskImage = url;
   m.append(ph.querySelector("img"));
   ph.prepend(m);
-  ph.insertAdjacentHTML("beforeend", `<svg class="ph-edge" viewBox="0 0 100 120" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="${d}"/><path class="run" d="${d}" pathLength="1040"/></svg>`);
+  // Bayangan: bentuk kelopak yang sama, di bawah foto.
+  const sh = document.createElement("span");
+  sh.className = "ps";
+  sh.innerHTML = "<i></i>";
+  sh.firstChild.style.webkitMaskImage = sh.firstChild.style.maskImage = url;
+  ph.prepend(sh);
+  // Kilau bingkai mulai dari titik awal jalur dan berputar searah jalur (jalur "br" berlawanan arah jarum jam).
+  const [, sx, sy] = d.match(/M(-?[\d.]+) (-?[\d.]+)/).map(Number);
+  const a0 = Math.round(Math.atan2(sx - 50, 60 - sy) * 180 / Math.PI);
+  ph.insertAdjacentHTML("beforeend", `<svg class="ph-edge" viewBox="0 0 100 120" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="${d}"/></svg><span class="ph-run" style="--a0:${a0}deg${ph.dataset.mk === "br" ? ";--turn:-360deg" : ""}"><i></i></span>`);
+  const run = ph.lastElementChild;
+  run.style.webkitMaskImage = run.style.maskImage = strokeMask(d, "0 0 100 120", 2, " vector-effect='non-scaling-stroke'");
 });
 
 /* ---------- Muncul saat masuk layar (.in) ---------- */
@@ -807,9 +868,9 @@ function paint() {
   praf = 0;
   cx += (tx - cx) * .09; cy += (ty - cy) * .09;
   const h = innerHeight;
-  for (const box of VIS) {
-    const r = box.getBoundingClientRect();
-    const p = box.closest(".gate") ? 0 : (r.top + r.height / 2 - h / 2) / h;
+  // Semua posisi dibaca dulu, baru transform ditulis: baca-tulis bergantian memaksa hitung ulang style di tiap kotak.
+  const ps = [...VIS].map((box) => { const r = box.getBoundingClientRect(); return [box, box.closest(".gate") ? 0 : (r.top + r.height / 2 - h / 2) / h]; });
+  for (const [box, p] of ps) {
     for (const el of box.children) {
       const k = +el.dataset.k || 1;
       el.style.transform = `translate3d(${f(cx * k * 18)}px,${f(cy * k * 14 - p * k * 70)}px,0)`;
@@ -826,9 +887,13 @@ function listenTilt() {
   addEventListener("deviceorientation", (e) => {
     if (e.gamma == null) return;
     b0 ??= e.beta;
-    tx = clamp(e.gamma / 25); ty = clamp((e.beta - b0) / 25);
+    const nx = clamp(e.gamma / 25), ny = clamp((e.beta - b0) / 25);
+    // Sensor mengirim data sekitar 60 kali per detik walau HP dipegang diam. Getaran di bawah ±0,5° (kelopak bergeser
+    // kurang dari 0,5px) diabaikan, supaya kelopak tidak dihitung ulang terus-menerus.
+    if (Math.abs(nx - tx) + Math.abs(ny - ty) < .02) return;
+    tx = nx; ty = ny;
     kickPaint();
-  });
+  }, { passive: true });
 }
 // Di iPhone izin kemiringan hanya bisa diminta di dalam ketukan; di Android langsung berjalan.
 function askTilt() {
@@ -881,7 +946,10 @@ function openInvite() {
     return;
   }
   // 1. Isi sampul memudar; kelopak sampul tersebar menjauh dari tengah.
-  $(".g-in").animate([{ opacity: 1, transform: "none", filter: "blur(0)" }, { opacity: 0, transform: "scale(.97)", filter: "blur(6px)" }], { duration: 650, easing: "ease-in", fill: "forwards" });
+  // Di HP tanpa blur: blur tidak bisa dijalankan compositor, sehingga seluruh isi sampul (termasuk foto dan bayangannya)
+  // digambar ulang tiap frame tepat saat kelopak pembuka mulai bergerak.
+  $(".g-in").animate(COARSE ? [{ opacity: 1, transform: "none" }, { opacity: 0, transform: "scale(.97)" }]
+    : [{ opacity: 1, transform: "none", filter: "blur(0)" }, { opacity: 0, transform: "scale(.97)", filter: "blur(6px)" }], { duration: 650, easing: "ease-in", fill: "forwards" });
   const W = innerWidth, H = innerHeight;
   $$(".gate .pe, .gate .orb").forEach((el) => {
     const r = el.getBoundingClientRect(), dx = r.left + r.width / 2 - W / 2, dy = r.top + r.height / 2 - H / 2;
@@ -890,7 +958,7 @@ function openInvite() {
   // 2. Kuncup: tujuh kelopak (sudut dan ukuran tak beraturan, bukan bentuk bintang) tumbuh di tengah.
   const c = $(".bl-c", bloom), U = Math.min(W, H);
   const B = [["b", "blush", -150, .62], ["a", "lilac", -98, .56], ["c", "peach", -44, .6], ["b", "mauve", 6, .52], ["a", "champ", 58, .58], ["d", "blush", 112, .5], ["c", "lilac", 166, .56]];
-  c.innerHTML = B.map(([k, col, , s]) => `<div class="bp" style="--w:${f(U * s)}px">${petalSvg(k, col, col === "champ")}</div>`).join("");
+  c.innerHTML = B.map(([k, col, , s]) => `<div class="bp" style="--w:${f(U * s)}px">${petalSvg(k, col, col === "champ", !COARSE)}</div>`).join("");
   bloom.hidden = false;
   const bg = $(".bl-bg", bloom);
   bg.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 520, delay: 380, easing: "ease", fill: "forwards" });
@@ -956,6 +1024,10 @@ function openInvite() {
 const evs = Object.values(EVENT.events).sort((a, b) => a.startsAt.localeCompare(b.startsAt));
 const start = new Date(evs[0].startsAt).getTime(), end = new Date(evs[evs.length - 1].endsAt).getTime();
 const count = $("#count"), cells = Object.fromEntries($$("[data-u]", count).map((b) => [b.dataset.u, b]));
+// Angka hanya dianimasikan saat hitung mundur ada di layar; di luar layar animasinya tidak terlihat tetapi tetap
+// dihitung di thread utama setiap detik.
+let countVis = false;
+new IntersectionObserver(([e]) => { countVis = e.isIntersecting; }).observe(count);
 function swap(el, text) {
   const old = el.lastElementChild;
   if (old && old.textContent === text) return;
@@ -963,7 +1035,7 @@ function swap(el, text) {
   n.textContent = text;
   el.append(n);
   if (!old) return;
-  if (!FULL) { old.remove(); return; }
+  if (!FULL || !countVis) { old.remove(); return; }
   // Angka lama yang sedang memudar disembunyikan dari pembaca layar, supaya hanya angka baru yang terbaca.
   old.setAttribute("aria-hidden", "true");
   old.animate([{ opacity: 1, transform: "none" }, { opacity: 0, transform: "translateY(-24%) scale(.92)" }], { duration: 600, easing: "ease", fill: "forwards" }).onfinish = () => old.remove();
