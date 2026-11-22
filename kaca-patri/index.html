@@ -163,7 +163,9 @@ window.KP = (() => {
     for (let j = 0; j <= rows; j++) for (let i = 0; i <= cols; i++) if (i % cols && j % rows) g += put(lozenge(i * s, ry + 8 + j * s, s * .3), (i + j) % 2 ? PAL.sapph : PAL.teal, .8);
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 260"><defs><filter id="b" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="${blur}"/></filter></defs>`
       + `<g filter="url(#b)"><g transform="translate(210 24) skewX(${skew}) scale(1 ${sy}) translate(${-rx} 0)"><path d="M0,${ry}A${rx},${ry} 0 0 1 ${bw},${ry}V${ry + 8 + bh}H0Z" fill="#f9dc9c" fill-opacity=".6"/>${g}</g></g></svg>`;
-    return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+    // Blob URL, bukan data URI: nilai variabel CSS tetap pendek. Data URI sepanjang 20 ribu karakter diurai ulang
+    // setiap kali gaya cahaya dihitung ulang (parallax mengubahnya di setiap frame), sehingga gulir tersendat.
+    return `url("${URL.createObjectURL(new Blob([svg], { type: "image/svg+xml" }))}")`;
   }
   return { f, win, fanMini, band, light, GLASS };
 })();
@@ -243,6 +245,15 @@ html.motion .win:not(.in) .vl{fill-opacity:.14}
 html.motion .win.in .vl{animation:veil 2.4s ease calc(var(--d) + .5s) both}
 @keyframes veil{0%{fill-opacity:.14}35%{fill-opacity:1;stroke-opacity:1}100%{fill-opacity:0;stroke-opacity:0}}
 html.calm .vl{display:none}
+/* Layar sentuh (HP, tablet): jendela muncul memudar utuh, tidak digambar keping demi keping. Ratusan keping yang
+   bertransisi sendiri-sendiri membuat gulir tersendat di HP; di desktop efek menggambar tetap. */
+@media (hover:none){
+  html.motion .draw .pn{transition:none}
+  html.motion .draw:not(.in) .pn:not(.vl){fill-opacity:1;stroke-dashoffset:0}
+  html.motion .draw .vl{display:none}
+  html.motion .draw svg{transition:opacity 1.2s ease}
+  html.motion .draw:not(.in) svg{opacity:0}
+}
 
 /* ---------- Pantulan cahaya kaca di dinding ---------- */
 .light{position:absolute;left:var(--lx,0);top:var(--ly,0);width:var(--lw,420px);aspect-ratio:420/260;pointer-events:none;z-index:0;mix-blend-mode:multiply;opacity:var(--lo,.5)}
@@ -897,15 +908,19 @@ function openInvite(quick = false) {
 if (FULL) {
   const ls = $$("main .light");
   let raf = 0;
+  // Baca semua posisi dulu, baru tulis semua transform. Membaca dan menulis bergantian per cahaya
+  // memaksa browser menghitung ulang gaya halaman di setiap putaran, dan membuat gulir tersendat di HP.
   const upd = () => {
     raf = 0;
     const h = innerHeight;
-    for (const l of ls) {
-      const r = l.parentElement.getBoundingClientRect();
-      if (r.bottom < -200 || r.top > h + 200) continue;
+    const rs = ls.map((l) => l.parentElement.getBoundingClientRect());
+    ls.forEach((l, i) => {
+      const r = rs[i];
+      if (r.bottom < -200 || r.top > h + 200) return;
       const p = (r.top + r.height / 2 - h / 2) / h, k = +(l.dataset.k || 1);
-      l.style.transform = `translate3d(${f(p * -90 * k)}px,${f(p * 60 * k)}px,0) rotate(${f(p * -6 * k)}deg)`;
-    }
+      const t = `translate3d(${f(p * -90 * k)}px,${f(p * 60 * k)}px,0) rotate(${f(p * -6 * k)}deg)`;
+      if (l._t !== t) l.style.transform = l._t = t;
+    });
   };
   addEventListener("scroll", () => { raf ||= requestAnimationFrame(upd); }, { passive: true });
   addEventListener("resize", upd);
