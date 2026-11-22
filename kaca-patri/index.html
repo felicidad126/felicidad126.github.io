@@ -243,6 +243,9 @@ html.motion .win:not(.in) .vl{fill-opacity:.14}
 html.motion .win.in .vl{animation:veil 2.4s ease calc(var(--d) + .5s) both}
 @keyframes veil{0%{fill-opacity:.14}35%{fill-opacity:1;stroke-opacity:1}100%{fill-opacity:0;stroke-opacity:0}}
 html.calm .vl{display:none}
+/* Selama kaca jendela menyala, tergambar, dan tirainya luruh, SVG-nya dilukis ulang tiap frame. Sebagai layer sendiri, foto dan
+   bingkai di sekitarnya tidak ikut dirender ulang. Setelah animasinya selesai (.idle, dipasang skrip), layernya dilepas. */
+html.motion :is(.win.sunrise.lit,.win.draw.in):not(.idle) :is(.w-lat,.w-ov,.w-frame){will-change:transform}
 
 /* ---------- Pantulan cahaya kaca di dinding ---------- */
 .light{position:absolute;left:var(--lx,0);top:var(--ly,0);width:var(--lw,420px);aspect-ratio:420/260;pointer-events:none;z-index:0;mix-blend-mode:multiply;opacity:var(--lo,.5)}
@@ -250,6 +253,15 @@ html.calm .vl{display:none}
 html.motion .light::before{animation:shimmer 16s ease-in-out infinite alternate}
 @keyframes shimmer{to{transform:translate(14px,-8px) scale(1.03) rotate(1deg);opacity:.82}}
 .dark .light{mix-blend-mode:screen;--lo:.4}
+/* Pantulan di isi undangan. Chromium tidak menjalankan animasi di GPU bila elemennya tidak terlihat saat animasi mulai
+   (tertutup sampul atau di luar layar); animasinya lalu dihitung dan dilukis ulang di thread utama tiap frame, termasuk SVG
+   ber-blur di dalamnya. Karena itu kilau baru berjalan saat pantulan masuk layar (.on, dipasang skrip). Pantulan juga
+   digeser skrip mengikuti gulir, jadi dijadikan layer sendiri supaya geserannya tidak melukis ulang halaman. */
+html.motion main .light{will-change:transform}
+html.motion main .light::before{animation:none}
+html.motion main .light.on::before{animation:shimmer 16s ease-in-out infinite alternate}
+/* HP: kilau 16 detik di isi undangan tidak terasa saat halaman digulir (pantulan tetap bergeser mengikuti gulir), jadi dimatikan. */
+@media (pointer:coarse){html.motion main .light.on::before{animation:none}}
 
 /* ---------- Sampul ---------- */
 .gate{position:fixed;inset:0;z-index:50;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;background:radial-gradient(90% 60% at 50% 30%,#fbf5ea,rgba(251,245,234,0) 70%),var(--plaster) var(--tex)}
@@ -290,7 +302,9 @@ html.motion .g-names{animation-delay:.7s!important}
 html.motion .g-date{animation-delay:1.5s!important}
 html.motion .g-to{animation-delay:1.7s!important}
 html.motion #openBtn{animation-delay:1.9s!important}
-html.motion .gate .light{animation:lightIn 2.6s ease 1.4s both}
+/* Pantulan sampul muncul lewat wadahnya. Bila .light sendiri yang dipudarkan, kilau di dalamnya mulai saat masih tak terlihat
+   (opacity 0) dan seluruh pantulan dilukis ulang tiap frame. Di wadah, perbedaan blend multiply terhadap plester terang tidak terlihat. */
+html.motion .g-lights{animation:lightIn 2.6s ease 1.4s both}
 html.motion .g-win{animation:fadeIn 1.2s ease .1s both}
 @keyframes rise{from{opacity:0;transform:translateY(16px)}}
 @keyframes fadeIn{from{opacity:0}}
@@ -830,12 +844,15 @@ const reveal = new IntersectionObserver((es) => es.forEach((e) => {
   if (!e.isIntersecting) return;
   e.target.classList.add("in");
   reveal.unobserve(e.target);
+  // Kaca jendela selesai menyala dan tirainya luruh dalam ±5 detik; setelah itu layer animasinya dilepas (lihat CSS .idle).
+  if (FULL && e.target.classList.contains("win")) setTimeout(() => e.target.classList.add("idle"), 5200);
 }), { rootMargin: "0px 0px -8% 0px", threshold: .12 });
 const watchAll = () => $$("main .rv, main .draw").forEach((el) => reveal.observe(el));
 
 /* ---------- Sampul: matahari terbit di balik kaca, lalu daun jendela terangkat dan cahaya membanjir ---------- */
 const gate = $("#gate"), main = $("#main"), foot = $(".foot"), musicBtn = $("#music"), flood = $("#flood"), coverWin = $("#coverWin");
 setTimeout(() => coverWin.classList.add("lit"), FULL ? 350 : 0);
+if (FULL) setTimeout(() => coverWin.classList.add("idle"), 4000);
 function unlock() {
   document.body.classList.remove("locked");
   main.inert = false;
@@ -900,13 +917,19 @@ if (FULL) {
   const upd = () => {
     raf = 0;
     const h = innerHeight;
+    // Baca semua posisi dulu, baru tulis. Bila baca-tulis berselang-seling, tiap getBoundingClientRect memaksa browser
+    // menghitung ulang style yang baru diubah di pantulan sebelumnya.
+    const moves = [];
     for (const l of ls) {
       const r = l.parentElement.getBoundingClientRect();
       if (r.bottom < -200 || r.top > h + 200) continue;
-      const p = (r.top + r.height / 2 - h / 2) / h, k = +(l.dataset.k || 1);
-      l.style.transform = `translate3d(${f(p * -90 * k)}px,${f(p * 60 * k)}px,0) rotate(${f(p * -6 * k)}deg)`;
+      moves.push([l, (r.top + r.height / 2 - h / 2) / h * +(l.dataset.k || 1)]);
     }
+    for (const [l, p] of moves) l.style.transform = `translate3d(${f(p * -90)}px,${f(p * 60)}px,0) rotate(${f(p * -6)}deg)`;
   };
+  // Kilau pantulan baru dimulai saat pantulan terlihat (lihat CSS main .light.on).
+  const seen = new IntersectionObserver((es) => es.forEach((e) => e.target.classList.toggle("on", e.isIntersecting)));
+  ls.forEach((l) => seen.observe(l));
   addEventListener("scroll", () => { raf ||= requestAnimationFrame(upd); }, { passive: true });
   addEventListener("resize", upd);
   upd();
