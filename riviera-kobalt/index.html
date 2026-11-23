@@ -17,9 +17,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=DM+Serif+Display:ital@0;1&family=Yellowtail&display=swap" rel="stylesheet">
 <script>
-// Kelas gerak dipasang sebelum halaman dilukis supaya keadaan awal animasi tidak berkedip. ?motion=full memaksa animasi untuk demo.
+// Kelas gerak dipasang sebelum halaman dilukis supaya keadaan awal animasi tidak berkedip.
+// Tema ini selalu beranimasi penuh, juga di perangkat yang meminta kurangi gerak (prefers-reduced-motion), seperti
+// undangan pesaing: browser bisa meminta kurangi gerak walau pemilik HP tidak merasa menyalakannya, dan undangan
+// lalu tampil datar. Jalur .calm / !FULL di bawah sementara tidak terpakai; untuk kembali mengikuti setelan perangkat,
+// ganti `full` dengan: !matchMedia("(prefers-reduced-motion: reduce)").matches || new URLSearchParams(location.search).get("motion") === "full".
 (() => {
-  const full = !matchMedia("(prefers-reduced-motion: reduce)").matches || new URLSearchParams(location.search).get("motion") === "full";
+  const full = true;
   document.documentElement.classList.add(full ? "motion" : "calm");
 })();
 
