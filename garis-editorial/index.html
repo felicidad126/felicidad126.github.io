@@ -136,6 +136,10 @@ main>section>*{position:relative;z-index:1}
 .gate.opening .back{transition:translate .76s var(--ease) .12s,rotate .76s var(--ease) .12s,opacity .76s .12s;translate:-30px 40px;rotate:0deg;opacity:0}
 .gate.opening .polaroid{transition:rotate 1s var(--ease) .16s,translate 1s var(--ease) .16s,scale 1s var(--ease) .16s;rotate:0deg;translate:0 -36px;scale:1.08}
 .gate.opening{transition:opacity .49s ease .91s;opacity:0}
+/* mode halus: sampul tidak bergeser atau berputar; teks memudar, polaroid membesar tipis, lalu seluruh sampul memudar ke isi (900 ms) */
+.gate.fading{pointer-events:none;transition:opacity .7s ease .2s;opacity:0}
+.gate.fading .fade-out{transition:opacity .45s;opacity:0}
+.gate.fading .stack{transition:scale .9s var(--soft);scale:1.03}
 .gate.gone{display:none}
 
 /* ---------- tata letak ---------- */
@@ -402,10 +406,24 @@ main:focus{outline:none}
   .music{right:24px}
 }
 
-@media (prefers-reduced-motion:reduce){
-  html:not(.force-motion) .venue-photo img,html:not(.force-motion) .music.playing svg{animation:none}
-  html:not(.force-motion) .music.loading svg{animation:none;opacity:.5}
-}
+/* ---------- mode halus: perangkat meminta kurangi gerak, tanpa ?motion=full (kelas .soft dari skrip) ----------
+   Animasi kecil tetap jalan: memudar, ranting dan benang yang tergambar, stempel, hitung mundur, ikon musik.
+   Gerak besar dimatikan atau diganti memudar. */
+/* muncul: jarak naik/geser dipendekkan (paling jauh ±20px) */
+.soft .rv,.soft .rv-tilt{translate:0 20px}
+.soft .petal.rv{translate:calc(var(--from,-30px) / 2) 6px}
+/* foto diam: tanpa zoom "mendarat", Ken Burns, dan parallax gulir (kelopak dan film strip) */
+.soft .rv .ph>img,.soft .rv-tilt .ph>img,.soft .rv .ph>picture>img,.soft .rv-tilt .ph>picture>img{scale:none;transition:none}
+.soft .venue-photo img{animation:none}
+.soft .ph.drift img{animation:none;will-change:auto}
+.soft .frame .ph img{animation:none;width:100%;margin-left:0}
+.soft .stage .polaroid .ph img.off{scale:1}
+/* galeri tetap "mengintip" sekali, tetapi pendek */
+.soft .film.in .frame{animation-name:peekSoft}
+@keyframes peekSoft{0%,100%{translate:0}35%{translate:-20px}}
+/* amplop: tanpa lipatan 3D dan kartu meluncur; JS memudarkan amplop lalu menampilkannya terbuka */
+.soft .cards,.soft .cardlist,.soft .flap,.soft .envelope.open .seal{transition:none}
+.soft .cardlist{translate:none}
 .music.dodge{opacity:0!important;pointer-events:none!important}
 </style>
 <script src="/acara.js"></script>
@@ -625,9 +643,11 @@ const IMG = Object.fromEntries(["cover", "mempelai-wanita", "mempelai-pria", "ga
 const HD = (k) => `../foto/hd/${k}.jpg`;
 const root = document.documentElement;
 const params = new URLSearchParams(location.search);
-if (params.get("motion") === "full") root.classList.add("force-motion");
-const MOTION = params.get("motion") === "full" || !matchMedia("(prefers-reduced-motion: reduce)").matches;
-if (MOTION) root.classList.add("anim");
+// Animasi selalu aktif bila JS jalan (.anim). Mode halus: perangkat meminta kurangi gerak dan tidak ada ?motion=full
+// (?motion=full memaksa animasi penuh untuk demo). Gerak besar dimatikan lewat kelas .soft di CSS dan pengecekan SOFT di bawah.
+const SOFT = params.get("motion") !== "full" && matchMedia("(prefers-reduced-motion: reduce)").matches;
+root.classList.add("anim");
+if (SOFT) root.classList.add("soft");
 const $ = (q, el = document) => el.querySelector(q);
 const $$ = (q, el = document) => [...el.querySelectorAll(q)];
 const esc = (t) => String(t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
@@ -738,8 +758,8 @@ function segment(src) {
     const el = document.createElementNS(NS, "path");
     el.setAttribute("d", "M" + run.map(([, x, y]) => `${x.toFixed(1)} ${y.toFixed(1)}`).join("L"));
     const sl = run[run.length - 1][0] - run[0][0] + 1;
-    el.style.strokeDasharray = `${sl} ${sl + 2}`; el.style.strokeDashoffset = MOTION ? sl : 0;
-    svg.appendChild(el); segs.push({ el, s0: run[0][0], len: sl, v: MOTION ? 0 : sl });
+    el.style.strokeDasharray = `${sl} ${sl + 2}`; el.style.strokeDashoffset = sl;
+    svg.appendChild(el); segs.push({ el, s0: run[0][0], len: sl, v: 0 });
   }
   return { pts, segs, len };
 }
@@ -766,7 +786,7 @@ function buildThreads() {
   $("#tEnd").setAttribute("cx", m); $("#tEnd").setAttribute("cy", end);
   for (const l of T.lines) for (const s of l.segs) s.el.remove();
   T.lines = ["#tL", "#tR", "#tJ"].map((q) => segment($(q)));
-  T.rings = ["#r1", "#r2"].map((q) => { const el = $(q), len = el.getTotalLength(); el.style.strokeDasharray = len; el.style.strokeDashoffset = MOTION ? len : 0; return { el, len, v: -1 }; });
+  T.rings = ["#r1", "#r2"].map((q) => { const el = $(q), len = el.getTotalLength(); el.style.strokeDasharray = len; el.style.strokeDashoffset = len; return { el, len, v: -1 }; });
   T.ky = ky; T.end = end; T.dot = undefined; T.ready = true;
 }
 // panjang garis yang sudah "terjahit" sampai ketinggian y, diinterpolasi supaya tidak meloncat
@@ -779,7 +799,7 @@ function lenAt(pts, y) {
   return a[0] + (b[0] - a[0]) * k;
 }
 function drawThreads(y) {
-  if (!T.ready || !MOTION) return;
+  if (!T.ready) return;
   const yView = y - G.mainTop + G.vh * 0.72;
   for (const l of T.lines) {
     const S = lenAt(l.pts, yView) + (yView >= l.pts[l.pts.length - 1][2] ? 1 : 0);
@@ -805,9 +825,10 @@ function filmPos() {
   fPrev.disabled = x < 4; fNext.disabled = x >= max - 4;
 }
 let fRaf = 0;
+// Tombol panah dan lepas-seret menggeser strip dengan gulir halus; di mode halus langsung ke foto tujuan.
 reel.addEventListener("scroll", () => { if (!fRaf) fRaf = requestAnimationFrame(() => { fRaf = 0; filmPos(); }); }, { passive: true });
-fPrev.addEventListener("click", () => reel.scrollBy({ left: -frameStep(), behavior: MOTION ? "smooth" : "auto" }));
-fNext.addEventListener("click", () => reel.scrollBy({ left: frameStep(), behavior: MOTION ? "smooth" : "auto" }));
+fPrev.addEventListener("click", () => reel.scrollBy({ left: -frameStep(), behavior: SOFT ? "auto" : "smooth" }));
+fNext.addEventListener("click", () => reel.scrollBy({ left: frameStep(), behavior: SOFT ? "auto" : "smooth" }));
 // Seret dengan mouse di desktop; klik tanpa seret tetap membuka foto.
 let drag = null, dragged = false;
 reel.addEventListener("pointerdown", (e) => { if (e.pointerType === "mouse" && e.button === 0) drag = { x: e.clientX, left: reel.scrollLeft, moved: false }; });
@@ -825,7 +846,7 @@ addEventListener("pointerup", () => {
   const x = reel.scrollLeft, s = frameStep();
   reel.classList.remove("dragging");
   reel.scrollLeft = x;
-  reel.scrollTo({ left: Math.round(x / s) * s, behavior: MOTION ? "smooth" : "auto" });
+  reel.scrollTo({ left: Math.round(x / s) * s, behavior: SOFT ? "auto" : "smooth" });
   setTimeout(() => (dragged = false), 0);
 });
 reel.addEventListener("click", (e) => { if (dragged) { e.stopPropagation(); e.preventDefault(); } }, true);
@@ -833,7 +854,8 @@ reel.addEventListener("click", (e) => { if (dragged) { e.stopPropagation(); e.pr
 /* ---------- parallax halus pada foto kelopak (cadangan bila kompositor tidak mendukung) ---------- */
 const drifts = $$("[data-speed]").map((el) => ({ el, box: el.closest(".ph"), s: +el.dataset.speed }));
 function moveDrift(y) {
-  if (!MOTION || SDA) return;
+  // mode halus: foto kelopak diam (tanpa parallax)
+  if (SOFT || SDA) return;
   for (const d of drifts) {
     const top = d.top - y;
     if (top + d.h < -100 || top > G.vh + 100) continue;
@@ -916,9 +938,10 @@ function openInvite(instant) {
   $("#music").classList.add("show");
   relayout();
   // fokus pindah ke isi undangan begitu sampul hilang (main punya tabindex="-1")
-  if (instant || !MOTION) { gate.classList.add("gone"); if (!instant) main.focus({ preventScroll: true }); return; }
-  gate.classList.add("opening");
-  setTimeout(() => { gate.classList.add("gone"); main.focus({ preventScroll: true }); }, 1400);
+  if (instant) { gate.classList.add("gone"); return; }
+  // mode halus: sampul cukup memudar ke isi (.gate.fading), tanpa polaroid yang terangkat dan selotip yang terlepas
+  gate.classList.add(SOFT ? "fading" : "opening");
+  setTimeout(() => { gate.classList.add("gone"); main.focus({ preventScroll: true }); }, SOFT ? 900 : 1400);
 }
 $("#openBtn").addEventListener("click", () => { toggleMusic(true); openInvite(false); });
 
@@ -994,10 +1017,26 @@ if (ACARA.aktif) {
 
 /* ---------- amplop ---------- */
 const env = $("#envelope");
-const openEnv = () => { env.classList.add("open"); setTimeout(relayout, 1300); };
+let envSwap = false;
+const openEnv = () => {
+  // Mode halus: tanpa tutup amplop yang terlipat 3D dan kartu yang meluncur. Amplop memudar, berganti ke keadaan
+  // terbuka saat tak terlihat (transisinya dimatikan .soft di CSS), lalu memudar masuk lagi.
+  if (SOFT && !env.classList.contains("open")) {
+    if (envSwap) return;
+    envSwap = true;
+    const out = env.animate({ opacity: [1, 0] }, { duration: 280, easing: "ease-in", fill: "forwards" });
+    out.finished.then(() => {
+      env.classList.add("open");
+      env.animate({ opacity: [0, 1] }, { duration: 650, easing: "ease-out" });
+      out.cancel();
+      relayout();
+    });
+    return;
+  }
+  env.classList.add("open"); setTimeout(relayout, 1300);
+};
 $("#seal").addEventListener("click", openEnv);
 $("#envBtn").addEventListener("click", openEnv);
-if (!MOTION) env.classList.add("open");
 
 /* ---------- salin ---------- */
 const toast = (m) => { const t = $("#toast"); t.textContent = m; t.classList.add("show"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("show"), 2000); };
