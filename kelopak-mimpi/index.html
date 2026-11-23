@@ -895,11 +895,10 @@ function listenTilt() {
     kickPaint();
   }, { passive: true });
 }
-// Di iPhone izin kemiringan hanya bisa diminta di dalam ketukan; di Android langsung berjalan.
-function askTilt() {
-  const D = window.DeviceOrientationEvent;
-  if (D && typeof D.requestPermission === "function") D.requestPermission().then((s) => { if (s === "granted") listenTilt(); }).catch(() => {});
-}
+// Kemiringan HP: sensor didengarkan di layar sentuh tanpa pernah meminta izin (DeviceOrientationEvent.requestPermission).
+// Dialog izinnya muncul tepat saat undangan dibuka dan memotong momen itu. Android mengirim data sensor tanpa izin;
+// iPhone tidak mengirim apa pun, jadi di iPhone kelopak tetap melayang dan mengikuti gulir, hanya tidak mengikuti
+// kemiringan. Ada atau tidaknya requestPermission tidak dipakai untuk menebak perangkat: Chrome baru juga memilikinya.
 if (FULL) {
   addEventListener("scroll", kickPaint, { passive: true });
   addEventListener("resize", kickPaint);
@@ -908,8 +907,7 @@ if (FULL) {
     tx = clamp((e.clientX / innerWidth - .5) * 2); ty = clamp((e.clientY / innerHeight - .5) * 2);
     kickPaint();
   }, { passive: true });
-  const D = window.DeviceOrientationEvent;
-  if (D && typeof D.requestPermission !== "function" && matchMedia("(pointer: coarse)").matches) listenTilt();
+  if (matchMedia("(pointer: coarse)").matches) listenTilt();
 }
 
 /* ---------- Sampul: kelopak kuncup di tengah layar lalu mekar keluar, membuka undangan ---------- */
@@ -936,8 +934,6 @@ if (params.has("open")) {
 function openInvite() {
   gate.style.pointerEvents = "none";
   Music.play();
-  // Izin kemiringan hanya diminta bila animasi aktif; pada mode tenang kelopak tidak bergerak.
-  if (FULL) askTilt();
   if (!FULL) {
     scrollTo(0, 0);
     unlock();
