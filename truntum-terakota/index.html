@@ -171,9 +171,11 @@ main{max-width:var(--col);margin:0 auto;outline:none;background:var(--tera)}
 .hero .ph::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#7a332233 0%,transparent 20%,transparent 45%,#7a3322e6 85%,var(--tera) 100%);pointer-events:none}
 .hero .names{position:relative;margin:-84px 0 0;padding:0 20px;font-size:clamp(48px,14vw,66px);line-height:1.04;text-shadow:0 2px 22px #4a1c1166}
 .cue{position:relative;width:1px;height:44px;margin:24px auto 0;background:linear-gradient(var(--ink-line),transparent)}
-.cue svg{position:absolute;left:50%;top:0;width:9px;height:9px;translate:-50% -50%;color:var(--ink)}
+.cue svg{position:absolute;left:50%;top:0;width:9px;height:9px;margin:-4.5px 0 0 -4.5px;color:var(--ink)}
+/* Bergerak lewat transform (dijalankan compositor). Dulu memakai top, yang memicu layout dan gambar ulang tiap frame
+   tanpa henti, juga selama undangan masih tertutup sampul. 44px = tinggi .cue. */
 .motion .cue svg{animation:cue 2.6s cubic-bezier(.5,0,.5,1) infinite}
-@keyframes cue{0%{top:0;opacity:0}20%{opacity:1}80%{opacity:1}100%{top:100%;opacity:0}}
+@keyframes cue{0%{transform:none;opacity:0}20%{opacity:1}80%{opacity:1}100%{transform:translateY(44px);opacity:0}}
 
 /* ---------- mempelai ---------- */
 .couple{padding-top:64px}
@@ -292,7 +294,9 @@ footer a{color:var(--ink)}
 .music svg{width:20px;height:20px}
 .music.playing svg{animation:spin 5s linear infinite}
 .music:not(.playing)::after{content:"";position:absolute;width:24px;height:1.5px;background:var(--ink);transform:rotate(-45deg)}
-@keyframes spin{to{rotate:360deg}}
+/* transform, bukan properti rotate: putaran rotate pada elemen svg tidak bisa dijalankan compositor, sehingga ikon
+   digambar ulang di thread utama tiap frame selama musik berputar. */
+@keyframes spin{to{transform:rotate(360deg)}}
 /* Musik masih dirender (beberapa detik pertama): ikon berdenyut redup, belum berputar. */
 .music[aria-busy="true"] svg{opacity:.45;animation:busy .8s ease-in-out infinite alternate}
 @keyframes busy{to{opacity:1}}
@@ -327,6 +331,10 @@ footer a{color:var(--ink)}
 .motion .bloom .sd{opacity:0;transform:scale(.25);transition:transform .8s cubic-bezier(.2,.7,.2,1) calc(var(--bd,.1s) + .5s + var(--i) * 40ms),opacity .5s ease calc(var(--bd,.1s) + .5s + var(--i) * 40ms)}
 .motion :is(.in,.play) .bloom{transform:none}
 .motion :is(.in,.play) .bloom :is(.pt,.ct,.sd){transform:none;opacity:1}
+/* Bunga (sudut bingkai, pembatas) dan garis bingkai digambar di lapisan sendiri. Saat mekar/tumbuh mereka digambar
+   ulang tiap frame; tanpa lapisan sendiri, setiap ubin 256px di sekitarnya (latar berbintik, teks, foto) ikut di-raster
+   ulang, dan itu yang membuat gulir di HP tersendat setiap kali bagian baru muncul. */
+.motion .bloom,.motion .frame::before{will-change:transform}
 /* Garis bingkai tumbuh dari keempat bunga sudut menuju tengah sisi (tiap kuadran mask membesar 0 → 51%). */
 .motion .frame::before{-webkit-mask-size:0 0,0 0,0 0,0 0;mask-size:0 0,0 0,0 0,0 0;transition:-webkit-mask-size 1.4s cubic-bezier(.6,0,.2,1) var(--ld,.35s),mask-size 1.4s cubic-bezier(.6,0,.2,1) var(--ld,.35s)}
 .motion :is(.frame.in,.play .frame)::before{-webkit-mask-size:51% 51%,51% 51%,51% 51%,51% 51%;mask-size:51% 51%,51% 51%,51% 51%,51% 51%}
@@ -347,6 +355,19 @@ footer a{color:var(--ink)}
 .motion .ph.rv{background:transparent}
 .motion .ph.rv img{clip-path:inset(0 0 100% 0);transform:scale(1.14);transition:clip-path 1.3s cubic-bezier(.7,0,.2,1) var(--pd,.15s),transform 2s cubic-bezier(.2,.7,.2,1) var(--pd,.15s)}
 .motion .ph.rv.in img{clip-path:inset(0);transform:none}
+/* HP (layar sentuh, kelas .cv-on dari skrip): tirai yang sama tanpa clip-path. Animasi clip-path membuat foto (beserta
+   filter warnanya) digambar ulang tiap frame selama 1,3 detik; di sampul dan saat undangan dibuka itu yang paling berat.
+   Gambar dibungkus jendela .cv yang turun dari atas (translate -100% -> 0), sementara gambarnya bergeser balik dengan
+   waktu yang sama (100% -> 0). Hasilnya gambar tampak diam dan tersingkap dari atas, hanya dengan transform. */
+.cv{display:block;width:100%;height:100%;overflow:hidden}
+.cv-on.motion .ph{background:transparent}
+.cv-on.motion :is(.rv,.gate,.stage) .ph,.cv-on.motion :is(.in,.play) .ph,.cv-on.motion .ph.rv img,.cv-on.motion .ph.rv.in img{clip-path:none}
+.cv-on.motion :is(.rv,.gate,.stage) .ph .cv,.cv-on.motion .ph.rv .cv{translate:0 -100%;transition:translate 1.3s cubic-bezier(.7,0,.2,1) var(--pd,.15s)}
+.cv-on.motion :is(.rv,.gate,.stage) .ph img,.cv-on.motion .ph.rv img{translate:0 100%;transition:translate 1.3s cubic-bezier(.7,0,.2,1) var(--pd,.15s),transform 2s cubic-bezier(.2,.7,.2,1) var(--pd,.15s)}
+.cv-on.motion :is(.in,.play) .ph :is(.cv,img),.cv-on.motion .ph.rv.in :is(.cv,img){translate:none}
+/* Garis dalam bingkai foto galeri dulu ikut tersingkap tirai; di HP ia muncul memudar setelah tirai terbuka. */
+.cv-on.motion :is(.rv,.gate,.stage) .ph::after{transition:opacity .8s ease calc(var(--pd,.15s) + .6s)}
+.cv-on.motion :is(.rv,.gate,.stage):not(.in):not(.play) .ph::after{opacity:0}
 /* Nama: tiap kata naik dari balik garis dasarnya; "&" tertulis dari kiri ke kanan. */
 .split .w,.split i{display:inline-block}
 .motion .split .w{clip-path:inset(-.4em -.3em -.12em)}
@@ -401,6 +422,8 @@ footer a{color:var(--ink)}
 .bank::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 38%,#f6ecdf26 50%,transparent 62%);transform:translateX(-100%);pointer-events:none}
 .motion .bank.in::after{transform:translateX(100%);transition:transform 1.7s cubic-bezier(.4,0,.2,1) .55s}
 .motion .bank .wm{animation:spin 90s linear infinite}
+/* Ditahan sampai kartunya tampak: animasi pada elemen yang tak tampak dihitung di thread utama tiap frame. */
+.motion .bank:not(.in) .wm{animation-play-state:paused}
 /* Ucapan baru & ucapan terima kasih RSVP naik pelan. */
 .motion .wish.new,.motion .thanks:not([hidden]){animation:up .7s cubic-bezier(.2,.7,.2,1)}
 @keyframes up{from{opacity:0;transform:translateY(14px)}}
@@ -641,6 +664,11 @@ const params = new URLSearchParams(location.search);
 const MOTION = root.classList.contains("motion");
 const $ = (q, el = document) => el.querySelector(q);
 const $$ = (q, el = document) => [...el.querySelectorAll(q)];
+// HP: tirai foto memakai jendela .cv yang digeser (lihat CSS .cv-on), bukan clip-path yang digambar ulang tiap frame.
+if (MOTION && matchMedia("(pointer: coarse)").matches) {
+  root.classList.add("cv-on");
+  for (const img of $$(".ph > img")) { const w = document.createElement("span"); w.className = "cv"; img.before(w); w.append(img); }
+}
 const esc = (t) => String(t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 // Undangan klien (<meta name="acara">): RSVP dan ucapan dikirim ke server lewat /acara.js;
 // tanpa tag itu (demo), semuanya tetap tersimpan di perangkat ini saja.
@@ -748,13 +776,17 @@ function tick() {
   $$("b", cd).forEach((b, i) => setDigits(b, String(parts[i]).padStart(2, "0")));
 }
 // Per digit: digit yang berganti diberi angka lama (.o, keluar ke atas) dan angka baru (.n, masuk dari bawah).
+// Hanya saat hitung mundur ada di layar: di luar layar animasinya tidak terlihat tetapi tetap dihitung di thread utama
+// setiap detik, jadi angkanya langsung diganti.
+let cdVis = false;
+new IntersectionObserver(([e]) => { cdVis = e.isIntersecting; }).observe($("#countdown"));
 function setDigits(b, v) {
   const old = b.dataset.v || "";
   if (old === v) return;
   b.dataset.v = v;
   if (!MOTION) { b.textContent = v; return; }
   if (old.length !== v.length) { b.innerHTML = [...v].map((c) => `<span class="dg"><span class="n">${c}</span></span>`).join(""); return; }
-  [...v].forEach((c, i) => { if (c !== old[i]) b.children[i].innerHTML = `<span class="o" aria-hidden="true">${old[i]}</span><span class="n">${c}</span>`; });
+  [...v].forEach((c, i) => { if (c !== old[i]) b.children[i].innerHTML = cdVis ? `<span class="o" aria-hidden="true">${old[i]}</span><span class="n">${c}</span>` : `<span>${c}</span>`; });
 }
 tick();
 setInterval(tick, 1000);

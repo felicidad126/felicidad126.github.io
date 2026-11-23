@@ -38,6 +38,9 @@ html{-webkit-tap-highlight-color:transparent}
   --fs-serif-s:19px;--fs-lead:clamp(19px,4.8vw,24px);--fs-num:28px;--fs-card-h:clamp(34px,8vw,40px);
   /* Kabut: noise fraktal yang bisa diulang tanpa sambungan (stitchTiles), dirender sekali lalu hanya digeser dengan transform. */
   --fog:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='300'%3E%3Cfilter id='f' x='0' y='0' width='1' height='1'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.0036 .0078' numOctaves='3' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .97 0 0 0 0 .98 0 0 0 0 1 2.7 0 0 0 -1.08'/%3E%3C/filter%3E%3Crect width='900' height='300' filter='url(%23f)'/%3E%3C/svg%3E");
+  /* Sama dengan --fog, tetapi sudah memudar di tepi atas dan bawah (dulu lewat mask-image pada .fog). Kabut yang bergerak
+     dengan mask-image digambar ulang lewat lapisan tambahan di GPU setiap frame; pudarnya kini ikut dirender sekali. */
+  --fog-band:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='300'%3E%3Cfilter id='f' x='0' y='0' width='1' height='1'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.0036 .0078' numOctaves='3' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .97 0 0 0 0 .98 0 0 0 0 1 2.7 0 0 0 -1.08'/%3E%3C/filter%3E%3ClinearGradient id='g' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23fff' stop-opacity='0'/%3E%3Cstop offset='.34' stop-color='%23fff'/%3E%3Cstop offset='.66' stop-color='%23fff'/%3E%3Cstop offset='1' stop-color='%23fff' stop-opacity='0'/%3E%3C/linearGradient%3E%3Cmask id='m'%3E%3Crect width='900' height='300' fill='url(%23g)'/%3E%3C/mask%3E%3Crect width='900' height='300' filter='url(%23f)' mask='url(%23m)'/%3E%3C/svg%3E");
   --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n' x='0' y='0' width='1' height='1'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .15 0 0 0 0 .19 0 0 0 0 .24 0 0 0 1.1 -.35'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 *{box-sizing:border-box}
@@ -76,15 +79,25 @@ p,h1,h2,h3,figure,blockquote{margin:0}
 .glass{position:relative;background:rgba(250,251,252,.52);border:1px solid rgba(255,255,255,.85);border-radius:28px;-webkit-backdrop-filter:blur(18px) saturate(1.15);backdrop-filter:blur(18px) saturate(1.15);box-shadow:0 26px 60px -32px rgba(39,48,58,.4),inset 0 1px 0 rgba(255,255,255,.75)}
 .soft{position:relative;background:rgba(255,255,255,.58);border:1px solid rgba(255,255,255,.95);border-radius:26px;box-shadow:0 20px 46px -30px rgba(39,48,58,.38)}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.glass{background:rgba(247,248,249,.93)}}
+/* Layar sentuh: backdrop-filter dihitung ulang setiap frame selama ada yang bergerak (kabut, gulir, tombol musik), berat di HP.
+   Kartu sampul berada di atas kabut yang terus bergeser: blur diganti latar yang sedikit lebih pekat (hasilnya hampir sama
+   karena di belakangnya hanya kabut dan tepi foto yang sudah memudar). Panel Acara dan Ucapan berada di atas gradasi halus,
+   yang tetap sama bila diburamkan, jadi blurnya tidak terlihat. Panel RSVP di atas foto tetap memakai blur. */
+@media (pointer:coarse){
+  .g-card{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(246,248,250,.72)}
+  .acara .glass,.ucapan .glass{-webkit-backdrop-filter:none;backdrop-filter:none}
+}
 
 /* ---------- Kabut ---------- */
-.fog{position:absolute;left:0;top:var(--y,0);height:var(--bh);width:calc(100% + var(--bh) * 3);background:var(--fog) 0 0/calc(var(--bh) * 3) var(--bh) repeat-x;opacity:var(--o,.8);pointer-events:none;-webkit-mask-image:linear-gradient(180deg,transparent,#000 34%,#000 66%,transparent);mask-image:linear-gradient(180deg,transparent,#000 34%,#000 66%,transparent)}
+.fog{position:absolute;left:0;top:var(--y,0);height:var(--bh);width:calc(100% + var(--bh) * 3);background:var(--fog-band) 0 0/calc(var(--bh) * 3) var(--bh) repeat-x;opacity:var(--o,.8);pointer-events:none}
 html.motion .fog{animation:drift var(--t,80s) linear infinite;will-change:transform}
 html.motion .fog.rev{animation-direction:reverse}
 @keyframes drift{from{transform:translate3d(0,0,0)}to{transform:translate3d(calc(var(--bh) * -3),0,0)}}
 /* Pita kabut di sambungan antarbagian; posisinya ikut bergeser pelan saat halaman digulir. */
 .seam{position:relative;z-index:1;height:300px;margin:-150px 0;overflow:hidden;pointer-events:none}
 .seam .drift{position:absolute;inset:0}
+/* will-change: transform yang ditulis skrip gulir (upd) diperbarui langsung di GPU, tanpa menyusun ulang lapisan setiap frame. */
+html.motion .seam .drift{will-change:transform}
 .seam .fog{--bh:300px;--o:.85}
 
 /* ---------- Ornamen hydrangea ---------- */
@@ -144,8 +157,13 @@ html.calm .in .emerge{opacity:1}
 .g-guest.long{font-size:clamp(19px,2.8svh,23px)}
 /* Dua tirai kabut saling tumpang di tengah. Seluruh lapisan (tekstur ikut) dipudarkan dengan mask, jadi tidak ada tepi tegak. */
 .veil i{position:absolute;top:-6%;bottom:-6%;width:88%;opacity:0;z-index:5;pointer-events:none}
-.veil .l{left:-14%;background:var(--fog) 0 0/900px 300px,linear-gradient(90deg,#f6f8fa,#f1f5f8);-webkit-mask-image:linear-gradient(90deg,#000 62%,transparent);mask-image:linear-gradient(90deg,#000 62%,transparent)}
-.veil .r{right:-14%;background:var(--fog) 120px 60px/900px 300px,linear-gradient(270deg,#f6f8fa,#f1f5f8);-webkit-mask-image:linear-gradient(270deg,#000 62%,transparent);mask-image:linear-gradient(270deg,#000 62%,transparent)}
+.veil .l{left:-14%}
+.veil .r{right:-14%}
+/* Tekstur dan mask ada di elemen dalam (b) yang tidak dianimasikan, sehingga mask dirender sekali bersama teksturnya.
+   Bila mask ada di elemen yang bergeser, GPU harus menerapkannya ulang lewat lapisan tambahan di setiap frame. */
+.veil b{position:absolute;inset:0}
+.veil .l b{background:var(--fog) 0 0/900px 300px,linear-gradient(90deg,#f6f8fa,#f1f5f8);-webkit-mask-image:linear-gradient(90deg,#000 62%,transparent);mask-image:linear-gradient(90deg,#000 62%,transparent)}
+.veil .r b{background:var(--fog) 120px 60px/900px 300px,linear-gradient(270deg,#f6f8fa,#f1f5f8);-webkit-mask-image:linear-gradient(270deg,#000 62%,transparent);mask-image:linear-gradient(270deg,#000 62%,transparent)}
 /* Isi sampul muncul pelan dari kabur ke tajam. */
 html.motion .g-in .sprig{--d:.2}
 html.motion .g-kick,html.motion .g-names > *,html.motion .g-date,html.motion .g-card{animation:clear 1.6s var(--ease) both}
@@ -363,6 +381,8 @@ fieldset.f{border:0;margin:0;padding:0;min-width:0}
 /* ---------- Musik, toast, lightbox ---------- */
 /* Tombol musik gelap seperti tombol lain, supaya tidak terbaca sebagai bagian dari kartu kaca di belakangnya. */
 .music{position:fixed;right:max(14px,env(safe-area-inset-right));bottom:max(14px,env(safe-area-inset-bottom));z-index:40;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;border:1px solid rgba(255,255,255,.4);background:rgba(39,48,58,.76);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:var(--paper);cursor:pointer;box-shadow:0 10px 24px -12px rgba(39,48,58,.6);transition:opacity .35s ease,transform .45s var(--ease)}
+/* Layar sentuh: tombol musik sudah hampir pekat, blur di belakangnya tidak terlihat tetapi tetap dihitung setiap frame. */
+@media (pointer:coarse){.music{-webkit-backdrop-filter:none;backdrop-filter:none}}
 .music[hidden]{display:none}
 .music svg{width:19px;height:19px}
 /* Menepi selama halaman digulir, kembali saat berhenti. */
@@ -419,7 +439,7 @@ html.lb-open{overflow:hidden}
       <button class="btn btn-ink" id="openBtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="m3.5 7 8.5 6 8.5-6"/></svg>Buka Undangan</button>
     </div>
   </div>
-  <div class="veil" aria-hidden="true"><i class="l"></i><i class="r"></i></div>
+  <div class="veil" aria-hidden="true"><i class="l"><b></b></i><i class="r"><b></b></i></div>
 </header>
 
 <main id="main" tabindex="-1">
