@@ -6,6 +6,8 @@ Semua tema memakai foto dari folder [`foto/`](../foto/) yang sama; nama, tanggal
 
 Alamat demo di bawah memakai https://felicidad126.github.io/; semuanya juga bisa dibuka di https://invitation.helonoia.com/ dengan jalur yang sama.
 
+Bila perangkat meminta kurangi gerak, tema memakai mode halus (gerak besar dimatikan, animasi kecil tetap jalan), kecuali Riviera Kobalt dan Kelopak Mimpi yang selalu beranimasi penuh. Lihat "Gerak dan setelan kurangi-animasi" di [README](../README.md).
+
 ---
 
 ## 1. Lengkung Sage
@@ -126,7 +128,7 @@ Tema kedelapan, di subfolder [`riviera-kobalt/`](../riviera-kobalt/): **pernikah
 
 - Lihat: https://felicidad126.github.io/riviera-kobalt/
 - Dengan nama tamu: https://felicidad126.github.io/riviera-kobalt/?to=Nama%20Tamu
-- Animasi penuh (abaikan setting reduced-motion): https://felicidad126.github.io/riviera-kobalt/?motion=full
+- Selalu beranimasi penuh, juga di perangkat dengan setelan kurangi-animasi.
 
 Font DM Serif Display, Yellowtail, dan DM Sans dimuat dari Google Fonts, berlisensi SIL Open Font License 1.1.
 
@@ -157,7 +159,7 @@ Tema kesepuluh, di subfolder [`kelopak-mimpi/`](../kelopak-mimpi/): **taman kelo
 
 - Lihat: https://felicidad126.github.io/kelopak-mimpi/
 - Dengan nama tamu: https://felicidad126.github.io/kelopak-mimpi/?to=Nama%20Tamu
-- Animasi penuh (abaikan setting reduced-motion): https://felicidad126.github.io/kelopak-mimpi/?motion=full
+- Selalu beranimasi penuh, juga di perangkat dengan setelan kurangi-animasi.
 
 Font Italiana, Urbanist, dan Ephesis dimuat dari Google Fonts, berlisensi SIL Open Font License 1.1.
 
