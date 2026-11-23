@@ -859,22 +859,38 @@ const VIS = new Set();
 const seen = new IntersectionObserver((es) => es.forEach((e) => {
   e.target.classList.toggle("vis", e.isIntersecting);
   if (e.isIntersecting) VIS.add(e.target); else VIS.delete(e.target);
+  // Kelopak yang baru mendekati layar langsung ditempatkan menurut posisi gulir sekarang, supaya tidak melompat dari
+  // posisi lamanya saat tampil.
+  if (FULL && e.isIntersecting) kickPaint();
 }), { rootMargin: "120px 0px" });
 PE.forEach((b) => seen.observe(b));
 
 /* ---------- Parallax: kelopak bergeser menurut kedalaman saat digulir, mengikuti kursor atau kemiringan HP ---------- */
 let tx = 0, ty = 0, cx = 0, cy = 0, praf = 0;
+// Parallax gulir dihitung dari posisi tiap kelopak terhadap tengah layar (p, dalam tinggi layar): kelopak berada di
+// tempat aslinya saat melewati tengah layar, dan bergeser serta berputar makin jauh menuju tepi layar. PAR_Y (px) dan
+// PAR_R (derajat) per tinggi layar, dikali kedalaman k. Kecepatannya hampir dua kali versi lama (70 px, dihitung dari
+// tengah bagian), supaya kelopak tetap terasa hidup di iPhone yang tidak memakai kemiringan HP, tetapi jarak gesernya
+// lebih pendek sehingga kelopak jarang terpotong tepi bagian. Kelopak kiri dan kanan berputar berlawanan arah.
+const PAR_Y = 130, PAR_R = 8;
 function paint() {
   praf = 0;
   cx += (tx - cx) * .09; cy += (ty - cy) * .09;
   const h = innerHeight;
   // Semua posisi dibaca dulu, baru transform ditulis: baca-tulis bergantian memaksa hitung ulang style di tiap kotak.
-  const ps = [...VIS].map((box) => { const r = box.getBoundingClientRect(); return [box, box.closest(".gate") ? 0 : (r.top + r.height / 2 - h / 2) / h]; });
-  for (const [box, p] of ps) {
-    for (const el of box.children) {
-      const k = +el.dataset.k || 1;
-      el.style.transform = `translate3d(${f(cx * k * 18)}px,${f(cy * k * 14 - p * k * 70)}px,0)`;
-    }
+  // offsetTop adalah letak kelopak tanpa transform (titik tengahnya, karena kelopak digeser -50%).
+  const ps = [...VIS].map((box) => {
+    if (box.closest(".gate")) return [box, null];
+    const top = box.getBoundingClientRect().top;
+    return [box, [...box.children].map((el) => (top + el.offsetTop - h / 2) / h)];
+  });
+  for (const [box, pp] of ps) {
+    [...box.children].forEach((el, i) => {
+      const k = +el.dataset.k || 1, p = pp ? pp[i] : 0;
+      // Arah putar: kelopak di kiri searah jarum jam, di kanan berlawanan; bulatan cahaya tidak berputar.
+      el.kmSide ??= el.classList.contains("orb") ? 0 : parseFloat(el.style.left) < 50 ? 1 : -1;
+      el.style.transform = `translate3d(${f(cx * k * 18)}px,${f(cy * k * 14 - p * k * PAR_Y)}px,0)${el.kmSide ? ` rotate(${f(p * k * PAR_R * el.kmSide)}deg)` : ""}`;
+    });
   }
   if (Math.abs(tx - cx) > .003 || Math.abs(ty - cy) > .003) kickPaint();
 }

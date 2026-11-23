@@ -151,7 +151,7 @@ Font Playfair Display dan Spectral dimuat dari Google Fonts, berlisensi SIL Open
 
 Tema kesepuluh, di subfolder [`kelopak-mimpi/`](../kelopak-mimpi/): **taman kelopak abstrak yang melayang di bawah cahaya kubah**, dari tren pernikahan Indonesia 2026 "Petal Dreamscape" dan warna Charming Champagne (Bridestory). Kelopak besar yang tembus pandang dengan kilau sampanye, palet blush, mauve, lilac, dan peach, foto dalam bingkai berbentuk kelopak, dan komposisi asimetris. Urutannya: sampul, salam, mempelai, kisah kami (2019 · 2023 · 2026), simpan tanggal, acara, galeri, RSVP, ucapan, amplop digital, dan penutup. Konsepnya berasal dari riset di bagian 11 [`REFERENSI-DESAIN.md`](REFERENSI-DESAIN.md).
 
-- Motion: kelopak mekar satu per satu saat dimuat dan cahaya kubah berdenyut pelan; saat dibuka, kuncup tujuh kelopak tumbuh di tengah lalu mekar ke luar; kelopak melayang dan bergeser mengikuti scroll, kursor, atau kemiringan HP; foto muncul dari jendela berbentuk kelopak.
+- Motion: kelopak mekar satu per satu saat dimuat dan cahaya kubah berdenyut pelan; saat dibuka, kuncup tujuh kelopak tumbuh di tengah lalu mekar ke luar; kelopak melayang, bergeser dan sedikit berputar mengikuti scroll, serta bergeser mengikuti kursor atau kemiringan HP; foto muncul dari jendela berbentuk kelopak.
   Efek kemiringan HP hanya berjalan di Android. Di iPhone efek ini butuh izin, dan dialog izinnya muncul tepat saat undangan dibuka, jadi sengaja tidak diminta.
 - Musik: harpa dan celesta di atas pad hangat, dirender di browser saat halaman dimuat.
 
