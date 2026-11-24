@@ -27,6 +27,9 @@
   r.classList.add("js", "motion");
   if (q.get("motion") !== "full" && matchMedia("(prefers-reduced-motion: reduce)").matches) r.classList.add("soft");
   if (!q.has("open")) r.classList.add("locked");
+  // Browser yang mendukung animasi terikat gulir (.sda) menggeser lookbook desktop di thread kompositor (lihat CSS Lookbook);
+  // browser lain memakai skrip cadangan.
+  if (window.CSS && CSS.supports && CSS.supports("animation-timeline: view()")) r.classList.add("sda");
 })();
 </script>
 <style>
@@ -297,6 +300,17 @@ button,input,select,textarea{font:inherit;color:inherit}
 .lookbook.pinned .lk-intro .title{font-size:clamp(44px,4.6vw,68px)}
 .lookbook.pinned .lk-bar{display:block;position:absolute;left:var(--gut);right:var(--gut);bottom:clamp(24px,5vh,48px);height:1px;background:var(--line)}
 .lookbook.pinned .lk-bar i{position:absolute;inset:0;background:var(--ink);transform-origin:left;transform:scaleX(0)}
+/* Browser yang mendukung animasi terikat gulir (.sda) menggeser strip, mengisi garis kemajuan, dan memudarkan intro di thread
+   kompositor, tanpa skrip dan hitung ulang style per frame. Kemajuannya sama dengan skrip cadangan (onScroll): 0 saat wadah
+   tersemat menyentuh atas layar, 1 saat ujung bawahnya menyentuh bawah layar (rentang contain); strip bergeser sejauh
+   lebar strip dikurangi lebar layar (100% − 100vw), intro pudar habis di 20% pertama. */
+.sda .lookbook.pinned .lk-pin{view-timeline:--lk block}
+.sda .lookbook.pinned .lk-track{animation:lkSlide linear both;animation-timeline:--lk;animation-range:contain}
+.sda .lookbook.pinned .lk-bar i{animation:lkBar linear both;animation-timeline:--lk;animation-range:contain}
+.sda .lookbook.pinned .lk-intro{animation:lkIntro linear both;animation-timeline:--lk;animation-range:contain}
+@keyframes lkSlide{from{transform:translate3d(0,0,0)}to{transform:translate3d(calc(100vw - 100%),0,0)}}
+@keyframes lkBar{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes lkIntro{from{opacity:1}20%,to{opacity:0}}
 @media (min-width:900px){
   .lookbook:not(.pinned) .lk-track{flex-wrap:wrap;justify-content:center;overflow:visible;--lh:300px}
 }
@@ -968,13 +982,15 @@ if (params.has("open")) {
 /* ---------- Gulir: lookbook bergeser ke samping di desktop ---------- */
 const lk = $("#lookbook"), pin = $("#lkPin"), track = $("#lkTrack"), prog = $("#lkProg"), intro = $(".lk-intro");
 const WIDE = matchMedia("(min-width:900px) and (min-height:560px)");
+// Browser yang mendukung animasi terikat gulir menjalankan geseran ini di kompositor (CSS .sda); onScroll hanya cadangan.
+const SDA = root.classList.contains("sda");
 let pinned = false, raf = 0;
 function layoutPin() {
   // Mode halus: tidak disematkan; foto disusun dalam baris seperti di layar lebar biasa.
   pinned = !SOFT && WIDE.matches;
   lk.classList.toggle("pinned", pinned);
   pin.style.height = pinned ? `${track.offsetWidth - innerWidth + innerHeight}px` : "";
-  onScroll();
+  if (!SDA) onScroll();
 }
 function onScroll() {
   raf = 0;
@@ -989,7 +1005,7 @@ function onScroll() {
   }
 }
 // Lookbook hanya bergeser saat disematkan (desktop); di HP tidak ada yang perlu dihitung saat gulir.
-addEventListener("scroll", () => { if (pinned) raf ||= requestAnimationFrame(onScroll); }, { passive: true });
+if (!SDA) addEventListener("scroll", () => { if (pinned) raf ||= requestAnimationFrame(onScroll); }, { passive: true });
 addEventListener("resize", layoutPin);
 layoutPin();
 $$(".look img").forEach((img) => img.addEventListener("load", layoutPin, { once: true }));
@@ -1069,11 +1085,16 @@ $$("[data-map]").forEach((a) => {
 {
   const start = new Date(EVENT.events.akad.startsAt).getTime(), end = new Date(EVENT.events.resepsi.endsAt).getTime();
   const cells = Object.fromEntries($$("#cd [data-u]").map((b) => [b.dataset.u, b]));
+  // Di luar layar angka diganti tanpa animasi: tiap animasi geser membuat layer baru di kompositor lalu melepasnya, setiap
+  // detik, juga selama halaman digulir di bagian lain. Batas 120 px: angka yang berganti tepat sebelum terlihat sudah beranimasi.
+  let seen = false;
+  new IntersectionObserver((es) => { seen = es[es.length - 1].isIntersecting; }, { rootMargin: "120px 0px" }).observe($("#cd"));
   const set = (b, text) => {
     const cur = b.lastElementChild;
     if (cur && cur.textContent === text) return;
     const n = document.createElement("span");
     n.textContent = text;
+    if (!seen) return b.replaceChildren(n);
     b.append(n);
     if (!cur) return;
     cur.className = "old";
