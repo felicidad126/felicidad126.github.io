@@ -44,16 +44,25 @@ a{color:inherit}
 .ph img{position:absolute;left:0;top:-15%;width:100%;height:130%;object-fit:cover;filter:sepia(.22) saturate(.95) hue-rotate(-8deg) contrast(1.04);will-change:transform}
 .ph::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#e8b9aa14,#20274d33);mix-blend-mode:soft-light;pointer-events:none}
 .ph.zoom{cursor:zoom-in}
+/* Parallax gulir di kompositor (kelas .sda dari skrip bila browser mendukung animation-timeline): tiap elemen
+   [data-speed] bergeser linear dari --pa ke --pb selama posisi gulir berada di antara --r0 dan --r1 (px, dihitung
+   skrip dari letak elemen); di luar rentang itu nilainya ditahan. Pemetaannya sama dengan loop frame() di skrip. */
+.sda [data-speed]{animation:parallax linear both;animation-timeline:scroll(root);animation-range:var(--r0) var(--r1)}
+@keyframes parallax{from{transform:translate3d(0,var(--pa),0)}to{transform:translate3d(0,var(--pb),0)}}
 .ph.zoom:focus-visible,.polaroid:focus-visible{outline:2px solid var(--gold);outline-offset:4px}
 
 /* ---------- ornamen gantung (sway) ---------- */
 .hangers{position:absolute;left:0;right:0;top:0;height:0;pointer-events:none;z-index:3}
 .hang{position:absolute;top:0;transform-origin:50% 0}
-.swing{transform-origin:50% 0;will-change:transform;rotate:calc(var(--tilt,0) * 1deg)}
-/* ayunan pelan saat diam; dorongan saat digulir ditambahkan JS lewat transform */
+.swing{transform-origin:50% 0;will-change:transform;rotate:calc((var(--tilt,0) + var(--push,0)) * 1deg)}
+/* ayunan pelan saat diam; dorongan saat digulir ditambahkan JS, lewat --push (sudut, ikut dijumlahkan di keyframe
+   ayunan) atau, di browser yang tidak mendukungnya, lewat transform (lihat setPush di skrip). Kedua cara memutar dari
+   titik yang sama, jadi sudutnya cukup dijumlahkan. */
 .motion .swing{animation:sway calc(var(--period,3) * .5s) ease-in-out calc(var(--phase,0) * -1s) infinite alternate}
 .motion .swing.idle,body.locked main .swing{animation-play-state:paused}
-@keyframes sway{from{rotate:calc((var(--tilt,0) - var(--amp,3)) * 1deg)}to{rotate:calc((var(--tilt,0) + var(--amp,3)) * 1deg)}}
+@keyframes sway{from{rotate:calc((var(--tilt,0) + var(--push,0) - var(--amp,3)) * 1deg)}to{rotate:calc((var(--tilt,0) + var(--push,0) + var(--amp,3)) * 1deg)}}
+/* --push tidak diwariskan: saat berubah tiap frame, hanya ornamen itu yang dihitung ulang, bukan seluruh isinya. */
+@property --push{syntax:"<number>";inherits:false;initial-value:0}
 .hang svg{display:block;overflow:visible}
 
 /* ---------- gerbang / sampul ---------- */
@@ -754,21 +763,43 @@ setInterval(tick, 1000);
 
 /* ---------- gerak: parallax + ayunan ----------
  * Ayunan pelan saat diam dijalankan CSS (animasi rotate di kompositor). JavaScript hanya bekerja
- * beberapa detik setelah halaman digulir atau kursor/HP digerakkan: dorongan ayunan (transform,
- * menumpuk di atas rotate CSS) dan parallax dari posisi elemen yang diukur sekali.
+ * selama halaman digulir atau kursor/HP digerakkan dan selama ornamen masih berayun: dorongan ayunan
+ * (--push atau transform, menumpuk di atas rotate CSS; lihat setPush) dan, di browser tanpa animasi terikat
+ * gulir, parallax dari posisi elemen yang diukur sekali.
+ * Parallax gulir dijalankan browser di kompositor bila didukung (SDA, animation-timeline): skrip hanya mengukur
+ * letak tiap elemen lalu menulis rentang gulir dan pergeserannya ke variabel CSS (lihat .sda di CSS), jadi tidak ada
+ * tulisan transform tiap frame. Transform yang ditulis skrip tiap frame (bukan animasi) membuat browser menyusun
+ * ulang seluruh lapisan halaman setiap frame. Browser tanpa dukungan (mis. iOS lama) memakai loop frame() seperti dulu.
  * Mode halus (SOFT): tanpa parallax gulir, sampul tidak mengikuti kursor/kemiringan HP, dan dorongan ayunan
  * diperkecil (lihat SWAY); ayunan pelan CSS tetap berjalan.
  */
 root.classList.add("motion");
 const docTop = (el) => { let y = 0; for (let n = el; n; n = n.offsetParent) y += n.offsetTop; return y; };
 const parallax = SOFT ? [] : $$("[data-speed]").map((el) => ({ el, ref: el.closest(".ph") || el.parentElement, speed: +el.dataset.speed, inPh: !!el.closest(".ph") }));
+const SDA = typeof CSS !== "undefined" && CSS.supports("animation-timeline: scroll()") && CSS.supports("animation-range: 0px 1px");
 // Besar dorongan ayunan yang ditampilkan: penuh, atau 0,15× di mode halus (paling jauh ±3,3°, bukan ±22°).
 const SWAY = SOFT ? 0.15 : 1;
 function measureParallax() {
   for (const p of parallax) { p.top = docTop(p.ref); p.h = p.ref.offsetHeight; }
+  if (!SDA || !parallax.length) return;
+  const vh = innerHeight;
+  for (const p of parallax) {
+    // Sama dengan loop frame(): pergeseran = (tengah elemen - tengah layar) × -speed, yaitu linear terhadap posisi
+    // gulir y: off(y) = (y - y0) × speed, dengan y0 = posisi gulir saat tengah elemen tepat di tengah layar.
+    // Foto (.ph) dibatasi ±14% tingginya: rentang animasi berhenti tepat di titik batas itu dan di luarnya nilai
+    // ditahan (fill both). Lapisan lain (langit): rentang yang sama dengan loop, sampai 200px di luar layar.
+    const y0 = p.top + p.h / 2 - vh / 2, sp = p.speed, lim = (p.h * 0.14) / (Math.abs(sp) || 1);
+    const r0 = +(p.inPh ? y0 - lim : p.top - vh - 200).toFixed(1), r1 = +(p.inPh ? y0 + lim : p.top + p.h + 200).toFixed(1);
+    const st = p.el.style;
+    st.setProperty("--r0", `${r0}px`);
+    st.setProperty("--r1", `${r1}px`);
+    st.setProperty("--pa", `${((r0 - y0) * sp).toFixed(2)}px`);
+    st.setProperty("--pb", `${((r1 - y0) * sp).toFixed(2)}px`);
+  }
+  root.classList.add("sda");
 }
 const swings = $$(".swing").map((el) => {
-  const s = { el, th: 0, om: 0, w: (2 * Math.PI) / (+el.dataset.period || 3), gain: +(el.dataset.gain || 1), inGate: !!el.closest("#gate") };
+  const s = { el, th: 0, om: 0, tf: "", w: (2 * Math.PI) / (+el.dataset.period || 3), gain: +(el.dataset.gain || 1), inGate: !!el.closest("#gate") };
   const period = +el.dataset.period || 3;
   el.style.setProperty("--period", period);
   el.style.setProperty("--amp", +(el.dataset.amp || 3));
@@ -776,6 +807,23 @@ const swings = $$(".swing").map((el) => {
   el.style.setProperty("--phase", (Math.random() * period).toFixed(2));
   return s;
 });
+// Dorongan ayunan (sudut a, string 2 desimal; "" = diam). Transform yang ditulis skrip tiap frame membuat browser
+// menyusun ulang seluruh lapisan halaman setiap frame (putaran bukan perubahan "sederhana"). Bila didukung, dorongan
+// ditulis ke --push, yang ikut dijumlahkan ke rotate di keyframe ayunan CSS: animasi itu berjalan di kompositor,
+// jadi perubahannya cukup diteruskan ke animasi tanpa penyusunan ulang lapisan. Dipakai hanya bila browser mendukung
+// animasi terikat gulir (mesin baru) dan terbukti menghitung ulang keyframe saat --push berubah (diuji sekali di
+// sini; tanpa itu dorongan tidak akan tampak). Selain itu tetap lewat transform seperti dulu.
+const PUSHVAR = SDA && !!swings.length && (() => {
+  const el = swings[0].el, rot = () => parseFloat(getComputedStyle(el).rotate) || 0;
+  const a = rot();
+  el.style.setProperty("--push", "10");
+  const b = rot();
+  el.style.removeProperty("--push");
+  return Math.abs(b - a - 10) < 0.01;
+})();
+const setPush = PUSHVAR
+  ? (el, a) => (a ? el.style.setProperty("--push", a) : el.style.removeProperty("--push"))
+  : (el, a) => { el.style.transform = a ? `rotate(${a}deg)` : ""; };
 const visIO = new IntersectionObserver((es) => {
   for (const e of es) { const s = swings.find((x) => x.el === e.target); if (s) { s.vis = e.isIntersecting; e.target.classList.toggle("idle", !e.isIntersecting); } }
 }, { rootMargin: "120px" });
@@ -789,12 +837,16 @@ $$("[data-stars]").forEach((el) => skyIO.observe(el));
 const gate = $("#gate");
 const gateLayers = $$(".gate .layer");
 let pointer = { x: 0, y: 0, tx: 0, ty: 0 }, kick = 0;
-let lastY = scrollY, lastT = 0, running = false, awakeUntil = 0, parY = null;
+let lastY = scrollY, lastT = 0, running = false, awakeUntil = 0, parY = null, scrolled = false;
+// Tanpa SDA loop tetap berjalan 2,5 detik setelah gerakan terakhir (parallax). Dengan SDA loop hanya dibutuhkan
+// untuk ayunan: tiap event scroll membangunkannya, dan ia berjalan terus selama masih ada ornamen yang berayun
+// (busy). Frame tambahan tanpa gulir dan tanpa ayunan tidak mengubah apa pun, tetapi tetap memaksa browser
+// menghitung ulang style semua animasi yang sedang berjalan (karena scrollY dibaca).
 function wake() {
-  awakeUntil = performance.now() + 2500;
+  awakeUntil = performance.now() + (SDA ? 0 : 2500);
   if (!running) { running = true; lastT = 0; requestAnimationFrame(frame); }
 }
-addEventListener("scroll", wake, { passive: true });
+addEventListener("scroll", () => { scrolled = true; wake(); }, { passive: true });
 // Mode halus: sampul tidak bergeser mengikuti kursor / kemiringan HP, jadi keduanya tidak didengarkan.
 if (!SOFT) {
   addEventListener("pointermove", (e) => {
@@ -820,9 +872,12 @@ function frame(now) {
   // Selama sampul menutupi halaman, ornamen di halaman utama tidak terlihat (tidak perlu dihitung) dan halaman
   // tidak bisa digulir, jadi scrollY tidak dibaca: membaca scrollY memaksa browser menghitung ulang style di
   // tengah frame, padahal di HP Android loop ini terus berjalan di sampul karena sensor kemiringan.
-  // Di luar sampul, scrollY dibaca sebelum menulis style apa pun.
+  // Di luar sampul, scrollY dibaca sebelum menulis style apa pun. Dengan SDA, scrollY hanya dipakai untuk dorongan
+  // ayunan, jadi hanya dibaca di frame yang memang didahului event scroll; frame saat ornamen masih berayun setelah
+  // gulir berhenti tidak perlu membacanya (posisi gulir tidak berubah).
   const covered = document.body.classList.contains("locked");
-  const y = covered ? lastY : scrollY;
+  const y = covered || (SDA && !scrolled) ? lastY : scrollY;
+  scrolled = false;
 
   // Gerbang: lapisan bergeser mengikuti pointer / kemiringan HP dengan kedalaman berbeda (tidak di mode halus).
   if (!SOFT && !gate.classList.contains("gone") && !gate.classList.contains("opening")) {
@@ -838,7 +893,8 @@ function frame(now) {
   }
 
   // Parallax gulir: tiap lapisan bergeser sebanding jaraknya dari tengah layar (hanya saat posisi gulir berubah).
-  if (y !== parY) {
+  // Cadangan untuk browser tanpa SDA; dengan SDA pergeseran ini dijalankan animasi CSS (.sda).
+  if (!SDA && y !== parY) {
     parY = y;
     const vh = innerHeight;
     for (const p of parallax) {
@@ -856,13 +912,15 @@ function frame(now) {
   kick = 0;
   for (const s of swings) {
     // Ornamen di luar layar tidak perlu dihitung: langsung diam.
-    if (!s.vis || (covered && !s.inGate)) { if (s.th) { s.th = s.om = 0; s.el.style.transform = ""; } continue; }
+    if (!s.vis || (covered && !s.inGate)) { if (s.th) { s.th = s.om = 0; s.tf = ""; setPush(s.el, ""); } continue; }
     s.om += (-(s.w * s.w) * s.th - 1.5 * s.om) * dt + push * s.gain * dt * 6;
     s.om = Math.max(-140, Math.min(140, s.om));
     s.th = Math.max(-22, Math.min(22, s.th + s.om * dt));
     if (Math.abs(s.th) < 0.1 && Math.abs(s.om) < 0.5) s.th = s.om = 0;
     else busy = true;
-    s.el.style.transform = s.th ? `rotate(${(s.th * SWAY).toFixed(2)}deg)` : "";
+    // Ditulis hanya bila sudut yang tampil berubah (tiap tulisan menghitung ulang style ornamen itu).
+    const tf = s.th ? (s.th * SWAY).toFixed(2) : "";
+    if (tf !== s.tf) { s.tf = tf; setPush(s.el, tf); }
   }
 
   if (busy || now < awakeUntil) requestAnimationFrame(frame);
@@ -872,7 +930,8 @@ measureParallax();
 addEventListener("load", () => { measureParallax(); parY = null; wake(); });
 document.fonts?.ready.then(() => { measureParallax(); parY = null; wake(); });
 new ResizeObserver(() => { measureParallax(); parY = null; wake(); }).observe($("#main"));
-addEventListener("resize", () => { parY = null; wake(); });
+// Tinggi layar berubah (mis. bilah alamat HP menyusut): titik tengah layar ikut bergeser.
+addEventListener("resize", () => { if (SDA) measureParallax(); parY = null; wake(); });
 wake();
 
 // Muncul saat masuk layar

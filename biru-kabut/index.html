@@ -109,16 +109,26 @@ html.soft-motion .fog{animation:fog-breathe calc(var(--t,80s) / 8) ease-in-out i
 html.motion .seam .drift{will-change:transform}
 html.soft-motion .seam .drift{will-change:auto}
 .seam .fog{--bh:300px;--o:.85}
+/* Browser yang mendukung animasi terikat gulir menggeser pita di thread kompositor, tanpa skrip dan tanpa kerja thread utama
+   per frame (upd di skrip hanya cadangan). Pemetaannya sama dengan upd: geser = (tengah pita - tengah layar) × -.22, linear
+   selama pita melintasi layar. Rentang cover dimulai saat tepi atas pita di tepi bawah layar (geser -.22 × (50dvh + 150px))
+   dan berakhir saat tepi bawahnya di tepi atas layar (+.22 × (50dvh + 150px)); 150px = setengah tinggi pita. */
+@supports (animation-timeline:view()){
+  html.motion:not(.soft-motion) .seam{view-timeline:--seam block}
+  html.motion:not(.soft-motion) .seam .drift{animation:seam-drift linear both;animation-timeline:--seam;animation-range:cover}
+}
+@keyframes seam-drift{from{transform:translate3d(0,calc((50dvh + 150px) * -.22),0)}to{transform:translate3d(0,calc((50dvh + 150px) * .22),0)}}
 
 /* ---------- Ornamen hydrangea ---------- */
 .sprig{display:block;margin:0 auto;line-height:0}
 .sprig svg{display:block;width:100%;height:auto;overflow:visible}
 .sprig .st{fill:none;stroke:#7f9ab4;stroke-width:.9;stroke-linecap:round}
-.sprig .pt{fill:var(--c);stroke:#6f8cab;stroke-width:.5;stroke-linejoin:round}
+/* --k: skala kuntum/daun yang sudah dibakar ke koordinat path (lihat Sprig di skrip), jadi tebal garisnya ikut dikalikan. */
+.sprig .pt{fill:var(--c);stroke:#6f8cab;stroke-width:calc(.5 * var(--k,1));stroke-linejoin:round}
 .sprig .ct{fill:var(--deep)}
 .sprig .bb{fill:#dde7f1;stroke:#89a3bc;stroke-width:.5}
-.sprig .lf path{fill:#e3ebf3;stroke:#8aa4bd;stroke-width:.6}
-.sprig .lf .rib{fill:none;stroke-width:.45}
+.sprig .lf path{fill:#e3ebf3;stroke:#8aa4bd;stroke-width:calc(.6 * var(--k,1))}
+.sprig .lf .rib{fill:none;stroke-width:calc(.45 * var(--k,1))}
 html.motion .sprig .st{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1.7s cubic-bezier(.5,0,.2,1) calc(var(--d,0) * 1s)}
 html.motion .sprig .fl,html.motion .sprig .lf{opacity:0;transform:scale(0) rotate(-40deg);transition:transform 1s cubic-bezier(.2,.9,.3,1.25) calc(var(--d,0) * 1s),opacity .45s ease calc(var(--d,0) * 1s)}
 html.motion .sprig.in .st,html.motion .in .sprig .st{stroke-dashoffset:0}
@@ -741,12 +751,33 @@ if (GUEST) {
 const Sprig = (() => {
   const PETAL = "M0 0C-2.7-1.6-3-4.8 0-5.8C3-4.8 2.7-1.6 0 0Z";
   const LEAF = "M0 0C5-4.8 14.5-5.2 22 0C14.5 5.2 5 4.8 0 0Z";
+  const RIB = "M1.5 0L19 0";
   const TONES = ["#c9d8e6", "#afc5da", "#e1e9f2", "#bdd0e2", "#d3e0ec"];
+  // Posisi, sudut, dan skala setiap kuntum, kelopak, daun, dan gerombol "dibakar" langsung ke koordinat path, bukan lagi
+  // atribut transform di <g> dan di setiap kelopak. Di Chromium setiap transform SVG menjadi node tersendiri di pohon
+  // properti cat (±850 di 13 ornamen) yang ditelusuri ulang di setiap frame gulir (layerize), meski ornamennya diam.
+  // Gerak muncul (.fl/.lf: scale lalu rotate) tetap berporos di titik pangkal yang sama lewat transform-origin; hasilnya
+  // sama karena skala seragam dan rotasi 2D boleh ditukar urutannya. Tebal garis ikut dikalikan skalanya lewat --k.
+  const n = (v) => +v.toFixed(3);
+  // Path d (perintah absolut M/C/L/Z) setelah translate(x y) rotate(r) scale(s), sama seperti atribut transform dulu.
+  const at = (x, y, r, s) => {
+    const c = Math.cos(r * Math.PI / 180) * s, si = Math.sin(r * Math.PI / 180) * s;
+    return (d) => {
+      const t = d.match(/[A-Z]|-?(?:\d+\.?\d*|\.\d+)/g), out = [];
+      for (let i = 0; i < t.length;) {
+        if (/[A-Z]/.test(t[i])) { out.push(t[i++]); continue; }
+        const px = +t[i], py = +t[i + 1];
+        i += 2;
+        out.push(`${n(x + c * px - si * py)} ${n(y + si * px + c * py)}`);
+      }
+      return out.join(" ");
+    };
+  };
   // Satu kuntum hydrangea: empat kelopak bersilang dengan titik di tengah.
-  const floret = (x, y, s, r, k, d) => `<g transform="translate(${x} ${y}) rotate(${r}) scale(${s})"><g class="fl" style="--d:${d};--c:${TONES[k % 5]}">${[45, 135, 225, 315].map((a) => `<path class="pt" d="${PETAL}" transform="rotate(${a})"/>`).join("")}<circle class="ct" r=".9"/></g></g>`;
-  const leaf = (x, y, r, s, d) => `<g transform="translate(${x} ${y}) rotate(${r}) scale(${s})"><g class="lf" style="--d:${d}"><path d="${LEAF}"/><path class="rib" d="M1.5 0H19"/></g></g>`;
+  const floret = (x, y, s, r, k, d) => `<g class="fl" style="--d:${d};--c:${TONES[k % 5]};--k:${n(s)};transform-origin:${n(x)}px ${n(y)}px">${[45, 135, 225, 315].map((a) => `<path class="pt" d="${at(x, y, r + a, s)(PETAL)}"/>`).join("")}<circle class="ct" cx="${n(x)}" cy="${n(y)}" r="${n(.9 * s)}"/></g>`;
+  const leaf = (x, y, r, s, d) => `<g class="lf" style="--d:${d};--k:${n(s)};transform-origin:${n(x)}px ${n(y)}px"><path d="${at(x, y, r, s)(LEAF)}"/><path class="rib" d="${at(x, y, r, s)(RIB)}"/></g>`;
   // Gerombol baby's breath di ujung ranting.
-  const puff = (x, y, d) => `<g transform="translate(${x} ${y})"><g class="fl" style="--d:${d}">${[[0, 0, 1.9], [-3.3, -2.1, 1.4], [3.1, -2.6, 1.5], [-.8, -4.7, 1.2], [2.8, 1.9, 1.1]].map(([a, b, r]) => `<circle class="bb" cx="${a}" cy="${b}" r="${r}"/>`).join("")}</g></g>`;
+  const puff = (x, y, d) => `<g class="fl" style="--d:${d};transform-origin:${n(x)}px ${n(y)}px">${[[0, 0, 1.9], [-3.3, -2.1, 1.4], [3.1, -2.6, 1.5], [-.8, -4.7, 1.2], [2.8, 1.9, 1.1]].map(([a, b, r]) => `<circle class="bb" cx="${n(x + a)}" cy="${n(y + b)}" r="${r}"/>`).join("")}</g>`;
   const stem = (p, d) => `<path class="st" pathLength="1" d="${p}" style="--d:${d}"/>`;
   const cluster = (cx, cy, s, d0) => [[0, -4.2], [-10.5, -3], [10.5, -3], [-5.2, -11.6], [5.4, -11.8], [-6.2, 4.4], [6.4, 4.2], [0, 10.6], [-14.6, 5.2], [14.8, 5]]
     .map(([x, y], i) => floret(cx + x * s * 1.08, cy + y * s * 1.06, s * (i < 5 ? .95 : .8), (i * 37) % 90, i, (d0 + Math.hypot(x, y) * .025).toFixed(2))).join("");
@@ -821,21 +852,38 @@ function openInvite() {
 }
 
 /* ---------- Pita kabut di sambungan bagian bergeser pelan mengikuti gulir (mode halus: diam) ---------- */
-if (!SOFT) {
-  const drifts = $$(".seam .drift");
-  let raf = 0;
+// Browser yang mendukung animasi terikat gulir menjalankannya lewat CSS di kompositor (lihat .seam); skrip ini cadangan.
+const SDA = typeof CSS !== "undefined" && CSS.supports("animation-timeline: view()");
+if (!SOFT && !SDA) {
+  // Posisi pita diukur sekali (dan lagi saat ukuran layar atau tinggi isi berubah); tiap frame hanya dihitung dari scrollY,
+  // tanpa membaca tata letak, dan transform hanya ditulis bila nilainya berubah.
+  const seams = $$(".seam .drift").map((el) => ({ el, top: 0, h: 0, v: null }));
+  let raf = 0, vh = innerHeight;
   const upd = () => {
     raf = 0;
-    const h = innerHeight;
-    for (const d of drifts) {
-      const r = d.parentElement.getBoundingClientRect();
-      if (r.bottom < -200 || r.top > h + 200) continue;
-      d.style.transform = `translate3d(0,${((r.top + r.height / 2 - h / 2) * -.22).toFixed(1)}px,0)`;
+    const y = scrollY;
+    for (const s of seams) {
+      const top = s.top - y;
+      if (top + s.h < -200 || top > vh + 200) continue;
+      const v = ((top + s.h / 2 - vh / 2) * -.22).toFixed(1);
+      if (v === s.v) continue;
+      s.v = v;
+      s.el.style.transform = `translate3d(0,${v}px,0)`;
     }
   };
+  const measure = () => {
+    vh = innerHeight;
+    for (const s of seams) {
+      const r = s.el.parentElement.getBoundingClientRect();
+      s.top = r.top + scrollY;
+      s.h = r.height;
+    }
+    upd();
+  };
   addEventListener("scroll", () => { raf ||= requestAnimationFrame(upd); }, { passive: true });
-  addEventListener("resize", upd);
-  upd();
+  addEventListener("resize", measure);
+  new ResizeObserver(measure).observe(main);
+  measure();
 }
 
 /* ---------- Tombol musik menepi saat halaman digulir, muncul lagi saat berhenti ---------- */
