@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "greeting": "kristiani",
+  "city": "Jakarta Selatan",
+  "rsvpDeadline": "2027-02-07",
+  "photoBase": "/foto/",
+  "bride": {
+    "name": "Nadia",
+    "fullName": "Nadia Kirana Uji",
+    "child": "Putri kedua",
+    "father": "Bapak Hendro Uji",
+    "mother": "Ibu Ratna Uji",
+    "instagram": "nadia.uji",
+    "photo": { "file": "mempelai-wanita", "focus": "50% 30%" }
+  },
+  "groom": {
+    "name": "Raka",
+    "fullName": "Raka Pradipta Uji",
+    "child": "Putra sulung",
+    "father": "Bapak Joko Uji (Alm.)",
+    "mother": "Ibu Maria Uji",
+    "photo": { "file": "mempelai-pria" }
+  },
+  "events": {
+    "akad": {
+      "label": "Pemberkatan",
+      "startsAt": "2027-02-14T10:00:00+07:00",
+      "endsAt": "2027-02-14T11:30:00+07:00",
+      "timezone": "Asia/Jakarta",
+      "venue": "Gereja Uji Coba",
+      "address": "Jl. Pengujian No. 7, Jakarta Selatan",
+      "mapsUrl": "https://maps.app.goo.gl/ujicoba1"
+    },
+    "resepsi": {
+      "label": "Resepsi",
+      "startsAt": "2027-02-14T18:30:00+07:00",
+      "endsAt": "2027-02-14T21:00:00+07:00",
+      "timezone": "Asia/Jakarta",
+      "venue": "Hotel Uji Coba",
+      "address": "Jl. Percobaan No. 9, Jakarta Selatan"
+    }
+  },
+  "cover": { "file": "galeri-6", "focus": "50% 40%" },
+  "story": [
+    { "year": "2020", "title": "Kenalan", "text": "Teks kisah uji pertama.", "photo": { "file": "galeri-2" } },
+    { "year": "2024", "title": "Lamaran", "text": "Teks kisah uji kedua.", "photo": { "file": "galeri-5" } }
+  ],
+  "gallery": [
+    { "file": "galeri-6" }, { "file": "galeri-5" }, { "file": "galeri-4" },
+    { "file": "galeri-3" }, { "file": "galeri-2" }, { "file": "galeri-1" }
+  ],
+  "gifts": {
+    "accounts": [ { "bank": "Bank Uji", "number": "9876543210", "holder": "Nadia Kirana Uji" } ]
+  },
+  "music": null,
+  "sections": { "story": true, "gifts": true, "countdown": true, "wishes": true }
+}

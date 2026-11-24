@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "demo": true,
+  "eventType": "wedding",
+  "greeting": "islami",
+  "city": "Denpasar, Bali",
+  "rsvpDeadline": "2026-12-05",
+  "photoBase": "../foto/",
+  "bride": {
+    "name": "Laras",
+    "fullName": "Larasati Pramesti",
+    "child": "Putri",
+    "father": "Bapak Wiryo Hadi",
+    "mother": "Ibu Sekar Arum",
+    "instagram": "laras.contoh",
+    "photo": { "file": "mempelai-wanita", "alt": "Larasati Pramesti memegang buket bunga putih" }
+  },
+  "groom": {
+    "name": "Bima",
+    "fullName": "Bima Arya Nugraha",
+    "child": "Putra",
+    "father": "Bapak Arif Hidayat",
+    "mother": "Ibu Siti Aminah",
+    "instagram": "bima.contoh",
+    "photo": { "file": "mempelai-pria", "alt": "Bima Arya Nugraha berdiri di jalan setapak berpohon" }
+  },
+  "events": {
+    "akad": {
+      "label": "Akad Nikah",
+      "startsAt": "2026-12-12T09:00:00+08:00",
+      "endsAt": "2026-12-12T10:30:00+08:00",
+      "timezone": "Asia/Makassar",
+      "venue": "Rumah Keluarga Mempelai Wanita",
+      "address": "Jl. Contoh Raya No. 1, Denpasar, Bali",
+      "lat": -8.65,
+      "lng": 115.2167
+    },
+    "resepsi": {
+      "label": "Resepsi",
+      "startsAt": "2026-12-12T19:00:00+08:00",
+      "endsAt": "2026-12-12T21:30:00+08:00",
+      "timezone": "Asia/Makassar",
+      "venue": "Gedung Serbaguna Contoh",
+      "address": "Jl. Contoh Kedua No. 2, Denpasar, Bali",
+      "lat": -8.66,
+      "lng": 115.21
+    }
+  },
+  "cover": { "file": "cover", "alt": "Laras dan Bima berjalan bergandengan tangan di jalan setapak" },
+  "story": [
+    { "year": "2019", "title": "Bertemu", "text": "Sebuah acara kampus mempertemukan dua orang yang sama-sama datang terlambat.", "photo": { "file": "galeri-1", "alt": "Laras dan Bima di jalan setapak berpohon kelapa" } },
+    { "year": "2023", "title": "Bersama", "text": "Dari obrolan singkat menjadi kebiasaan; dari kebiasaan menjadi rumah.", "photo": { "file": "galeri-3", "alt": "Laras dan Bima piknik di padang rumput" } },
+    { "year": "2026", "title": "Selamanya", "text": "Lamaran sederhana di hadapan keluarga, lalu kami memilih satu tanggal.", "photo": { "file": "galeri-4", "alt": "Tangan mempelai dengan cincin pernikahan" } }
+  ],
+  "gallery": [
+    { "file": "galeri-1", "alt": "Laras dan Bima di jalan setapak berpohon kelapa", "caption": "Awal cerita" },
+    { "file": "galeri-2", "alt": "Laras dan Bima tertawa bersama", "caption": "Tawa kita" },
+    { "file": "galeri-3", "alt": "Laras dan Bima piknik di padang rumput", "caption": "Piknik sore" },
+    { "file": "galeri-4", "alt": "Tangan mempelai dengan cincin pernikahan", "caption": "Cincin" },
+    { "file": "galeri-5", "alt": "Laras dan Bima di pelaminan", "caption": "Hari bahagia" },
+    { "file": "galeri-6", "alt": "Laras dan Bima berjalan di sawah terasering saat senja", "caption": "Pulang bersama" }
+  ],
+  "gifts": {
+    "accounts": [
+      { "bank": "Bank Contoh", "number": "1234567890", "holder": "Larasati Pramesti" },
+      { "bank": "Dompet Digital", "number": "081234567890", "holder": "Bima Arya Nugraha" }
+    ],
+    "address": { "text": "Jl. Contoh Raya No. 1, Denpasar, Bali", "holder": "Larasati Pramesti" }
+  },
+  "music": null,
+  "sections": { "story": true, "gifts": true, "countdown": true, "wishes": true }
+}
