@@ -332,6 +332,22 @@ footer a{color:var(--ink)}
 .motion .bloom .sd{opacity:0;transform:scale(.25);transition:transform .8s cubic-bezier(.2,.7,.2,1) calc(var(--bd,.1s) + .5s + var(--i) * 40ms),opacity .5s ease calc(var(--bd,.1s) + .5s + var(--i) * 40ms)}
 .motion :is(.in,.play) .bloom{transform:none}
 .motion :is(.in,.play) .bloom :is(.pt,.ct,.sd){transform:none;opacity:1}
+/* Browser yang mendukung geometri SVG sebagai properti CSS: gerak yang sama tanpa transform. Transform (dan opacity)
+   pada unsur di dalam SVG tidak bisa dijalankan kompositor; perubahannya tiap frame membuat browser menyusun ulang
+   seluruh lapisan halaman (puluhan lapisan bunga) setiap frame selama bunga mekar. Membesar dari pusat bunga sama
+   dengan mengalikan letak dan jari-jari: kelopak cy/rx/ry, titik pusat r, titik isen cx/cy/r (--x/--y dari skrip),
+   dengan durasi, kurva, dan jeda yang sama. Titik isen memudar lewat fill-opacity (hanya berisi isi, jadi hasilnya sama
+   dengan opacity). Garis kelopak tetap 1px (vector-effect), sama seperti saat diskalakan. Kotak transparan .bb di tiap
+   grup (dari skrip) menjaga batas gambar bunga tetap, supaya bunga yang membesar cukup digambar ulang di lapisannya. */
+@supports (rx:1px) and (r:1px) and (cx:1px){
+  .motion .bloom :is(.pt,.ct,.sd){transform:none}
+  .motion .bloom .pt{rx:0;ry:0;cy:0;transition:rx .7s cubic-bezier(.3,1.45,.5,1) calc(var(--bd,.1s) + .1s + var(--i) * 55ms),ry .7s cubic-bezier(.3,1.45,.5,1) calc(var(--bd,.1s) + .1s + var(--i) * 55ms),cy .7s cubic-bezier(.3,1.45,.5,1) calc(var(--bd,.1s) + .1s + var(--i) * 55ms)}
+  .motion .bloom .ct{r:0;transition:r .5s cubic-bezier(.3,1.6,.5,1) var(--bd,.1s)}
+  .motion .bloom .sd{opacity:1;fill-opacity:0;cx:calc(var(--x) * .25);cy:calc(var(--y) * .25);r:.1875px;transition:cx .8s cubic-bezier(.2,.7,.2,1) calc(var(--bd,.1s) + .5s + var(--i) * 40ms),cy .8s cubic-bezier(.2,.7,.2,1) calc(var(--bd,.1s) + .5s + var(--i) * 40ms),r .8s cubic-bezier(.2,.7,.2,1) calc(var(--bd,.1s) + .5s + var(--i) * 40ms),fill-opacity .5s ease calc(var(--bd,.1s) + .5s + var(--i) * 40ms)}
+  .motion :is(.in,.play) .bloom .pt{rx:2.5px;ry:3.3px;cy:-4.4px}
+  .motion :is(.in,.play) .bloom .ct{r:1.5px}
+  .motion :is(.in,.play) .bloom .sd{cx:var(--x);cy:var(--y);r:.75px;fill-opacity:1}
+}
 /* Bunga (sudut bingkai, pembatas) dan garis bingkai digambar di lapisan sendiri. Saat mekar/tumbuh mereka digambar
    ulang tiap frame; tanpa lapisan sendiri, setiap ubin 256px di sekitarnya (latar berbintik, teks, foto) ikut di-raster
    ulang, dan itu yang membuat gulir di HP tersendat setiap kali bagian baru muncul. */
@@ -738,10 +754,13 @@ if (guest) { $("#guest").textContent = guest; $("#rName").value = guestFull; $("
 /* ---------- ornamen truntum ---------- */
 const use = (id, cls = "") => `<svg${cls ? ` class="${cls}"` : ""} aria-hidden="true" focusable="false"><use href="#${id}"/></svg>`;
 // Bunga truntum inline (bentuknya sama dengan #tr) supaya tiap kelopak & titik isen bisa mekar sendiri-sendiri.
+// .bb: kotak transparan selebar bunga (tidak tergambar, tidak bisa diketuk) di tiap grup, supaya batas gambar grup itu
+// tidak berubah selama kelopak/titik membesar (lihat @supports (rx:1px) di CSS). --x/--y: letak titik isen untuk CSS.
 const SEEDS = [[5.05, -6.96], [8.18, 2.66], [0, 8.6], [-8.18, 2.66], [-5.05, -6.96]];
+const BB = `<rect class="bb" x="-12" y="-12" width="24" height="24" fill="transparent" stroke="none" pointer-events="none"/>`;
 const bloom = (cls) => `<svg class="bloom ${cls}" viewBox="-12 -12 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor">${
-  SEEDS.map((_, i) => `<g transform="rotate(${i * 72})"><ellipse class="pt" style="--i:${i}" cy="-4.4" rx="2.5" ry="3.3" vector-effect="non-scaling-stroke"/></g>`).join("")
-}</g><g fill="currentColor"><circle class="ct" r="1.5"/>${SEEDS.map(([x, y], i) => `<circle class="sd" style="--i:${i}" cx="${x}" cy="${y}" r=".75"/>`).join("")}</g></svg>`;
+  SEEDS.map((_, i) => `<g transform="rotate(${i * 72})">${BB}<ellipse class="pt" style="--i:${i}" cy="-4.4" rx="2.5" ry="3.3" vector-effect="non-scaling-stroke"/></g>`).join("")
+}</g><g fill="currentColor">${BB}<circle class="ct" r="1.5"/>${SEEDS.map(([x, y], i) => `<circle class="sd" style="--i:${i};--x:${x}px;--y:${y}px" cx="${x}" cy="${y}" r=".75"/>`).join("")}</g></svg>`;
 // Pembatas: garis – truntum kecil – bunga truntum – truntum kecil – garis
 $$(".divider").forEach((d) => (d.innerHTML = `<i></i>${use("tr-s")}${bloom("b")}${use("tr-s")}<i></i>`));
 // Bunga di keempat sudut bingkai
