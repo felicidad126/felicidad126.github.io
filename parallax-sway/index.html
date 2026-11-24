@@ -341,11 +341,22 @@ footer a{color:var(--gold)}
   .music{right:24px}
 }
 
-@media (prefers-reduced-motion:reduce){
-  html:not(.force-motion) .rv{opacity:1!important;transform:none!important;transition:none!important}
-  html:not(.force-motion) .gate .btn-gold::before,html:not(.force-motion) .stage .ph img,html:not(.force-motion) .sky i,html:not(.force-motion) .music.playing svg{animation:none}
-  html:not(.force-motion) .music[aria-busy="true"] svg{opacity:.5}
-}
+/* ---------- mode halus ----------
+   Perangkat meminta kurangi gerak (prefers-reduced-motion) dan URL tidak memakai ?motion=full: <html> diberi kelas .soft
+   (konstanta SOFT di skrip). Pudar, kelip bintang, denyut tombol, ayunan pelan ornamen, dan muncul-saat-digulir tetap
+   berjalan; yang dimatikan hanya gerak besar: parallax gulir/kursor/kemiringan HP dan dorongan ayunan besar (lihat SOFT
+   di skrip), zoom pelan foto panggung, dan lapisan sampul yang terbang keluar layar. */
+/* Muncul saat digulir: jarak naik/geser dipendekkan (34-40px menjadi 20px). */
+.soft .rv:not([data-rv]):not(.in){transform:translate3d(0,20px,0)}
+.soft .rv[data-rv="left"]:not(.in){transform:translate3d(-20px,0,0)}
+.soft .rv[data-rv="right"]:not(.in){transform:translate3d(20px,0,0)}
+/* Foto panggung desktop diam (tanpa Ken Burns); pergantian fotonya tetap memudar. */
+.soft .stage .ph img{animation:none}
+/* Buka Undangan: sampul memudar di tempat (0,9 detik) sementara fotonya membesar sedikit (1,03); lapisan tidak terbang
+   ke atas. !important menandingi aturan .gate.opening di atas. */
+.soft .gate.opening{transform:none;opacity:0;transition:opacity .9s ease .1s}
+.soft .gate.opening .layer{transform:none!important;transition:transform 1s ease}
+.soft .gate.opening .gate-photo{transform:scale(1.03)!important}
 .music.dodge{opacity:0!important;pointer-events:none!important}
 </style>
 <script src="/acara.js"></script>
@@ -581,8 +592,10 @@ footer a{color:var(--gold)}
 const root = document.documentElement;
 root.classList.add("js");
 const params = new URLSearchParams(location.search);
-if (params.get("motion") === "full") root.classList.add("force-motion");
-const MOTION = params.get("motion") === "full" || !matchMedia("(prefers-reduced-motion: reduce)").matches;
+// Mode halus: perangkat meminta kurangi gerak dan URL tidak memakai ?motion=full (dipakai tombol "Tampilkan dengan
+// animasi" di katalog). Animasi tetap berjalan; gerak besar dimatikan lewat aturan .soft di CSS dan SOFT di skrip ini.
+const SOFT = params.get("motion") !== "full" && matchMedia("(prefers-reduced-motion: reduce)").matches;
+if (SOFT) root.classList.add("soft");
 const $ = (q, el = document) => el.querySelector(q);
 const $$ = (q, el = document) => [...el.querySelectorAll(q)];
 const esc = (t) => String(t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
@@ -743,10 +756,14 @@ setInterval(tick, 1000);
  * Ayunan pelan saat diam dijalankan CSS (animasi rotate di kompositor). JavaScript hanya bekerja
  * beberapa detik setelah halaman digulir atau kursor/HP digerakkan: dorongan ayunan (transform,
  * menumpuk di atas rotate CSS) dan parallax dari posisi elemen yang diukur sekali.
+ * Mode halus (SOFT): tanpa parallax gulir, sampul tidak mengikuti kursor/kemiringan HP, dan dorongan ayunan
+ * diperkecil (lihat SWAY); ayunan pelan CSS tetap berjalan.
  */
-if (MOTION) root.classList.add("motion");
+root.classList.add("motion");
 const docTop = (el) => { let y = 0; for (let n = el; n; n = n.offsetParent) y += n.offsetTop; return y; };
-const parallax = $$("[data-speed]").map((el) => ({ el, ref: el.closest(".ph") || el.parentElement, speed: +el.dataset.speed, inPh: !!el.closest(".ph") }));
+const parallax = SOFT ? [] : $$("[data-speed]").map((el) => ({ el, ref: el.closest(".ph") || el.parentElement, speed: +el.dataset.speed, inPh: !!el.closest(".ph") }));
+// Besar dorongan ayunan yang ditampilkan: penuh, atau 0,15× di mode halus (paling jauh ±3,3°, bukan ±22°).
+const SWAY = SOFT ? 0.15 : 1;
 function measureParallax() {
   for (const p of parallax) { p.top = docTop(p.ref); p.h = p.ref.offsetHeight; }
 }
@@ -775,23 +792,26 @@ let pointer = { x: 0, y: 0, tx: 0, ty: 0 }, kick = 0;
 let lastY = scrollY, lastT = 0, running = false, awakeUntil = 0, parY = null;
 function wake() {
   awakeUntil = performance.now() + 2500;
-  if (!running && MOTION) { running = true; lastT = 0; requestAnimationFrame(frame); }
+  if (!running) { running = true; lastT = 0; requestAnimationFrame(frame); }
 }
 addEventListener("scroll", wake, { passive: true });
-addEventListener("pointermove", (e) => {
-  if (gate.classList.contains("gone")) return;
-  pointer.tx = e.clientX / innerWidth - 0.5;
-  pointer.ty = e.clientY / innerHeight - 0.5;
-  wake();
-}, { passive: true });
-addEventListener("deviceorientation", (e) => {
-  if (e.gamma == null || gate.classList.contains("gone")) return;
-  const tx = Math.max(-0.5, Math.min(0.5, e.gamma / 40)), ty = Math.max(-0.5, Math.min(0.5, (e.beta - 40) / 50));
-  // Sensor terus mengirim data walau HP diam: bangunkan hanya bila kemiringan benar-benar berubah.
-  if (Math.abs(tx - pointer.tx) + Math.abs(ty - pointer.ty) < 0.004) return;
-  pointer.tx = tx; pointer.ty = ty;
-  wake();
-}, { passive: true });
+// Mode halus: sampul tidak bergeser mengikuti kursor / kemiringan HP, jadi keduanya tidak didengarkan.
+if (!SOFT) {
+  addEventListener("pointermove", (e) => {
+    if (gate.classList.contains("gone")) return;
+    pointer.tx = e.clientX / innerWidth - 0.5;
+    pointer.ty = e.clientY / innerHeight - 0.5;
+    wake();
+  }, { passive: true });
+  addEventListener("deviceorientation", (e) => {
+    if (e.gamma == null || gate.classList.contains("gone")) return;
+    const tx = Math.max(-0.5, Math.min(0.5, e.gamma / 40)), ty = Math.max(-0.5, Math.min(0.5, (e.beta - 40) / 50));
+    // Sensor terus mengirim data walau HP diam: bangunkan hanya bila kemiringan benar-benar berubah.
+    if (Math.abs(tx - pointer.tx) + Math.abs(ty - pointer.ty) < 0.004) return;
+    pointer.tx = tx; pointer.ty = ty;
+    wake();
+  }, { passive: true });
+}
 
 function frame(now) {
   const dt = lastT ? Math.min(0.05, (now - lastT) / 1000) : 1 / 60;
@@ -804,8 +824,8 @@ function frame(now) {
   const covered = document.body.classList.contains("locked");
   const y = covered ? lastY : scrollY;
 
-  // Gerbang: lapisan bergeser mengikuti pointer / kemiringan HP dengan kedalaman berbeda.
-  if (!gate.classList.contains("gone") && !gate.classList.contains("opening")) {
+  // Gerbang: lapisan bergeser mengikuti pointer / kemiringan HP dengan kedalaman berbeda (tidak di mode halus).
+  if (!SOFT && !gate.classList.contains("gone") && !gate.classList.contains("opening")) {
     const px = pointer.x;
     pointer.x += (pointer.tx - pointer.x) * 0.06;
     pointer.y += (pointer.ty - pointer.y) * 0.06;
@@ -842,7 +862,7 @@ function frame(now) {
     s.th = Math.max(-22, Math.min(22, s.th + s.om * dt));
     if (Math.abs(s.th) < 0.1 && Math.abs(s.om) < 0.5) s.th = s.om = 0;
     else busy = true;
-    s.el.style.transform = s.th ? `rotate(${s.th.toFixed(2)}deg)` : "";
+    s.el.style.transform = s.th ? `rotate(${(s.th * SWAY).toFixed(2)}deg)` : "";
   }
 
   if (busy || now < awakeUntil) requestAnimationFrame(frame);
@@ -922,9 +942,10 @@ function openInvite(instant) {
   document.body.classList.remove("locked");
   $("#music").classList.add("show");
   fitNames();
-  if (instant || !MOTION) { gate.classList.add("gone"); return; }
+  if (instant) { gate.classList.add("gone"); return; }
+  // Mode halus: sampul memudar di tempat (lihat .soft .gate.opening di CSS), selesai lebih cepat.
   gate.classList.add("opening");
-  setTimeout(() => gate.classList.add("gone"), 1700);
+  setTimeout(() => gate.classList.add("gone"), SOFT ? 1100 : 1700);
 }
 $("#openBtn").addEventListener("click", () => { toggleMusic(true); openInvite(false); });
 

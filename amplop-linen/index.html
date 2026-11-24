@@ -147,7 +147,6 @@ body.opened .decor.sprig{opacity:.3}
 .env-stage.leave .fall{transform:translateY(46%);opacity:0}
 .env-stage.leave .env-proxies{transform:translateY(-60%) scale(1.1);opacity:0}
 .env-stage.leave .env-kicker,.env-stage.leave .env-hint{opacity:0;transition:opacity .4s}
-.env-stage.fade{opacity:0;transition:opacity .45s ease}
 
 /* ---------- Tumpukan kartu ---------- */
 .deck-wrap{position:absolute;inset:0;z-index:3;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:48px minmax(0,1fr) auto;visibility:hidden;opacity:0}
@@ -157,7 +156,7 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
 .top .date{font:11px/1 var(--f-cap);letter-spacing:var(--ls-3);color:var(--ink-2)}
 .music{justify-self:end;width:40px;height:40px;border-radius:50%;border:1px solid #9a8a7680;background:#f6f1e9e6;color:var(--ink);display:grid;place-items:center;cursor:pointer;position:relative;transition:background-color .2s,border-color .2s}
 .music svg{width:18px;height:18px}
-/* Musik masih dirender (ketukan terlalu cepat): ikon berdenyut pelan; reduced motion: hanya diredupkan. */
+/* Musik masih dirender (ketukan terlalu cepat): ikon berdenyut pelan. */
 .music[aria-busy="true"] svg{opacity:.5;animation:busy .9s ease-in-out infinite alternate}
 @keyframes busy{from{opacity:.3}to{opacity:1}}
 .music[aria-pressed="false"]::after{content:"";position:absolute;width:20px;height:1.5px;background:var(--ink);rotate:-45deg}
@@ -551,14 +550,27 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
   .decor.sprig{width:340px;left:2vw;top:4vh}
   .decor.ribbon{width:520px;right:2vw;bottom:2vh}
 }
-/* Reduced motion: tanpa gerakan, hanya pudar. ?motion=full memaksa animasi penuh untuk demo. */
-@media (prefers-reduced-motion:reduce){
-  html:not(.force-motion) .vellum,html:not(.force-motion) .band,html:not(.force-motion) .c-invite .charm{transition:opacity .4s ease}
-  html:not(.force-motion) .vellum.off,html:not(.force-motion) .vellum.off .band,html:not(.force-motion) .c-invite.unwrapped .charm{transform:none}
-  html:not(.force-motion) .c-invite .scroll,html:not(.force-motion) .c-invite .paper::before{transition:filter .4s ease}
-  html:not(.force-motion) .seal::before,html:not(.force-motion) .sheen::before,html:not(.force-motion) .charm,html:not(.force-motion) .tie,html:not(.force-motion) .tag-charm,html:not(.force-motion) .music svg,html:not(.force-motion) .more svg,html:not(.force-motion) .env,html:not(.force-motion) .env-kicker,html:not(.force-motion) .env-hint,html:not(.force-motion) .env.crack .seal,html:not(.force-motion) .seal .half{animation:none!important}
-  html:not(.force-motion) .print,html:not(.force-motion) .tabs{transition:none;scroll-behavior:auto}
-}
+/* Mode halus (kelas .soft di <html>, dipasang skrip): perangkat meminta gerak dikurangi dan URL tidak memakai ?motion=full.
+   Animasi kecil tetap berjalan seperti mode penuh (kilau & denyut segel, segel retak, ayunan charm dan pita, isi kartu yang
+   naik pendek, vellum yang memudar, blur ke tajam). Gerak besar diganti pudar atau geser pendek (paling jauh 24px): amplop
+   mendarat lebih dekat, tutup amplop berganti lewat pudar alih-alih berputar 3D, kartu hanya terangkat sedikit dari amplop,
+   amplop tidak jatuh saat ditinggalkan, vellum/pita/charm hanya bergeser sedikit sambil memudar, dan deretan tab berpindah
+   tanpa gulir halus. Kemiringan kartu, kipas kartu, dan perpindahan antarkartu diatur di skrip (SOFT). */
+.soft .env{animation-name:land-soft}
+@keyframes land-soft{from{opacity:0;transform:translateY(-12px) rotate(-1.5deg)}}
+/* Tutup amplop memudar, berbalik seketika saat tidak terlihat (transform berganti tanpa transisi di detik ke-.4),
+   lalu tampil lagi dalam keadaan terbuka. Opasitas dipasang di pembungkusnya: opacity pada .env-flap (preserve-3d)
+   meratakan lapisan 3D sehingga sisi luar tutup yang terbalik ikut terlihat. */
+.soft .env-flap{transition:transform 0s .4s}
+.soft .env.open .env-flapwrap{animation:flap-swap .8s ease}
+@keyframes flap-swap{45%,55%{opacity:0}}
+.soft .env.out .env-proxies{transform:translateY(-20px)}
+.soft .env-stage.leave .env-proxies{transform:translateY(-20px) scale(1.03)}
+.soft .env-stage.leave .fall{transform:none}
+.soft .vellum.off .band{transform:translateX(24px)}
+.soft .vellum.off{transform:translateY(-24px)}
+.soft .c-invite.unwrapped .charm{transform:translateX(16px) rotate(8deg)}
+.soft .tabs{scroll-behavior:auto}
 </style>
 <script src="/acara.js"></script>
 </head>
@@ -875,8 +887,11 @@ body.opened .deck-wrap{visibility:visible;opacity:1;transition:opacity .5s ease}
 <script>
 document.documentElement.classList.add("js");
 const Q = new URLSearchParams(location.search);
-if (Q.get("motion") === "full") document.documentElement.classList.add("force-motion");
-const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches && Q.get("motion") !== "full";
+// Mode halus: perangkat meminta gerak dikurangi dan URL tidak memakai ?motion=full (yang memaksa animasi penuh untuk demo).
+// Animasi kecil tetap berjalan; gerak besar (kemiringan kartu, kipas kartu, kartu yang meluncur jauh, tutup amplop yang
+// berputar 3D) diganti pudar atau geser pendek. Kelas .soft dipasang bersama .js, sebelum animasi pertama berjalan.
+const SOFT = matchMedia("(prefers-reduced-motion: reduce)").matches && Q.get("motion") !== "full";
+if (SOFT) document.documentElement.classList.add("soft");
 const WIDE = matchMedia("(min-width: 900px)");
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -1022,7 +1037,7 @@ function apply(c, [x, y, r, s, o, z]) {
 }
 const EASE = "cubic-bezier(.3,.7,.2,1)";
 // Fisika kertas: dua kartu yang bertukar tempat terangkat di tengah jalan (membesar, sedikit miring,
-// bayangannya menjauh); kartu lain bergeser menyusul dengan jeda kecil. Reduced motion: hanya pudar.
+// bayangannya menjauh); kartu lain bergeser menyusul dengan jeda kecil. Mode halus: lihat moveSoft.
 function move(from, dx = 0) {
   cards.forEach((c, i) => {
     const a = pose(i - from), b = pose(i - cur);
@@ -1031,11 +1046,8 @@ function move(from, dx = 0) {
     const start = st ? { transform: st.transform, opacity: st.opacity } : { transform: tf(a, i === from ? dx : 0), opacity: a[4] };
     running.forEach((an) => an.cancel());
     apply(c, b);
-    if (REDUCED) {
-      if (i === cur && i !== from) c.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 320, easing: "ease" });
-      return;
-    }
     if (!st && a.join() === b.join() && !(i === from && dx)) return;
+    if (SOFT) return moveSoft(c, a, b, start, !!st, i === from ? dx : 0, i === cur, cur > from ? -1 : 1);
     const key = i === from || i === cur, dir = cur > from ? -1 : 1, k = 0.42;
     const lerp = (p, q) => p + (q - p) * k;
     const mid = [`${lerp(parseFloat(a[0]), parseFloat(b[0]))}%`, `${lerp(parseFloat(a[1]), parseFloat(b[1])) - (key ? 20 : 6)}px`,
@@ -1045,12 +1057,31 @@ function move(from, dx = 0) {
     if (key) $(".lift", c).animate([{ opacity: 0, transform: "none" }, { opacity: 0.85, transform: "translateY(22px) scale(1.08)", offset: k }, { opacity: 0, transform: "none" }], { duration: 820, easing: EASE });
   });
 }
+// Mode halus: tanpa luncuran jauh dan tanpa kertas yang terangkat. Kartu yang tetap di tumpukan (hanya bergeser atau
+// mengecil sedikit) langsung menuju posisinya; kartu yang muncul dari atau hilang ke balik tumpukan cukup memudar di
+// tempatnya, tanpa membesar/mengecil. Kartu yang pindah jauh ke samping memudar sambil bergeser 24px searah perpindahan (m),
+// lalu muncul di tempat barunya dengan pudar dan geser 24px yang searah. Kartu yang menjadi aktif tampil lebih awal (k .3)
+// daripada kartu yang ditinggalkan selesai memudar (k .5), jadi keduanya bertumpuk-pudar. live: kartu sedang beranimasi,
+// jadi start adalah posisinya saat ini.
+function moveSoft(c, a, b, start, live, dx, active, m) {
+  if (a[0] === b[0]) {
+    const from = a[4] || live ? start : { transform: tf(b), opacity: 0 };
+    const to = b[4] ? { transform: tf(b), opacity: b[4] } : { transform: from.transform, opacity: 0 };
+    return c.animate([from, to], { duration: 560, easing: EASE, fill: "backwards" });
+  }
+  const k = active ? 0.3 : 0.5;
+  c.animate([
+    { ...start, easing: "ease-in" },
+    { transform: tf(a, dx + m * 24), opacity: 0, offset: k },
+    { transform: tf(b, -m * 24), opacity: 0, offset: k, easing: "ease-out" },
+    { transform: tf(b), opacity: b[4] },
+  ], { duration: 640, fill: "backwards" });
+}
 // Isi kartu masuk bertahap setiap kali kartu menjadi aktif.
 // Chromium kadang tetap memakai style lama untuk elemen yang sedang dianimasikan (pointer-events/inert dari saat
 // kartunya belum aktif), sehingga foto/tombol di dalamnya tidak bisa diketuk. Style tiap elemen disegarkan sesaat
 // setelah animasi mulai dan saat animasinya selesai.
 function enter(card, from) {
-  if (REDUCED) return;
   if (card.id === "k-1" && !$("#vellum").classList.contains("off")) return; // menunggu vellum dibuka
   const near = WIDE.matches && Math.abs(cards.indexOf(card) - from) === 1;
   const items = $$(".in > *", card).filter((n) => !n.hidden);
@@ -1161,8 +1192,8 @@ deck.addEventListener("click", (e) => {
     setTimeout(() => (dragging = false), 0);
     const to = dx < -60 ? cur + 1 : dx > 60 ? cur - 1 : cur;
     if (to !== cur && cards[to]) return go(to, { dx });
-    // Tidak cukup jauh: kartu kembali ke tempatnya.
-    c.animate([{ transform: tf(pose(0), dx) }, { transform: tf(pose(0)) }], { duration: REDUCED ? 1 : 480, easing: EASE });
+    // Tidak cukup jauh: kartu kembali ke tempatnya (mode halus: lebih singkat).
+    c.animate([{ transform: tf(pose(0), dx) }, { transform: tf(pose(0)) }], { duration: SOFT ? 240 : 480, easing: EASE });
   };
   deck.addEventListener("pointerup", end);
   deck.addEventListener("pointercancel", end);
@@ -1176,6 +1207,7 @@ deck.addEventListener("click", (e) => {
 }
 
 /* ---------- Kemiringan kartu aktif: kursor di desktop, sensor di HP ---------- */
+// Mode halus: kartu tidak miring sama sekali (gerak yang mengikuti kursor/sensor termasuk gerak yang memicu pusing).
 const Tilt = {
   el: null, x: 0, y: 0, gx: 0, gy: 0, raf: 0, base: null, on: false,
   target(card) {
@@ -1184,7 +1216,7 @@ const Tilt = {
     this.el = el;
   },
   aim(nx, ny) {
-    if (REDUCED) return;
+    if (SOFT) return;
     this.gx = nx; this.gy = ny;
     if (!this.raf) this.raf = requestAnimationFrame(() => this.step());
   },
@@ -1195,7 +1227,7 @@ const Tilt = {
     this.raf = Math.abs(this.gx - this.x) + Math.abs(this.gy - this.y) > 0.002 ? requestAnimationFrame(() => this.step()) : 0;
   },
   listen() {
-    if (this.on || REDUCED) return;
+    if (this.on || SOFT) return;
     this.on = true;
     addEventListener("deviceorientation", (e) => {
       if (e.beta == null || dragging || !document.body.classList.contains("opened")) return;
@@ -1224,12 +1256,17 @@ deckWrap.addEventListener("pointerleave", () => Tilt.aim(0, 0));
 /* ---------- Membuka amplop ---------- */
 const stage = $("#envStage"), env = $("#env");
 let opened = false;
-function showDeck(fan) {
+function showDeck() {
   document.body.classList.add("opened");
   deckWrap.inert = false;
   stage.inert = true;
   go(0);
-  if (fan && !REDUCED) {
+  if (SOFT) {
+    // Mode halus: tanpa kipas kartu (kartu yang naik jauh dan berputar). Rangkaian kartu memudar masuk bersamaan dengan
+    // amplop yang memudar keluar, dengan skala yang hanya bertambah sedikit (.975 ke 1).
+    deckWrap.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 900, easing: "ease" });
+    deck.animate([{ transform: "scale(.975)" }, { transform: "none" }], { duration: 900, easing: "cubic-bezier(.2,.7,.2,1)" });
+  } else {
     // Kartu menyebar seperti kipas sesaat, lalu rapi menjadi tumpukan.
     const spread = [0, 6, -6, 11, -11, 15, -15, 19, -19];
     cards.forEach((c, i) => {
@@ -1240,26 +1277,24 @@ function showDeck(fan) {
         { transform: tf(b), opacity: b[4] },
       ], { duration: 1500, delay: i * 40, easing: EASE, fill: "backwards" });
     });
-  } else if (REDUCED) deckWrap.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 400 });
+  }
   setTimeout(() => {
     stage.hidden = true;
     $("#band").focus({ preventScroll: true });
-  }, fan && !REDUCED ? 1300 : 450);
+  }, SOFT ? 900 : 1300);
 }
+// Urutan yang sama di mode halus; segel tetap retak, sedangkan tutup yang berputar, kartu yang naik jauh, dan amplop
+// yang jatuh diganti pudar/geser pendek lewat aturan .soft di CSS.
 function openEnvelope() {
   if (opened) return;
   opened = true;
   $("#seal").disabled = true;
   toggleMusic(true);
-  if (REDUCED) {
-    stage.classList.add("fade");
-    return showDeck(false);
-  }
   env.classList.add("crack");
   setTimeout(() => env.classList.add("open"), 380);
   setTimeout(() => env.classList.add("flipped"), 720);
   setTimeout(() => env.classList.add("out"), 1000);
-  setTimeout(() => { stage.classList.add("leave"); showDeck(true); }, 1750);
+  setTimeout(() => { stage.classList.add("leave"); showDeck(); }, 1750);
 }
 $("#seal").addEventListener("click", openEnvelope);
 if (Q.has("open")) {
@@ -1279,7 +1314,7 @@ $("#band").addEventListener("click", () => {
   v.classList.add("off");
   $("#k-1").classList.add("unwrapped");
   $("#h-1").focus({ preventScroll: true });
-  setTimeout(() => enter($("#k-1"), 0), REDUCED ? 0 : 420);
+  setTimeout(() => enter($("#k-1"), 0), 420);
   setTimeout(() => (v.hidden = true), 1700);
 });
 

@@ -87,6 +87,14 @@ Katalog membuka setiap demo lewat [`demo/`](demo/index.html), misalnya `demo/?te
 - Parameter selain `tema` (`to`, `motion`, `open`) diteruskan apa adanya ke tema. Alamat tanpa `tema` atau dengan tema yang tidak dikenal diarahkan kembali ke katalog.
 - Tema baru: tambahkan folder dan namanya di objek `TEMA` di `demo/index.html`, dan kartunya di katalog dengan `id` sama dengan nama folder.
 
+### Gerak dan setelan kurangi-animasi
+Perangkat bisa meminta situs mengurangi gerak (`prefers-reduced-motion`). Di iPhone, browser bisa memintanya walau pemilik HP tidak merasa menyalakan Reduce Motion, misalnya lewat setelan per aplikasi. Tema menanggapinya dengan dua cara:
+
+- **Mode halus** (Lengkung Sage, Parallax & Sway, Garis Editorial, Truntum Terakota, Edisi Monokrom, Amplop Linen, Biru Kabut, Kaca Patri): animasi kecil tetap jalan (memudar, kilau, ornamen melayang dan berayun kecil, garis tergambar, hitung mundur). Gerak besar dimatikan atau diganti memudar: parallax, efek kemiringan HP dan kursor, zoom besar, dan geser jauh, termasuk saat sampul dibuka.
+- **Selalu penuh** (Kelopak Mimpi, Riviera Kobalt): setelan perangkat diabaikan, seperti undangan pesaing. Untuk kembali mengikuti setelan perangkat, lihat komentar di skrip `<head>` tema itu.
+
+`?motion=full` memaksa animasi penuh di semua tema. Katalog menawarkan tombol "Tampilkan dengan animasi penuh" untuk demo di perangkat dengan setelan ini.
+
 ### Undangan klien: RSVP dan ucapan tersimpan di server
 Demo tema di katalog menyimpan RSVP dan ucapan di HP tamu saja (keterangan "Preview" di bawah form). Undangan klien sungguhan mengirimnya ke server, ke API [`felicidad126/mengundang-api`](https://github.com/felicidad126/mengundang-api) di `/api/` pada domain yang sama.
 

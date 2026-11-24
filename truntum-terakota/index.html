@@ -15,8 +15,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="../foto/cover.jpg">
-<!-- Kelas gerak dipasang sedini mungkin supaya keadaan awal animasi tidak sempat berkedip. ?motion=full memaksa animasi penuh. -->
-<script>{const r=document.documentElement,f=new URLSearchParams(location.search).get("motion")==="full";r.classList.add("js");if(f)r.classList.add("force-motion");if(f||!matchMedia("(prefers-reduced-motion: reduce)").matches)r.classList.add("motion")}</script>
+<!-- Kelas gerak dipasang sedini mungkin supaya keadaan awal animasi tidak sempat berkedip. Perangkat yang meminta kurangi
+     gerak mendapat mode halus (.soft): animasi tetap berjalan, hanya gerak besar yang diganti. ?motion=full memaksa animasi penuh. -->
+<script>{const r=document.documentElement;r.classList.add("js","motion");if(new URLSearchParams(location.search).get("motion")!=="full"&&matchMedia("(prefers-reduced-motion: reduce)").matches)r.classList.add("soft")}</script>
 <!-- Motif truntum: dari kata Jawa "tumaruntum", tumbuh lagi / bersemi kembali. Menurut cerita Keraton Surakarta, motif ini
      dibuat Kanjeng Ratu Kencana (Ratu Beruk), permaisuri Sunan Pakubuwana III, dan melambangkan cinta yang tumbuh kembali
      dan terus bersemi. Pada pernikahan adat Jawa, kain truntum lazim dikenakan orang tua mempelai, sebagai lambang
@@ -444,12 +445,42 @@ footer a{color:var(--ink)}
   footer{padding-bottom:max(26px,env(safe-area-inset-bottom))}
 }
 
-/* Reduced motion: tanpa geser/berkelip, tetap fade lembut. ?motion=full memaksa animasi penuh untuk demo. */
-@media (prefers-reduced-motion:reduce){
-  html.js:not(.force-motion) .rv{transform:none;transition:opacity .6s ease}
-  html:not(.force-motion) .music.playing svg,html:not(.force-motion) .music[aria-busy="true"] svg,html:not(.force-motion) .lb.open{animation:none}
-  html:not(.force-motion) .lb img.anim{transition:none}
-}
+/* ---------- mode halus ----------
+   Perangkat meminta kurangi gerak dan URL tidak memakai ?motion=full: <html> diberi kelas .soft (skrip di <head>).
+   Animasi di atas tetap berjalan (pudar, kelip, bunga mekar, garis bingkai tumbuh, tirai foto, kilau, hitung mundur);
+   yang diganti hanya gerak besar: zoom foto, kata nama yang naik jauh, bunga gugur yang melintasi layar, putaran
+   besar, dan sampul yang terangkat keluar layar. */
+/* Foto tetap tersingkap tirai, tetapi gambarnya diam di ukuran asli (tanpa zoom 1,14 -> 1). */
+.soft :is(.rv,.gate,.stage) .ph img,.soft .ph.rv img{transform:none}
+/* Bunga mekar dengan putaran kecil (-8°, bukan -70°). */
+.soft .bloom{transform:rotate(-8deg)}
+/* Nama: tiap kata memudar sambil naik pendek (.28em, paling jauh ±20px), bukan naik dari balik garis dasarnya. */
+.soft .split .w{clip-path:none}
+.soft .split .w>span{opacity:0;transform:translateY(.28em);transition:opacity 1s ease calc(var(--nd,.2s) + var(--wi) * .12s),transform 1.25s cubic-bezier(.2,.7,.2,1) calc(var(--nd,.2s) + var(--wi) * .12s)}
+.soft :is(.split.in,.play .split) .w>span{opacity:1;transform:none}
+/* Penunjuk gulir: titik turun 16px (bukan 44px). */
+.soft .cue svg{animation-name:cue-soft}
+@keyframes cue-soft{0%{transform:none;opacity:0}20%{opacity:1}80%{opacity:1}100%{transform:translateY(16px);opacity:0}}
+/* Pita pinggiran: hanya terbuka dari tengah, tanpa bergeser satu motif. */
+.soft .band::before{transform:none}
+/* Hitung mundur: digit berganti dengan memudar dan geser pendek (30% tinggi digit, bukan 100%). */
+.soft .cd .dg .n{animation-name:rollIn-soft}
+.soft .cd .dg .o{animation-name:rollOut-soft}
+@keyframes rollIn-soft{from{transform:translateY(30%);opacity:0}}
+@keyframes rollOut-soft{to{transform:translateY(-30%);opacity:0}}
+/* Bunga tanda air kartu rekening berayun pelan (±6°), tidak berputar penuh. */
+.soft .bank .wm{animation:wm-sway 14s ease-in-out infinite alternate}
+@keyframes wm-sway{from{transform:rotate(-6deg)}to{transform:rotate(6deg)}}
+/* Bunga gugur tidak melintasi layar: tiap bunga tinggal di ketinggiannya (--fy dari skrip), turun pelan 16px sambil
+   muncul lalu memudar, dan berayun kecil (±8°, separuh jarak ayun). */
+.soft .fall{top:var(--fy);height:0;animation:drift calc(var(--t) / 3) ease-in-out var(--dl) infinite}
+.soft .sky .fall svg{animation-name:sway-soft}
+@keyframes drift{from{transform:translateY(-8px);opacity:0}35%,65%{opacity:1}to{transform:translateY(8px);opacity:0}}
+@keyframes sway-soft{from{transform:translateX(calc(var(--sw) * -.5)) rotate(-8deg)}to{transform:translateX(calc(var(--sw) * .5)) rotate(8deg)}}
+/* Buka Undangan: sampul tidak terangkat. Isinya memudar dan sedikit mengecil (aturan .gate.opening .gate-in di atas),
+   bunga sudut memudar bergiliran tanpa berputar lepas, lalu latarnya memudar memperlihatkan undangan (±1 detik). */
+.soft .gate.opening{transform:none;opacity:0;transition:opacity .8s ease .2s}
+.soft .gate.opening .kn,.soft .gate.opening .split .w>span,.soft .gate.opening .ph img{transform:none}
 .music.dodge{opacity:0!important;pointer-events:none!important}
 </style>
 <script src="/acara.js"></script>
@@ -660,12 +691,12 @@ footer a{color:var(--ink)}
 <script>
 const root = document.documentElement;
 const params = new URLSearchParams(location.search);
-// Kelas .motion / .force-motion sudah dipasang skrip di <head>.
-const MOTION = root.classList.contains("motion");
+// Kelas .motion / .soft sudah dipasang skrip di <head>. Mode halus: gerak besar diganti (aturan .soft di CSS).
+const SOFT = root.classList.contains("soft");
 const $ = (q, el = document) => el.querySelector(q);
 const $$ = (q, el = document) => [...el.querySelectorAll(q)];
 // HP: tirai foto memakai jendela .cv yang digeser (lihat CSS .cv-on), bukan clip-path yang digambar ulang tiap frame.
-if (MOTION && matchMedia("(pointer: coarse)").matches) {
+if (matchMedia("(pointer: coarse)").matches) {
   root.classList.add("cv-on");
   for (const img of $$(".ph > img")) { const w = document.createElement("span"); w.className = "cv"; img.before(w); w.append(img); }
 }
@@ -729,9 +760,10 @@ for (const sky of $$("[data-sky]")) {
     h += `<svg style="left:${x.toFixed(1)}%;top:${y.toFixed(1)}%;width:${size.toFixed(1)}px;height:${size.toFixed(1)}px;--o:${(0.35 + r() * 0.5).toFixed(2)};--t:${(3 + r() * 4).toFixed(1)}s;--dl:${(-r() * 6).toFixed(1)}s"><use href="#${big ? "tr" : "tr-s"}"/></svg>`;
   }
   // Bunga gugur: hanya di lajur tepi kiri/kanan supaya tidak melintas di atas foto dan nama.
-  if (MOTION) for (let i = 0; i < 6; i++) {
+  // Mode halus: tidak jatuh, tetapi tinggal di ketinggian --fy (tersebar 18–83%) dan melayang pelan (lihat .soft .fall).
+  for (let i = 0; i < 6; i++) {
     const x = i % 2 ? 87 + r() * 11 : 2 + r() * 11, size = 7 + r() * 6, t = 16 + r() * 12;
-    h += `<i class="fall" style="left:${x.toFixed(1)}%;--t:${t.toFixed(1)}s;--dl:${(-r() * t).toFixed(1)}s;--sw:${(8 + r() * 10).toFixed(0)}px"><svg style="width:${size.toFixed(1)}px;height:${size.toFixed(1)}px;--o:${(0.35 + r() * 0.3).toFixed(2)}"><use href="#${r() < 0.35 ? "tr" : "tr-s"}"/></svg></i>`;
+    h += `<i class="fall" style="left:${x.toFixed(1)}%;--t:${t.toFixed(1)}s;--dl:${(-r() * t).toFixed(1)}s;--sw:${(8 + r() * 10).toFixed(0)}px${SOFT ? `;--fy:${18 + i * 13}%` : ""}"><svg style="width:${size.toFixed(1)}px;height:${size.toFixed(1)}px;--o:${(0.35 + r() * 0.3).toFixed(2)}"><use href="#${r() < 0.35 ? "tr" : "tr-s"}"/></svg></i>`;
   }
   sky.innerHTML = h;
 }
@@ -784,7 +816,6 @@ function setDigits(b, v) {
   const old = b.dataset.v || "";
   if (old === v) return;
   b.dataset.v = v;
-  if (!MOTION) { b.textContent = v; return; }
   if (old.length !== v.length) { b.innerHTML = [...v].map((c) => `<span class="dg"><span class="n">${c}</span></span>`).join(""); return; }
   [...v].forEach((c, i) => { if (c !== old[i]) b.children[i].innerHTML = cdVis ? `<span class="o" aria-hidden="true">${old[i]}</span><span class="n">${c}</span>` : `<span>${c}</span>`; });
 }
@@ -820,7 +851,7 @@ function splitWords(el) {
   }
   el.classList.add("split");
 }
-if (MOTION) $$(".gate .names, .stage .names, .hero .names, .person h3, .closing .names").forEach(splitWords);
+$$(".gate .names, .stage .names, .hero .names, .person h3, .closing .names").forEach(splitWords);
 
 // Nama panjang: huruf mengecil sampai muat satu baris (paling kecil 60% ukuran semula), baru setelah itu boleh turun baris.
 function fitLine(el, ratio = 0.6) {
@@ -891,7 +922,8 @@ function openInvite(instant) {
   $(".stage").classList.add("play");
   $("#music").classList.add("show");
   layoutNames();
-  if (instant || !MOTION) { gate.classList.add("gone"); startReveal(); return; }
+  if (instant) { gate.classList.add("gone"); startReveal(); return; }
+  // Mode halus: sampul memudar di tempat, tidak terangkat (lihat .soft .gate.opening di CSS).
   gate.classList.add("opening");
   setTimeout(startReveal, 650);
   setTimeout(() => gate.classList.add("gone"), 1500);

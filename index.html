@@ -239,8 +239,8 @@ html.js .rv.in{opacity:1;transform:none}
         </form>
         <p class="live" id="live" aria-live="polite">Sampul demo akan menyapa: <b>Nama Tamu</b>. Pilih temanya di bawah.</p>
         <div class="motion-opt" id="motionOpt" hidden>
-          <p id="motionText">Perangkat Anda memakai setelan "kurangi animasi", jadi demo tampil tanpa gerakan.</p>
-          <button class="btn btn-line btn-sm" id="motionBtn" type="button" aria-pressed="false">Tampilkan dengan animasi</button>
+          <p id="motionText">Perangkat Anda memakai setelan "kurangi animasi", jadi sebagian demo tampil dengan gerakan yang dikurangi.</p>
+          <button class="btn btn-line btn-sm" id="motionBtn" type="button" aria-pressed="false">Tampilkan dengan animasi penuh</button>
         </div>
       </div>
 
@@ -438,8 +438,9 @@ if (TOKO.nama) {
 $$("[data-wa]").forEach((a) => { a.href = TOKO.waLink(a.dataset.wa); });
 
 // Coba dengan nama: semua tautan demo ikut memakai nama yang diketik
-// Di perangkat dengan setelan "kurangi animasi", tema tampil tanpa gerakan. Pengunjung katalog bisa memilih melihat
-// demo dengan animasi (&motion=full); undangan asli untuk tamu tetap mengikuti setelan perangkat masing-masing.
+// Di perangkat dengan setelan "kurangi animasi", sebagian besar tema tampil dengan gerakan yang dikurangi (parallax,
+// zoom besar, dan geser jauh dimatikan; Kelopak Mimpi dan Riviera Kobalt tetap penuh). Pengunjung katalog bisa memilih
+// melihat demo dengan animasi penuh (&motion=full); undangan asli untuk tamu tetap mengikuti setelan perangkat masing-masing.
 const RM = matchMedia("(prefers-reduced-motion: reduce)");
 const motionOpt = $("#motionOpt"), motionBtn = $("#motionBtn");
 let fullMotion = false;
@@ -448,10 +449,10 @@ function syncMotion() {
   motionOpt.hidden = !RM.matches;
   const on = RM.matches && fullMotion;
   motionBtn.setAttribute("aria-pressed", String(on));
-  motionBtn.textContent = on ? "✓ Demo tampil dengan animasi" : "Tampilkan dengan animasi";
+  motionBtn.textContent = on ? "✓ Demo tampil dengan animasi penuh" : "Tampilkan dengan animasi penuh";
   $("#motionText").textContent = on
     ? "Perangkat Anda memakai setelan \"kurangi animasi\". Demo kini dibuka dengan animasi penuh."
-    : "Perangkat Anda memakai setelan \"kurangi animasi\", jadi demo tampil tanpa gerakan.";
+    : "Perangkat Anda memakai setelan \"kurangi animasi\", jadi sebagian demo tampil dengan gerakan yang dikurangi.";
 }
 motionBtn.addEventListener("click", () => {
   fullMotion = !fullMotion;
