@@ -225,7 +225,9 @@ html.soft-motion .g-photo img{animation-name:appear}
 }
 
 /* ---------- Bagian umum ---------- */
-main{display:block;outline:none}
+main{display:block}
+/* main hanya menerima fokus dari skrip (tabindex="-1"); `main{outline:none}` kalah dari :focus-visible, jadi pakai :focus. */
+main:focus{outline:none}
 .sec{position:relative;padding:clamp(76px,9vw,112px) 20px;text-align:center}
 .wrap{position:relative;z-index:2;max-width:1080px;margin:0 auto}
 .narrow{max-width:640px;margin-left:auto;margin-right:auto}

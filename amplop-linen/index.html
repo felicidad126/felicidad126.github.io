@@ -56,6 +56,8 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
 [hidden]{display:none!important}
 button{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+/* Judul kartu 1 dan 7 hanya menerima fokus dari skrip (tabindex="-1") agar pembaca layar ikut pindah; tanpa garis. */
+h2[tabindex="-1"]:focus{outline:none}
 
 /* overflow:clip (bukan hidden): kartu tetangga yang tersingkir ke samping melebihi lebar layar, dan kotak overflow:hidden
    masih bisa digulir lewat skrip/fokus sehingga seluruh area kartu tergeser. clip tidak membuat area gulir. */
