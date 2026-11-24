@@ -27,6 +27,9 @@
 (() => {
   const full = true;
   document.documentElement.classList.add(full ? "motion" : "calm");
+  // .sda: browser menjalankan animasi terikat gulir (animation-timeline), sehingga parallax gulir kelopak dihitung
+  // compositor, bukan skrip tiap frame. Tanpa dukungan (iOS lama), parallax dihitung skrip seperti sebelumnya.
+  if (full && typeof CSS !== "undefined" && CSS.supports("animation-timeline: view()")) document.documentElement.classList.add("sda");
 })();
 </script>
 <style>
@@ -95,7 +98,10 @@ html.motion .pu{animation:unfurl 1.9s var(--ease) var(--ud,0s) both}
    dijalankan compositor, sehingga dihitung ulang di thread utama tiap frame. Di luar layar napasnya berhenti. */
 html.motion .orb .pf{animation:orbIn 1.6s ease var(--ud,0s) both}
 html.motion .orb .pf::before{animation:breathe 6s ease-in-out calc(var(--ud,0s) + 1.6s) infinite alternate}
-html.motion .pe .pf{animation:drift var(--dur,15s) ease-in-out var(--del,0s) infinite alternate}
+/* Melayang: nama animasi dan @keyframes-nya (geser dan putar acak) dibuat skrip per kelopak. Nilainya ditulis langsung,
+   bukan lewat var(): animasi dengan var() di keyframes dihitung ulang kira-kira dua kali lebih lama di thread utama
+   pada tiap frame selama halaman digulir. */
+html.motion .pe .pf{animation:var(--dur,15s) ease-in-out var(--del,0s) infinite alternate}
 html.motion .petals.vis .pr i{animation:edgeRun 9s ease-in-out calc(var(--ud,0s) + 2s) infinite}
 /* Sebelum bagiannya terlihat, kelopak tak tampak (opacity 0); animasi di dalamnya juga ditahan, karena animasi pada
    elemen yang tak tampak tidak dijalankan compositor dan justru dihitung di thread utama tiap frame.
@@ -105,10 +111,24 @@ html.motion .petals:not(.vis) .pe .pf,html.motion .petals:not(.vis) .orb .pf::be
 @keyframes unfurl{from{opacity:0;transform:scale(.3) rotate(-28deg)}}
 @keyframes orbIn{from{opacity:0;transform:scale(.2)}}
 @keyframes breathe{to{opacity:.55;transform:scale(1.2)}}
-@keyframes drift{to{transform:translate(var(--dx,10px),var(--dy,-14px)) rotate(var(--dr,6deg))}}
 @keyframes edgeRun{0%{transform:none;opacity:0}12%{opacity:.95}60%{opacity:.95}78%,100%{transform:rotate(360deg);opacity:0}}
 html.calm .petals :is(.pu,.orb .pf){opacity:0;transition:opacity 1.2s ease var(--ud,0s)}
 html.calm .petals.in :is(.pu,.orb .pf){opacity:1}
+/* Parallax gulir kelopak sebagai animasi terikat gulir (html.sda): dijalankan compositor tanpa kerja thread utama.
+   Dulu skrip menghitungnya tiap frame (posisi tiap kelopak dibaca, transform ditulis), dan itulah sebagian besar kerja
+   thread utama saat digulir. Pemetaannya sama dengan versi skrip (paint): p = (letak kelopak − tengah layar) / tinggi
+   layar, geser −p·k·PAR_Y dan putar p·k·PAR_R·arah. Timeline view() milik kelopak sendiri (transformnya tidak ikut
+   dihitung); inset −150% memperluas layar 1,5 tinggi layar ke atas dan ke bawah, sehingga rentang entry-crossing 0% s.d.
+   exit-crossing 0% (tepi atas kelopak di bawah layar diperluas s.d. di atasnya) sama dengan p = 2 s.d. −2, berapa pun
+   tinggi kelopaknya. Nama animasi dan @keyframes-nya (nilai di p = ±2) dibuat skrip per pasangan kedalaman dan arah,
+   dari PAR_Y dan PAR_R. Kursor dan kemiringan HP tetap dari skrip, lewat properti translate. Kelopak sampul tidak ikut
+   parallax gulir (sampul tidak digulir). */
+html.sda main :is(.pe,.orb){animation:linear both;animation-timeline:view(block -150%);animation-range:entry-crossing 0% exit-crossing 0%}
+/* Animasi gulir ini sengaja tidak ditahan di luar layar (seperti animasi melayang): animasi terikat gulir yang ditahan
+   membuat browser menyusun ulang seluruh layer (layerize) pada sebagian besar frame selama digulir. */
+/* Timeline view() mengikuti wadah gulir terdekat; overflow:hidden menjadikan bagian (dan kotak kelopak kartu acara)
+   wadah gulir sendiri. overflow:clip memotong sama persis tanpa menjadi wadah gulir. */
+html.sda .sec,html.sda .ev .petals{overflow:clip}
 
 /* ---------- Kubah cahaya (skylight dome) ---------- */
 /* overflow:hidden: glow yang bernapas (membesar 5%) tidak melewati kotak kubah. Tanpa ini luas gulir sampul (dan
@@ -147,6 +167,11 @@ html.motion body.locked main :is(.dome .glow,.rays){animation-play-state:paused}
 .ph-run i{position:absolute;inset:-50%;opacity:0;background:conic-gradient(from calc(var(--a0,180deg) - 8deg),rgba(255,248,232,0),#fff8e8 8deg,rgba(255,248,232,0) 16deg,rgba(255,248,232,0))}
 html.motion .ph.in .ph-run i,html.motion .gate .ph-run i{animation:edgeRun2 10s ease-in-out 2.4s infinite}
 @keyframes edgeRun2{0%{transform:none;opacity:0}10%{opacity:.9}55%{opacity:.9}70%,100%{transform:rotate(var(--turn,360deg));opacity:0}}
+/* Animasi yang berulang terus (kilau bingkai foto, napas kubah, kilau tombol) ditahan selama jauh dari layar (.vis
+   dipasang skrip, 120px sebelum masuk layar). Setiap animasi yang berjalan, juga yang tak terlihat, dihitung ulang di
+   thread utama pada tiap frame selama halaman digulir; tanpa ini kilau bingkai semua foto yang pernah muncul terus
+   berjalan. (Sesudah aturan animasinya: shorthand animation mengembalikan play-state ke running.) */
+html.motion main .ph:not(.vis) .ph-run i,html.motion main .dome:not(.vis) .glow,html.motion main .btn:not(.vis)::after{animation-play-state:paused}
 html.motion .ph.rv .ph-edge{transition:opacity 1.4s ease calc(var(--rd,0s) + .6s)}
 html.motion .ph.rv:not(.in) .ph-edge{opacity:0}
 /* Foto muncul dari jendela kelopak yang membesar, sekali kabur lalu tajam. */
@@ -794,19 +819,24 @@ document.head.insertAdjacentHTML("beforeend", `<style>${["a", "b", "c", "d"].map
   const u = strokeMask($("#p-" + k).getAttribute("d"), "0 0 100 140", 1.6);
   return `.pr-${k}{-webkit-mask-image:${u};mask-image:${u}}`;
 }).join("")}</style>`);
-const PE = [];
+const PE = [], DRIFT = [];
 $$(".petals").forEach((box, bi) => {
   const r = rand(bi * 977 + 31);
   box.innerHTML = SETS[box.dataset.set].map(([k, c, x, y, s, rot, depth, o = {}], i) => {
     const ud = f((box.closest(".gate") ? .3 : .05) + i * .16 + r() * .2);
-    const fl = `--dur:${f(12 + r() * 8)}s;--del:${f(-r() * 10)}s;--dx:${f((r() - .5) * 28)}px;--dy:${f(-6 - r() * 16)}px;--dr:${f((r() - .5) * 14)}deg`;
+    // Bilangan acak tetap diambil untuk bulatan cahaya juga, supaya urutannya (dan gerak kelopak lain) tidak berubah.
+    const dur = f(12 + r() * 8), del = f(-r() * 10), dx = f((r() - .5) * 28), dy = f(-6 - r() * 16), dr = f((r() - .5) * 14);
     if (k === "o") return `<div class="orb" data-k="${depth}" style="left:${x}%;top:${y}%;--s:${s};--ud:${ud}s"><div class="pf"></div></div>`;
-    return `<div class="pe" data-k="${depth}" style="left:${x}%;top:${y}%;--s:${s};--ud:${ud}s"><div class="pf" style="${fl}">${petalSvg(k, c, o.e)}</div></div>`;
+    // Gerak melayang: @keyframes sendiri per kelopak dengan nilai langsung (lihat CSS .pe .pf).
+    const n = `kmDrift${bi}-${i}`;
+    DRIFT.push(`@keyframes ${n}{to{transform:translate(${dx}px,${dy}px) rotate(${dr}deg)}}`);
+    return `<div class="pe" data-k="${depth}" style="left:${x}%;top:${y}%;--s:${s};--ud:${ud}s"><div class="pf" style="--dur:${dur}s;--del:${del}s;animation-name:${n}">${petalSvg(k, c, o.e)}</div></div>`;
   }).join("");
   // Putaran dipasang lewat properti rotate supaya tidak bertabrakan dengan animasi transform.
   $$(".pe", box).forEach((p, i) => { for (const u of $$(".pu", p)) u.style.rotate = `${SETS[box.dataset.set].filter((d) => d[0] !== "o")[i][5]}deg`; });
   PE.push(box);
 });
+document.head.insertAdjacentHTML("beforeend", `<style>${DRIFT.join("")}</style>`);
 
 /* ---------- Foto berbentuk kelopak ---------- */
 // a: kelopak bulat yang ujungnya melengkung ke kiri atas; b/br: tetes yang ujungnya condong ke kanan/kiri; c: ujung lembut di kiri bawah; d: tetes menggantung.
@@ -863,11 +893,14 @@ const VIS = new Set();
 const seen = new IntersectionObserver((es) => es.forEach((e) => {
   e.target.classList.toggle("vis", e.isIntersecting);
   if (e.isIntersecting) VIS.add(e.target); else VIS.delete(e.target);
-  // Kelopak yang baru mendekati layar langsung ditempatkan menurut posisi gulir sekarang, supaya tidak melompat dari
-  // posisi lamanya saat tampil.
+  // Kelopak yang baru mendekati layar langsung ditempatkan menurut posisi gulir sekarang (dengan html.sda: menurut
+  // kursor/kemiringan sekarang), supaya tidak melompat dari posisi lamanya saat tampil.
   if (FULL && e.isIntersecting) kickPaint();
 }), { rootMargin: "120px 0px" });
 PE.forEach((b) => seen.observe(b));
+// Foto, kubah, dan tombol yang jauh dari layar menahan animasi berulangnya (lihat CSS .vis).
+const near = new IntersectionObserver((es) => es.forEach((e) => e.target.classList.toggle("vis", e.isIntersecting)), { rootMargin: "120px 0px" });
+$$("main .ph, main .dome, main .btn:not(.line)").forEach((el) => near.observe(el));
 
 /* ---------- Parallax: kelopak bergeser menurut kedalaman saat digulir, mengikuti kursor atau kemiringan HP ---------- */
 let tx = 0, ty = 0, cx = 0, cy = 0, praf = 0;
@@ -877,9 +910,37 @@ let tx = 0, ty = 0, cx = 0, cy = 0, praf = 0;
 // tengah bagian), supaya kelopak tetap terasa hidup di iPhone yang tidak memakai kemiringan HP, tetapi jarak gesernya
 // lebih pendek sehingga kelopak jarang terpotong tepi bagian. Kelopak kiri dan kanan berputar berlawanan arah.
 const PAR_Y = 130, PAR_R = 8;
+// Arah putar: kelopak di kiri searah jarum jam, di kanan berlawanan; bulatan cahaya tidak berputar.
+const side = (el) => (el.kmSide ??= el.classList.contains("orb") ? 0 : parseFloat(el.style.left) < 50 ? 1 : -1);
+// html.sda: parallax gulir dijalankan compositor (animasi terikat gulir, lihat CSS). Skrip hanya menggeser kelopak
+// menurut kursor/kemiringan HP, lewat properti translate (titik tengah −50% tetap), sehingga tidak bertabrakan dengan
+// transform animasi gulir; selama gulir biasa skrip tidak berjalan sama sekali.
+const SDA = html.classList.contains("sda");
+if (SDA) {
+  // Satu @keyframes per pasangan kedalaman k dan arah, berisi nilai di p = 2 dan p = −2 (ujung rentang animasi).
+  // Nilainya ditulis langsung, bukan lewat var(): keyframes dengan var() membuat style tiap kelopak dihitung ulang
+  // kira-kira dua kali lebih lama di thread utama pada tiap frame gulir.
+  const kf = {}, r2 = (v) => Math.round(v * 100) / 100 || 0;
+  for (const el of $$("main .petals > *")) {
+    const k = +el.dataset.k || 1, sd = side(el), n = `kmPar${String(k).replace(".", "-")}${["kanan", "bulat", "kiri"][sd + 1]}`;
+    kf[n] ??= `@keyframes ${n}{from{transform:translateY(${r2(-2 * k * PAR_Y)}px) rotate(${r2(2 * k * PAR_R * sd)}deg)}to{transform:translateY(${r2(2 * k * PAR_Y)}px) rotate(${r2(-2 * k * PAR_R * sd)}deg)}}`;
+    el.style.animationName = n;
+  }
+  document.head.insertAdjacentHTML("beforeend", `<style>${Object.values(kf).join("")}</style>`);
+}
 function paint() {
   praf = 0;
   cx += (tx - cx) * .09; cy += (ty - cy) * .09;
+  if (SDA) {
+    for (const box of VIS) for (const el of box.children) {
+      const k = +el.dataset.k || 1, x = f(cx * k * 18), y = f(cy * k * 14);
+      // Hanya ditulis bila berubah: tiap tulisan menghitung ulang style kelopak itu.
+      const v = x || y ? `calc(${x}px - 50%) calc(${y}px - 50%)` : "";
+      if ((el.kmT ?? "") !== v) { el.kmT = v; el.style.translate = v; }
+    }
+    if (Math.abs(tx - cx) > .003 || Math.abs(ty - cy) > .003) kickPaint();
+    return;
+  }
   const h = innerHeight;
   // Semua posisi dibaca dulu, baru transform ditulis: baca-tulis bergantian memaksa hitung ulang style di tiap kotak.
   // offsetTop adalah letak kelopak tanpa transform (titik tengahnya, karena kelopak digeser -50%).
@@ -891,9 +952,8 @@ function paint() {
   for (const [box, pp] of ps) {
     [...box.children].forEach((el, i) => {
       const k = +el.dataset.k || 1, p = pp ? pp[i] : 0;
-      // Arah putar: kelopak di kiri searah jarum jam, di kanan berlawanan; bulatan cahaya tidak berputar.
-      el.kmSide ??= el.classList.contains("orb") ? 0 : parseFloat(el.style.left) < 50 ? 1 : -1;
-      el.style.transform = `translate3d(${f(cx * k * 18)}px,${f(cy * k * 14 - p * k * PAR_Y)}px,0)${el.kmSide ? ` rotate(${f(p * k * PAR_R * el.kmSide)}deg)` : ""}`;
+      const sd = side(el);
+      el.style.transform = `translate3d(${f(cx * k * 18)}px,${f(cy * k * 14 - p * k * PAR_Y)}px,0)${sd ? ` rotate(${f(p * k * PAR_R * sd)}deg)` : ""}`;
     });
   }
   if (Math.abs(tx - cx) > .003 || Math.abs(ty - cy) > .003) kickPaint();
@@ -920,8 +980,11 @@ function listenTilt() {
 // iPhone tidak mengirim apa pun, jadi di iPhone kelopak tetap melayang dan mengikuti gulir, hanya tidak mengikuti
 // kemiringan. Ada atau tidaknya requestPermission tidak dipakai untuk menebak perangkat: Chrome baru juga memilikinya.
 if (FULL) {
-  addEventListener("scroll", kickPaint, { passive: true });
-  addEventListener("resize", kickPaint);
+  // Dengan html.sda posisi gulir tidak dipakai skrip (parallax gulir sudah di compositor).
+  if (!SDA) {
+    addEventListener("scroll", kickPaint, { passive: true });
+    addEventListener("resize", kickPaint);
+  }
   addEventListener("pointermove", (e) => {
     if (e.pointerType !== "mouse") return;
     tx = clamp((e.clientX / innerWidth - .5) * 2); ty = clamp((e.clientY / innerHeight - .5) * 2);
