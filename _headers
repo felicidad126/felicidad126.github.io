@@ -5,6 +5,9 @@
 # Foto dan gambar katalog disimpan 30 hari. Bila foto diganti, pakai nama berkas
 # baru supaya tamu tidak melihat versi lama dari cache.
 # Font tidak pernah berubah isinya, jadi disimpan setahun.
+#
+# HTML tidak perlu aturan di sini karena bawaan Pages sudah selalu diperiksa ulang.
+# Di nginx, HTML butuh aturan "no-cache" sendiri; lihat bagian Hosting di README.
 
 /foto/*
   Cache-Control: public, max-age=2592000
