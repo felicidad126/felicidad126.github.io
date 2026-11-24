@@ -26,6 +26,9 @@
   const r = document.documentElement;
   r.classList.add("motion");
   if (matchMedia("(prefers-reduced-motion: reduce)").matches && new URLSearchParams(location.search).get("motion") !== "full") r.classList.add("soft");
+  // Browser yang mendukung animasi terikat gulir (.sda) menggeser pantulan cahaya di thread kompositor, tanpa skrip per frame
+  // (lihat CSS "Pantulan cahaya kaca di dinding"); browser lain memakai skrip cadangan.
+  if (window.CSS && CSS.supports("animation-timeline: view()")) r.classList.add("sda");
 })();
 
 /* Jendela orsi dan kaca patri. Kisi bawah memakai pola bulatan dan belah ketupat: tiap sel berisi bulatan kaca bercincin, dan
@@ -234,13 +237,15 @@ html.motion .btn:not(.line)::after{animation:glint 6s 2.4s ease-in-out infinite}
 .w-tex{position:absolute;inset:0;background:var(--glass) 0 0/300px 300px;mix-blend-mode:soft-light;opacity:.75;pointer-events:none}
 .tex{mix-blend-mode:soft-light;opacity:.75}
 .sheen{mix-blend-mode:screen}
-.pn{stroke:var(--walnut-d);stroke-width:2;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:0;transition:fill-opacity 1s ease var(--d,0s),stroke-dashoffset 1.6s var(--ease) calc(var(--d,0s) * .35)}
+/* --lag: keping yang transisinya baru dimulai beberapa frame kemudian (lihat skrip "kaca dinyalakan bertahap") tundaannya
+   dikurangi selisih itu, jadi tetap menyala pada saat yang sama. */
+.pn{stroke:var(--walnut-d);stroke-width:2;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:0;transition:fill-opacity 1s ease calc(var(--d,0s) - var(--lag,0s)),stroke-dashoffset 1.6s var(--ease) calc(var(--d,0s) * .35 - var(--lag,0s))}
 .glow{opacity:0;mix-blend-mode:screen;transition:opacity 1.8s ease 1.4s}
 .lit .glow,.in .glow{opacity:1}
 /* Matahari terbit di sampul: kaca redup lalu menyala dari bawah. */
 html.motion .sunrise:not(.lit) .pn{fill-opacity:.14}
 /* Bagian lain: kisi tergambar, lalu kaca terisi warna. */
-html.motion .draw:not(.in) .pn:not(.vl){fill-opacity:0;stroke-dashoffset:1}
+html.motion .draw:not(.in) .pn:not(.vl),html.motion .draw .pn.wait{fill-opacity:0;stroke-dashoffset:1}
 /* Tirai kaca di depan potret: redup, menyala sesaat terkena cahaya, lalu luruh keping demi keping. */
 html.motion .win:not(.in) .vl{fill-opacity:.14}
 html.motion .win.in .vl{animation:veil 2.4s ease calc(var(--d) + .5s) both}
@@ -258,7 +263,7 @@ html.motion .light::before{animation:shimmer 16s ease-in-out infinite alternate}
 /* Pantulan di isi undangan. Chromium tidak menjalankan animasi di GPU bila elemennya tidak terlihat saat animasi mulai
    (tertutup sampul atau di luar layar); animasinya lalu dihitung dan dilukis ulang di thread utama tiap frame, termasuk SVG
    ber-blur di dalamnya. Karena itu kilau baru berjalan saat pantulan masuk layar (.on, dipasang skrip). Pantulan juga
-   digeser skrip mengikuti gulir, jadi dijadikan layer sendiri supaya geserannya tidak melukis ulang halaman. */
+   digeser mengikuti gulir (lihat di bawah), jadi dijadikan layer sendiri supaya geserannya tidak melukis ulang halaman. */
 html.motion main .light{will-change:transform}
 html.motion main .light::before{animation:none}
 html.motion main .light.on::before{animation:shimmer 16s ease-in-out infinite alternate}
@@ -266,6 +271,19 @@ html.motion main .light.on::before{animation:shimmer 16s ease-in-out infinite al
 @media (pointer:coarse){html.motion main .light.on::before{animation:none}}
 /* Mode halus: pantulan tidak digeser mengikuti gulir, jadi tidak perlu layer sendiri; kilaunya tetap berjalan seperti di atas. */
 html.soft main .light{will-change:auto}
+/* Geseran mengikuti gulir sebagai animasi terikat gulir: browser menjalankannya di thread kompositor, jadi pantulan tetap
+   seiring dengan gulir walau thread utama sedang sibuk, dan tidak ada skrip per frame. Pemetaannya sama dengan skrip cadangan:
+   p = (pusat bagian − pusat layar) / tinggi layar × k, pantulan bergeser (−90p px, 60p px) dan berputar −6p°. Linimasa memakai
+   bagian induknya, sepanjang bagian itu terlihat (cover): p berubah linear dari p0 (tepi atas bagian di tepi bawah layar) ke −p0
+   (tepi bawahnya di tepi atas layar), dengan p0 = (tinggi layar + tinggi bagian) / (2 × tinggi layar) × k, diisi skrip ke --p0
+   saat dimuat dan saat ukuran berubah. Di luar rentang itu bagiannya tidak terlihat dan nilainya tetap, jadi browser tidak perlu
+   menghitung ulang style pantulan di bagian lain tiap frame. */
+html.sda:not(.soft) main > section{view-timeline:--kp block}
+html.sda:not(.soft) main .light{animation:sway linear both;animation-timeline:--kp}
+@keyframes sway{
+  from{transform:translate3d(calc(var(--p0,0) * -90px),calc(var(--p0,0) * 60px),0) rotate(calc(var(--p0,0) * -6deg))}
+  to{transform:translate3d(calc(var(--p0,0) * 90px),calc(var(--p0,0) * -60px),0) rotate(calc(var(--p0,0) * 6deg))}
+}
 
 /* ---------- Sampul ---------- */
 .gate{position:fixed;inset:0;z-index:50;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;background:radial-gradient(90% 60% at 50% 30%,#fbf5ea,rgba(251,245,234,0) 70%),var(--plaster) var(--tex)}
@@ -847,9 +865,35 @@ const BEADS = Array.from({ length: 24 }, (_, k) => {
 $$(".medal").forEach((el) => el.insertAdjacentHTML("beforeend", `<svg viewBox="0 0 100 100" aria-hidden="true" focusable="false"><circle class="o" cx="50" cy="50" r="48"/><circle class="i" cx="50" cy="50" r="43"/>${BEADS}</svg>`));
 
 /* ---------- Muncul saat masuk layar (.in) ---------- */
+// Kaca dinyalakan bertahap. Jendela dan pita terdiri dari 100–200 keping, masing-masing dengan dua transisi; bila semuanya
+// dimulai dalam satu frame, frame itu menghitung style dan membuat ratusan transisi sekaligus (±10 ms, lebih dari satu frame
+// 120 Hz). Keping dimulai dalam beberapa frame berturut-turut (paling banyak WAVE per frame, yang tundaannya terpendek lebih
+// dulu); keping yang menunggu (.wait) tetap redup seperti sebelum .in, dan tundaannya dikurangi selisih waktu frame (--lag),
+// jadi setiap keping tetap mulai menyala dan tergambar pada saat yang sama seperti bila semuanya dimulai bersamaan.
+const WAVE = 50;
+function lightUp(el) {
+  const ps = $$(".pn:not(.vl)", el).map((p) => [p, parseFloat(p.style.getPropertyValue("--d")) || 0]).sort((a, b) => a[1] - b[1]).map(([p]) => p);
+  if (ps.length <= WAVE) return el.classList.add("in");
+  // Frame pertama: .in dipasang (cahaya, tirai, layer animasi mulai seperti biasa) dan semua keping menunggu. Mulai frame
+  // berikutnya keping dilepas per gelombang; transisi yang dimulai di sebuah frame memakai waktu frame itu (t), jadi --lag
+  // gelombang ke-n adalah t-nya dikurangi t gelombang pertama.
+  requestAnimationFrame(() => {
+    for (const p of ps) p.classList.add("wait");
+    el.classList.add("in");
+    let i = 0, t0 = 0;
+    const next = (t) => {
+      t0 ||= t;
+      const lag = `${(t - t0) / 1000}s`;
+      for (const p of ps.slice(i, i += WAVE)) { p.style.setProperty("--lag", lag); p.classList.toggle("wait", false); }
+      if (i < ps.length) requestAnimationFrame(next);
+    };
+    requestAnimationFrame(next);
+  });
+}
 const reveal = new IntersectionObserver((es) => es.forEach((e) => {
   if (!e.isIntersecting) return;
-  e.target.classList.add("in");
+  if (e.target.classList.contains("draw") && !e.target.classList.contains("in")) lightUp(e.target);
+  else e.target.classList.add("in");
   reveal.unobserve(e.target);
   // Kaca jendela selesai menyala dan tirainya luruh dalam ±5 detik; setelah itu layer animasinya dilepas (lihat CSS .idle).
   if (FULL && e.target.classList.contains("win")) setTimeout(() => e.target.classList.add("idle"), 5200);
@@ -924,30 +968,57 @@ function openInvite(quick = false) {
 }
 
 /* ---------- Cahaya kaca bergeser pelan mengikuti gulir, seakan matahari ikut berpindah ---------- */
+// Browser yang mendukung animasi terikat gulir menjalankan geseran ini di kompositor (CSS html.sda); skrip di bawah cadangan
+// untuk browser lain (mis. iOS lama), dengan pemetaan yang sama.
+const SDA = html.classList.contains("sda");
 {
   const ls = $$("main .light");
-  let raf = 0;
-  const upd = () => {
-    raf = 0;
-    const h = innerHeight;
-    // Baca semua posisi dulu, baru tulis. Bila baca-tulis berselang-seling, tiap getBoundingClientRect memaksa browser
-    // menghitung ulang style yang baru diubah di pantulan sebelumnya.
-    const moves = [];
-    for (const l of ls) {
-      const r = l.parentElement.getBoundingClientRect();
-      if (r.bottom < -200 || r.top > h + 200) continue;
-      moves.push([l, (r.top + r.height / 2 - h / 2) / h * +(l.dataset.k || 1)]);
-    }
-    for (const [l, p] of moves) l.style.transform = `translate3d(${f(p * -90)}px,${f(p * 60)}px,0) rotate(${f(p * -6)}deg)`;
-  };
   // Kilau pantulan baru dimulai saat pantulan terlihat (lihat CSS main .light.on).
   const seen = new IntersectionObserver((es) => es.forEach((e) => e.target.classList.toggle("on", e.isIntersecting)));
   ls.forEach((l) => seen.observe(l));
+  const ps = ls.map((l) => ({ l, sec: l.parentElement, k: +(l.dataset.k || 1), top: 0, h: 0, v: "" }));
   // Mode halus: pantulan diam di tempatnya (parallax gulir dimatikan); kilaunya tetap berjalan.
-  if (!SOFT) {
+  if (!SOFT && SDA) {
+    // Animasi CSS hanya perlu p di awal linimasa (--p0, lihat CSS); dihitung ulang bila tinggi layar atau bagian berubah.
+    // Tiap pantulan mendapat nilainya sendiri, supaya perubahan tidak menghitung ulang style seluruh isi bagian.
+    const size = () => {
+      const h = innerHeight;
+      for (const p of ps) {
+        const v = ((h + p.sec.getBoundingClientRect().height) / (2 * h) * p.k).toFixed(4);
+        if (v !== p.v) p.l.style.setProperty("--p0", p.v = v);
+      }
+    };
+    addEventListener("resize", size);
+    const ro = new ResizeObserver(size);
+    ps.forEach((p) => ro.observe(p.sec, { box: "border-box" }));
+    size();
+  } else if (!SOFT) {
+    // Cadangan: posisi bagian dicatat saat dimuat dan setiap kali ukuran bagian atau layar berubah, jadi tiap frame gulir cukup
+    // menghitung dari scrollY tanpa getBoundingClientRect, dan transform hanya ditulis bila nilainya berubah.
+    let raf = 0;
+    const measure = () => {
+      const y = scrollY;
+      for (const p of ps) { const r = p.sec.getBoundingClientRect(); p.top = r.top + y; p.h = r.height; }
+    };
+    const upd = () => {
+      raf = 0;
+      const h = innerHeight, y = scrollY;
+      for (const p of ps) {
+        const top = p.top - y;
+        if (top + p.h < -200 || top > h + 200) continue;
+        const q = (top + p.h / 2 - h / 2) / h * p.k;
+        const v = `translate3d(${f(q * -90)}px,${f(q * 60)}px,0) rotate(${f(q * -6)}deg)`;
+        if (v !== p.v) p.l.style.transform = p.v = v;
+      }
+    };
+    const remeasure = () => { measure(); upd(); };
     addEventListener("scroll", () => { raf ||= requestAnimationFrame(upd); }, { passive: true });
-    addEventListener("resize", upd);
-    upd();
+    addEventListener("resize", remeasure);
+    // Tinggi bagian bisa berubah setelah dimuat (huruf web, formulir, daftar ucapan); posisi bagian di bawahnya ikut bergeser,
+    // jadi semua bagian diamati, juga yang tanpa pantulan.
+    const ro = new ResizeObserver(remeasure);
+    $$("main > section").forEach((s) => ro.observe(s, { box: "border-box" }));
+    remeasure();
   }
 }
 
@@ -1000,6 +1071,17 @@ function swap(el, text) {
   old.animate([{ opacity: 1, transform: "none", filter: "blur(0)" }, { opacity: 0, transform: "translateY(-30%)", filter: "blur(3px)" }], { duration: 600, easing: "ease", fill: "forwards" }).onfinish = () => old.remove();
   n.animate([{ opacity: 0, transform: "translateY(30%)", filter: "blur(3px)" }, { opacity: 1, transform: "none", filter: "blur(0)" }], { duration: 700, delay: 100, easing: "cubic-bezier(.2,.7,.1,1)", fill: "backwards" });
 }
+// Hitung mundur di luar layar: angka diganti tanpa animasi. Pudar-kabur di atas memakai filter blur, yang tidak bisa dijalankan
+// di kompositor, jadi selama ±0,7 s tiap detik browser menghitung style dan melukis ulang tiap frame di thread utama, juga
+// saat halaman digulir di bagian lain. Batas 120 px: angka yang berganti tepat sebelum terlihat sudah beranimasi.
+let countSeen = false;
+new IntersectionObserver((es) => { countSeen = es[es.length - 1].isIntersecting; }, { rootMargin: "120px 0px" }).observe(count);
+function put(el, text) {
+  if (el.lastElementChild?.textContent === text) return;
+  const n = document.createElement("span");
+  n.textContent = text;
+  el.replaceChildren(n);
+}
 let tickT;
 function tick() {
   clearTimeout(tickT);
@@ -1013,7 +1095,7 @@ function tick() {
   }
   const t = Math.floor(left / 1000);
   const v = { d: Math.floor(t / 86400), h: Math.floor(t / 3600) % 24, m: Math.floor(t / 60) % 60, s: t % 60 };
-  for (const k in v) swap(cells[k], String(v[k]).padStart(2, "0"));
+  for (const k in v) (countSeen ? swap : put)(cells[k], String(v[k]).padStart(2, "0"));
   tickT = setTimeout(tick, 1000 - (now % 1000));
 }
 tick();
