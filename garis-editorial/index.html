@@ -340,7 +340,9 @@ main:focus{outline:none}
 .music svg{width:20px;height:20px}
 .music.playing svg{animation:spin 6s linear infinite}
 .music:not(.playing)::after{content:"";position:absolute;width:26px;height:2px;background:var(--gold-ink);rotate:-45deg}
-@keyframes spin{to{rotate:360deg}}
+/* Ikon berputar lewat transform, bukan properti rotate: animasi rotate pada elemen SVG tidak bisa dijalankan compositor,
+   sehingga selama musik diputar thread utama menyusun ulang seluruh layer (layerize) di setiap frame, juga saat digulir. */
+@keyframes spin{to{transform:rotate(360deg)}}
 /* musik masih dirender: ikon berdenyut, belum berputar */
 .music.loading svg{animation:busy .9s ease-in-out infinite alternate}
 @keyframes busy{from{opacity:.3}to{opacity:1}}
@@ -384,6 +386,9 @@ main:focus{outline:none}
 .anim .in .sprig .lf,.anim .sprig.in .lf{opacity:1}
 .venue-photo img{animation:kb 22s ease-in-out infinite alternate}
 @keyframes kb{to{scale:1.1}}
+/* Ken Burns ditahan selama foto jauh dari layar (.vis dipasang skrip, 120px sebelum masuk layar): animasi yang berjalan
+   dihitung ulang di thread utama pada tiap frame selama halaman digulir, juga saat fotonya tidak terlihat. */
+.anim .venue-photo:not(.vis) img{animation-play-state:paused}
 
 /* ---------- desktop: polaroid ditahan di kiri, fotonya berganti per bagian ---------- */
 @media (min-width:1024px){
@@ -865,16 +870,20 @@ function moveDrift(y) {
 }
 
 /* ---------- satu putaran gerak: nilai gulir diredam supaya garis & foto meluncur, tidak tersentak ---------- */
-let cur = scrollY, lastT = 0, looping = false;
+// Posisi gulir dibaca sesudah frame selesai digambar (tugas setTimeout dari event scroll), bukan di dalam frame:
+// selama frame berjalan style belum dihitung untuk animasi dan transisi yang sedang jalan, sehingga membaca scrollY
+// di event scroll atau requestAnimationFrame memaksa style dihitung saat itu juga, dua kali per frame. Selisih satu
+// frame tidak terlihat karena nilai gulir memang diredam.
+let cur = scrollY, tgt = cur, lastT = 0, looping = false, readT = 0;
+const readScroll = () => { readT = 0; tgt = scrollY; if (!looping && cur !== tgt) { looping = true; requestAnimationFrame(frame); } };
 function frame(t) {
   const dt = lastT ? Math.min(64, t - lastT) : 16; lastT = t;
-  const tgt = scrollY;
   cur += (tgt - cur) * (1 - Math.exp(-dt / 95));
   if (Math.abs(tgt - cur) < 0.4) cur = tgt;
   drawThreads(cur); moveDrift(cur);
   if (cur !== tgt) requestAnimationFrame(frame); else { looping = false; lastT = 0; }
 }
-function onScroll() { if (!looping) { looping = true; requestAnimationFrame(frame); } }
+function onScroll() { readT ||= setTimeout(readScroll); }
 addEventListener("scroll", onScroll, { passive: true });
 function measure() {
   G.vh = innerHeight;
@@ -901,7 +910,7 @@ function fitNames() {
     if (el.style.whiteSpace === "normal") { person.classList.add("long"); fitLine(el); }
   }
 }
-function relayout() { fitNames(); buildThreads(); measure(); cur = scrollY; drawThreads(cur); moveDrift(cur); filmPos(); }
+function relayout() { fitNames(); buildThreads(); measure(); cur = tgt = scrollY; drawThreads(cur); moveDrift(cur); filmPos(); }
 // Bilah alamat HP yang muncul/hilang hanya mengubah tinggi sedikit: cukup ukur ulang, jangan bangun ulang garis.
 let lastW = innerWidth, lastH = innerHeight, rlTimer = 0;
 const relayoutSoon = () => { clearTimeout(rlTimer); rlTimer = setTimeout(relayout, 140); };
@@ -916,6 +925,10 @@ new ResizeObserver(relayoutSoon).observe(main);
 $$("main section").forEach((sec) => $$(".rv,.rv-tilt", sec).forEach((el, i) => el.style.setProperty("--d", `${Math.min(i, 8) * 0.075}s`)));
 const io = new IntersectionObserver((es) => { for (const e of es) if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }, { threshold: 0.12, rootMargin: "0px 0px -6% 0px" });
 $$(".rv,.rv-tilt").forEach((n) => io.observe(n));
+
+// Foto lokasi: Ken Burns hanya berjalan saat fotonya dekat layar (lihat CSS .venue-photo.vis).
+const venuePh = $(".venue-photo");
+new IntersectionObserver(([e]) => venuePh.classList.toggle("vis", e.isIntersecting), { rootMargin: "120px 0px" }).observe(venuePh);
 
 /* ---------- desktop: foto polaroid panggung berganti ---------- */
 const stImgs = $$(".stage .polaroid img");
