@@ -110,6 +110,26 @@ Demo tema di katalog menyimpan RSVP dan ucapan di HP tamu saja (keterangan "Prev
 - Situs dilayani nginx di VM Helonoia (aaPanel, situs `invitation.helonoia.com`, folder `/www/wwwroot/invitation.helonoia.com`). Tugas Cron aaPanel "Deploy invitation.helonoia.com dari GitHub" menjalankan `/www/deploy/deploy-invitation.sh` setiap 5 menit: menarik `main` ke `/www/deploy/invitation-src` (di luar folder situs, jadi `.git` tidak pernah terbuka ke publik) lalu menyalinnya dengan rsync.
 - DNS `invitation` di zona Cloudflare `helonoia.com` berupa A record ke IP VM (DNS only). Sertifikat Let's Encrypt dipasang dan diperpanjang aaPanel.
 - Aturan cache dari `_headers` dipasang juga di nginx (URL rewrite situs di aaPanel). Bila `_headers` berubah, salin perubahannya ke sana.
+- HTML perlu dikirim dengan `Cache-Control: no-cache`. Tanpa header itu nginx hanya mengirim `Last-Modified` dan `ETag`, dan browser boleh memakai salinan lama tanpa bertanya ke server (cache heuristik, kira-kira sepersepuluh umur berkas: halaman yang terakhir diubah 4 hari lalu bisa diambil dari cache sampai sekitar 9 jam). Akibatnya perubahan yang sudah tayang bisa belum terlihat di HP tamu maupun pemilik. Dengan `no-cache`, browser tetap menyimpan salinan tetapi selalu memeriksa ulang ke server dulu; bila halaman belum berubah, server menjawab 304 tanpa isi, jadi tetap hemat. Cloudflare Pages sudah begini secara bawaan (`max-age=0, must-revalidate`), jadi aturan ini hanya perlu di nginx. Tambahkan di URL rewrite situs di aaPanel, di samping aturan `_headers`:
+
+  ```nginx
+  # HTML (alamat berakhiran .html atau /) selalu diperiksa ulang ke server.
+  # /api/ dikecualikan supaya tetap ditangani blok proxy API.
+  # Foto, gambar katalog, dan font tetap memakai aturan dari _headers.
+  location ~* ^(?!/api/).*(\.html|/)$ {
+      add_header Cache-Control "no-cache" always;
+      add_header Strict-Transport-Security "max-age=31536000" always;
+  }
+  ```
+
+  Pengecualian `/api/` jangan dihapus. nginx mendahulukan `location` regex daripada `location /api/` biasa, jadi tanpa pengecualian itu alamat API yang berakhiran `/` akan dilayani sebagai berkas statis, bukan diteruskan ke server API. Baris `Strict-Transport-Security` juga wajib ikut. nginx tidak mewariskan `add_header` dari blok `server` ke `location` yang punya `add_header` sendiri, jadi tanpa baris itu halaman HTML kehilangan HSTS yang sekarang dikirim aaPanel. Hal ini sudah terjadi pada `acara.js` dan semua berkas yang memakai aturan `_headers` (foto, gambar katalog, font): semuanya punya `Cache-Control` tetapi tanpa HSTS. Untuk aset itu tidak berbahaya, selama HTML tetap membawa HSTS. Periksa setelah disimpan:
+
+  ```bash
+  curl -sI https://invitation.helonoia.com/edisi-monokrom/ | grep -iE "cache-control|strict-transport"
+  ```
+
+  Hasil yang benar memuat `cache-control: no-cache` dan `strict-transport-security: max-age=31536000`. Pastikan juga alamat yang tidak ada (misalnya `/apa-tidak-ada/`) tetap menampilkan halaman 404 dengan Noi, dan RSVP serta ucapan di undangan klien tetap terkirim.
+- `toko.js` sekarang dikirim dengan `max-age=43200` (12 jam, dari aturan `expires 12h` bawaan aaPanel untuk `.js` dan `.css`), sedangkan `acara.js` sudah `no-cache`. Bila nama usaha atau nomor WhatsApp di `toko.js` diganti, pengunjung bisa masih melihat yang lama sampai 12 jam. Bila perlu, beri `toko.js` aturan yang sama dengan `acara.js`.
 - Kembali ke Cloudflare Pages bila VM bermasalah: ubah record `invitation` menjadi CNAME `felicidad126-github-io.pages.dev` dengan proxy aktif, lalu di proyek Pages `felicidad126-github-io` buka **Custom domains** dan klik **Reactivate** (atau **Check DNS records**) pada `invitation.helonoia.com`. Sejak DNS dipindah ke VM, domain itu berstatus Inactive di Pages. Project Pages-nya tetap tersambung ke repo ini. Catatan: di Pages tidak ada `/api/`, jadi undangan klien hanya bisa menampilkan undangan, tanpa RSVP dan ucapan.
 
 ### Halaman 404, robots.txt, dan sitemap.xml

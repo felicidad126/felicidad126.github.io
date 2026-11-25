@@ -116,6 +116,8 @@ body.locked{overflow:hidden;height:100svh}
 img{display:block;max-width:100%}
 [hidden]{display:none!important}
 :focus-visible{outline:2.5px solid var(--cob);outline-offset:3px}
+/* main hanya menerima fokus dari skrip (tabindex="-1") setelah sampul dibuka; tanpa garis setinggi halaman. */
+main:focus{outline:none}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 h1,h2,h3,p,figure,blockquote{margin:0}
 .wrap{width:min(1180px,calc(100% - 40px));margin-inline:auto}

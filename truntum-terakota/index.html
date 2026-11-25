@@ -161,7 +161,9 @@ a{color:inherit}
 }
 
 /* ---------- kerangka: satu kolom; di desktop ada panel tetap di kiri ---------- */
-main{max-width:var(--col);margin:0 auto;outline:none;background:var(--tera)}
+main{max-width:var(--col);margin:0 auto;background:var(--tera)}
+/* main hanya menerima fokus dari skrip (tabindex="-1"); `main{outline:none}` kalah dari :focus-visible, jadi pakai :focus. */
+main:focus{outline:none}
 .stage{display:none}
 
 /* ---------- pembuka: foto selebar kolom (sampul memakai bingkai), nama menumpang di gradasi bawah foto ----------
