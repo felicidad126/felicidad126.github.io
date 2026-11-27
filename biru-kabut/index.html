@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#eef2f6">
-<title>Laras &amp; Bima · Biru Kabut</title>
-<meta name="description" content="Undangan pernikahan Laras &amp; Bima, Sabtu 12 Desember 2026, Denpasar, Bali.">
+<title data-isi="{couple} · Biru Kabut">Laras &amp; Bima · Biru Kabut</title>
+<meta name="description" content="Undangan pernikahan Laras &amp; Bima, Sabtu 12 Desember 2026, Denpasar, Bali." data-isi-attr='{"content": "Undangan pernikahan {couple}, {date.dayName} {date.short}, {city}."}'>
 <meta property="og:type" content="website">
-<meta property="og:title" content="Undangan Pernikahan Laras &amp; Bima">
-<meta property="og:description" content="Sabtu, 12 Desember 2026 · Denpasar, Bali">
-<meta property="og:image" content="https://invitation.helonoia.com/foto/cover.jpg">
+<meta property="og:title" content="Undangan Pernikahan Laras &amp; Bima" data-isi-attr='{"content": "Undangan Pernikahan {couple}"}'>
+<meta property="og:description" content="Sabtu, 12 Desember 2026 · Denpasar, Bali" data-isi-attr='{"content": "{date.long} · {city}"}'>
+<meta property="og:image" content="https://invitation.helonoia.com/foto/cover.jpg" data-isi-foto="cover">
 <!-- Tema Biru Kabut: pagi yang berkabut biru. Kabut berlapis bergerak pelan di atas foto, isi undangan di atas panel kaca buram,
      dan ilustrasi garis halus bunga hydrangea, baby's breath, dan daun. Dasarnya docs/REFERENSI-DESAIN.md: gaya modern yang simpel tapi
      elegan (riset UX milenial Indonesia) dengan palet biru pastel dan abu. Saat "Buka Undangan", kabut menebal lalu tersibak ke kiri-kanan.
@@ -442,7 +442,7 @@ html.lb-open{overflow:hidden}
 <!-- Sampul -->
 <header class="gate" id="gate" aria-label="Sampul undangan">
   <div class="g-bg">
-    <figure class="g-photo"><img src="../foto/cover.jpg" srcset="../foto/cover.jpg 800w, ../foto/hd/cover.jpg 1073w" sizes="(min-width: 900px) 48vw, 100vw" alt="Laras dan Bima berjalan bergandengan tangan di jalan setapak" fetchpriority="high"></figure>
+    <figure class="g-photo"><img data-isi-foto="cover" src="../foto/cover.jpg" srcset="../foto/cover.jpg 800w, ../foto/hd/cover.jpg 1073w" sizes="(min-width: 900px) 48vw, 100vw" alt="Laras dan Bima berjalan bergandengan tangan di jalan setapak" fetchpriority="high"></figure>
     <div class="g-fog" aria-hidden="true"><i class="fog"></i><i class="fog rev"></i><i class="fog"></i></div>
     <span class="sprig g-corner l" data-sprig="divider" aria-hidden="true"></span><span class="sprig g-corner r" data-sprig="divider" aria-hidden="true"></span>
   </div>
@@ -450,8 +450,8 @@ html.lb-open{overflow:hidden}
     <div class="g-top">
       <span class="sprig" data-sprig="divider" aria-hidden="true"></span>
       <p class="kick g-kick">Undangan Pernikahan</p>
-      <h1 class="g-names" aria-label="Laras dan Bima"><span>Laras</span><span class="amp">&amp;</span><span>Bima</span></h1>
-      <p class="g-date">Sabtu, 12 Desember 2026</p>
+      <h1 class="g-names" aria-label="Laras dan Bima" data-isi-attr='{"aria-label": "{coupleAnd}"}'><span data-isi="bride.name">Laras</span><span class="amp">&amp;</span><span data-isi="groom.name">Bima</span></h1>
+      <p class="g-date" data-isi="date.long">Sabtu, 12 Desember 2026</p>
     </div>
     <div class="g-card glass">
       <p class="g-to">Kepada Yth. Bapak/Ibu/Saudara/i</p>
@@ -467,8 +467,8 @@ html.lb-open{overflow:hidden}
   <section class="sec intro" aria-labelledby="h-salam">
     <div class="wrap narrow">
       <span class="sprig" data-sprig="divider" data-io aria-hidden="true"></span>
-      <h2 class="h2 salam-h rv" id="h-salam">Assalamu’alaikum <span>Warahmatullahi Wabarakatuh</span></h2>
-      <p class="lead rv" style="--d:.15">Dengan memohon rahmat dan ridho Allah SWT, kami bermaksud mengundang Bapak/Ibu/Saudara/i untuk hadir di hari pernikahan kami.</p>
+      <h2 class="h2 salam-h rv" id="h-salam" data-isi-salam="judul">Assalamu’alaikum <span data-isi-salam="sub">Warahmatullahi Wabarakatuh</span></h2>
+      <p class="lead rv" style="--d:.15" data-isi-salam="pembuka">Dengan memohon rahmat dan ridho Allah SWT, kami bermaksud mengundang Bapak/Ibu/Saudara/i untuk hadir di hari pernikahan kami.</p>
     </div>
   </section>
 
@@ -484,27 +484,27 @@ html.lb-open{overflow:hidden}
         <article class="person" aria-labelledby="n-bride">
           <figure class="portrait" data-io>
             <span class="glow" aria-hidden="true"></span>
-            <img class="focus" src="../foto/mempelai-wanita.jpg" alt="Laras, mempelai wanita" style="object-position:50% 22%" loading="lazy" decoding="async">
+            <img class="focus" data-isi-foto="bride.photo" src="../foto/mempelai-wanita.jpg" alt="Laras, mempelai wanita" style="object-position:50% 22%" loading="lazy" decoding="async">
             <svg class="ring" viewBox="0 0 120 150" preserveAspectRatio="none" aria-hidden="true"><ellipse class="st" pathLength="1" cx="60" cy="75" rx="59" ry="74"/><ellipse class="st b" pathLength="1" cx="61.5" cy="74" rx="56" ry="73" transform="rotate(-3 60 75)"/></svg>
             <span class="sprig" data-sprig="small" aria-hidden="true"></span>
           </figure>
           <p class="kick rv">Mempelai Wanita</p>
-          <h3 class="pn rv" id="n-bride">Larasati Pramesti</h3>
-          <p class="txt rv">Putri dari Bapak Wiryo Hadi<br>&amp; Ibu Sekar Arum</p>
-          <a class="ig rv" href="https://instagram.com/laras.contoh" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".9" fill="currentColor" stroke="none"/></svg>@laras.contoh</a>
+          <h3 class="pn rv" id="n-bride" data-isi="bride.fullName">Larasati Pramesti</h3>
+          <p class="txt rv" data-isi="bride.childOfFather">Putri dari Bapak Wiryo Hadi<br><span data-isi="&amp; {bride.mother}">&amp; Ibu Sekar Arum</span></p>
+          <a class="ig rv" data-isi-tampil="bride.instagram" data-isi-attr='{"href": "{bride.instagramUrl}"}' data-isi="bride.instagramHandle" href="https://instagram.com/laras.contoh" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".9" fill="currentColor" stroke="none"/></svg>@laras.contoh</a>
         </article>
         <p class="c-amp rv" aria-hidden="true">&amp;</p>
         <article class="person" aria-labelledby="n-groom">
           <figure class="portrait" data-io>
             <span class="glow" aria-hidden="true"></span>
-            <img class="focus" src="../foto/mempelai-pria.jpg" alt="Bima, mempelai pria" style="object-position:50% 24%" loading="lazy" decoding="async">
+            <img class="focus" data-isi-foto="groom.photo" src="../foto/mempelai-pria.jpg" alt="Bima, mempelai pria" style="object-position:50% 24%" loading="lazy" decoding="async">
             <svg class="ring" viewBox="0 0 120 150" preserveAspectRatio="none" aria-hidden="true"><ellipse class="st" pathLength="1" cx="60" cy="75" rx="59" ry="74"/><ellipse class="st b" pathLength="1" cx="58.5" cy="74" rx="56" ry="73" transform="rotate(3 60 75)"/></svg>
             <span class="sprig" data-sprig="small" aria-hidden="true"></span>
           </figure>
           <p class="kick rv">Mempelai Pria</p>
-          <h3 class="pn rv" id="n-groom">Bima Arya Nugraha</h3>
-          <p class="txt rv">Putra dari Bapak Arif Hidayat<br>&amp; Ibu Siti Aminah</p>
-          <a class="ig rv" href="https://instagram.com/bima.contoh" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".9" fill="currentColor" stroke="none"/></svg>@bima.contoh</a>
+          <h3 class="pn rv" id="n-groom" data-isi="groom.fullName">Bima Arya Nugraha</h3>
+          <p class="txt rv" data-isi="groom.childOfFather">Putra dari Bapak Arif Hidayat<br><span data-isi="&amp; {groom.mother}">&amp; Ibu Siti Aminah</span></p>
+          <a class="ig rv" data-isi-tampil="groom.instagram" data-isi-attr='{"href": "{groom.instagramUrl}"}' data-isi="groom.instagramHandle" href="https://instagram.com/bima.contoh" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".9" fill="currentColor" stroke="none"/></svg>@bima.contoh</a>
         </article>
       </div>
     </div>
@@ -513,7 +513,7 @@ html.lb-open{overflow:hidden}
   <div class="seam" aria-hidden="true"><div class="drift"><i class="fog"></i></div></div>
 
   <!-- Kisah -->
-  <section class="sec story" aria-labelledby="h-story">
+  <section class="sec story" aria-labelledby="h-story" data-isi-tampil="sections.story">
     <div class="wrap">
       <header class="head">
         <span class="sprig" data-sprig="divider" data-io aria-hidden="true"></span>
@@ -521,23 +521,23 @@ html.lb-open{overflow:hidden}
         <h2 class="h2 rv" id="h-story" style="--d:.1">Perjalanan Menuju Hari Ini</h2>
       </header>
       <ol class="moments" data-io>
-        <li class="moment">
-          <figure class="m-ph" data-io><img class="focus" src="../foto/galeri-1.jpg" alt="Laras dan Bima di jalan setapak berpohon kelapa" style="object-position:50% 62%" loading="lazy" decoding="async"></figure>
-          <p class="yr rv">2019</p>
-          <h3 class="rv">Bertemu</h3>
-          <p class="txt rv">Sebuah acara kampus mempertemukan dua orang yang sama-sama datang terlambat.</p>
+        <li class="moment" data-isi-tampil="story.0">
+          <figure class="m-ph" data-io><img class="focus" data-isi-foto="story.0.photo" src="../foto/galeri-1.jpg" alt="Laras dan Bima di jalan setapak berpohon kelapa" style="object-position:50% 62%" loading="lazy" decoding="async"></figure>
+          <p class="yr rv" data-isi="story.0.year">2019</p>
+          <h3 class="rv" data-isi="story.0.title">Bertemu</h3>
+          <p class="txt rv" data-isi="story.0.text">Sebuah acara kampus mempertemukan dua orang yang sama-sama datang terlambat.</p>
         </li>
-        <li class="moment">
-          <figure class="m-ph" data-io><img class="focus" src="../foto/galeri-3.jpg" alt="Laras dan Bima piknik di padang rumput" style="object-position:50% 60%" loading="lazy" decoding="async"></figure>
-          <p class="yr rv">2023</p>
-          <h3 class="rv">Bersama</h3>
-          <p class="txt rv">Dari obrolan singkat menjadi kebiasaan; dari kebiasaan menjadi rumah.</p>
+        <li class="moment" data-isi-tampil="story.1">
+          <figure class="m-ph" data-io><img class="focus" data-isi-foto="story.1.photo" src="../foto/galeri-3.jpg" alt="Laras dan Bima piknik di padang rumput" style="object-position:50% 60%" loading="lazy" decoding="async"></figure>
+          <p class="yr rv" data-isi="story.1.year">2023</p>
+          <h3 class="rv" data-isi="story.1.title">Bersama</h3>
+          <p class="txt rv" data-isi="story.1.text">Dari obrolan singkat menjadi kebiasaan; dari kebiasaan menjadi rumah.</p>
         </li>
-        <li class="moment">
-          <figure class="m-ph" data-io><img class="focus" src="../foto/galeri-4.jpg" alt="Tangan mempelai dengan cincin pernikahan" style="object-position:50% 45%" loading="lazy" decoding="async"></figure>
-          <p class="yr rv">2026</p>
-          <h3 class="rv">Selamanya</h3>
-          <p class="txt rv">Lamaran sederhana di hadapan keluarga, lalu kami memilih satu tanggal.</p>
+        <li class="moment" data-isi-tampil="story.2">
+          <figure class="m-ph" data-io><img class="focus" data-isi-foto="story.2.photo" src="../foto/galeri-4.jpg" alt="Tangan mempelai dengan cincin pernikahan" style="object-position:50% 45%" loading="lazy" decoding="async"></figure>
+          <p class="yr rv" data-isi="story.2.year">2026</p>
+          <h3 class="rv" data-isi="story.2.title">Selamanya</h3>
+          <p class="txt rv" data-isi="story.2.text">Lamaran sederhana di hadapan keluarga, lalu kami memilih satu tanggal.</p>
         </li>
       </ol>
     </div>
@@ -552,8 +552,8 @@ html.lb-open{overflow:hidden}
         <p class="kick rv">Simpan Tanggalnya</p>
         <h2 class="h2 rv" id="h-acara" style="--d:.1">Rangkaian Acara</h2>
       </header>
-      <p class="date-big rv">Sabtu, 12 Desember 2026</p>
-      <div class="count rv" id="count" data-io role="timer" aria-label="Hitung mundur menuju akad nikah">
+      <p class="date-big rv" data-isi="date.long">Sabtu, 12 Desember 2026</p>
+      <div class="count rv" id="count" data-io role="timer" aria-label="Hitung mundur menuju hari pernikahan" data-isi-tampil="sections.countdown">
         <div class="c"><b data-u="d"><span>00</span></b><small>Hari</small></div>
         <div class="c"><b data-u="h"><span>00</span></b><small>Jam</small></div>
         <div class="c"><b data-u="m"><span>00</span></b><small>Menit</small></div>
@@ -561,23 +561,23 @@ html.lb-open{overflow:hidden}
       </div>
       <p class="count-msg" id="countMsg" hidden></p>
       <div class="events">
-        <article class="glass ev rv" aria-labelledby="h-akad">
+        <article class="glass ev rv" aria-labelledby="h-akad" data-isi-tampil="events.akad">
           <span class="sprig" data-sprig="small" aria-hidden="true"></span>
-          <h3 id="h-akad">Akad Nikah</h3>
-          <p class="day">Sabtu, 12 Desember 2026</p>
-          <p class="when">09.00 – 10.30 WITA</p>
-          <p class="venue">Rumah Keluarga Mempelai Wanita</p>
-          <p class="addr">Jl. Contoh Raya No. 1, Denpasar, Bali</p>
-          <a class="btn btn-line sm" href="https://www.google.com/maps/search/?api=1&amp;query=-8.65,115.2167" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0C18.5 15.4 12 21 12 21Z"/><circle cx="12" cy="10" r="2.3"/></svg>Lihat Lokasi</a>
+          <h3 id="h-akad" data-isi="events.akad.label">Akad Nikah</h3>
+          <p class="day" data-isi="events.akad.dateLong">Sabtu, 12 Desember 2026</p>
+          <p class="when" data-isi="events.akad.timeRangeZone">09.00 – 10.30 WITA</p>
+          <p class="venue" data-isi="events.akad.venue">Rumah Keluarga Mempelai Wanita</p>
+          <p class="addr" data-isi="events.akad.address">Jl. Contoh Raya No. 1, Denpasar, Bali</p>
+          <a class="btn btn-line sm" data-isi-attr='{"href": "{events.akad.mapsUrl}"}' href="https://www.google.com/maps/search/?api=1&amp;query=-8.65,115.2167" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0C18.5 15.4 12 21 12 21Z"/><circle cx="12" cy="10" r="2.3"/></svg>Lihat Lokasi</a>
         </article>
-        <article class="glass ev rv" style="--d:.15" aria-labelledby="h-resepsi">
+        <article class="glass ev rv" style="--d:.15" aria-labelledby="h-resepsi" data-isi-tampil="events.resepsi">
           <span class="sprig" data-sprig="small" aria-hidden="true"></span>
-          <h3 id="h-resepsi">Resepsi</h3>
-          <p class="day">Sabtu, 12 Desember 2026</p>
-          <p class="when">19.00 – 21.30 WITA</p>
-          <p class="venue">Gedung Serbaguna Contoh</p>
-          <p class="addr">Jl. Contoh Kedua No. 2, Denpasar, Bali</p>
-          <a class="btn btn-line sm" href="https://www.google.com/maps/search/?api=1&amp;query=-8.66,115.21" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0C18.5 15.4 12 21 12 21Z"/><circle cx="12" cy="10" r="2.3"/></svg>Lihat Lokasi</a>
+          <h3 id="h-resepsi" data-isi="events.resepsi.label">Resepsi</h3>
+          <p class="day" data-isi="events.resepsi.dateLong">Sabtu, 12 Desember 2026</p>
+          <p class="when" data-isi="events.resepsi.timeRangeZone">19.00 – 21.30 WITA</p>
+          <p class="venue" data-isi="events.resepsi.venue">Gedung Serbaguna Contoh</p>
+          <p class="addr" data-isi="events.resepsi.address">Jl. Contoh Kedua No. 2, Denpasar, Bali</p>
+          <a class="btn btn-line sm" data-isi-attr='{"href": "{events.resepsi.mapsUrl}"}' href="https://www.google.com/maps/search/?api=1&amp;query=-8.66,115.21" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0C18.5 15.4 12 21 12 21Z"/><circle cx="12" cy="10" r="2.3"/></svg>Lihat Lokasi</a>
         </article>
       </div>
       <a class="btn btn-ink rv" id="calBtn" href="https://calendar.google.com/calendar/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 10h17M8 3v4m8-4v4"/></svg>Simpan ke Kalender</a>
@@ -595,12 +595,12 @@ html.lb-open{overflow:hidden}
         <h2 class="h2 rv" id="h-gal" style="--d:.1">Momen yang Kami Simpan</h2>
       </header>
       <div class="grid">
-        <button class="gi" style="grid-area:a" type="button" data-io aria-label="Perbesar foto: Laras dan Bima di jalan setapak berpohon kelapa"><img class="focus" src="../foto/galeri-1.jpg" alt="" style="object-position:50% 70%" loading="lazy" decoding="async"><span class="cap" aria-hidden="true">Awal cerita</span></button>
-        <button class="gi" style="grid-area:b" type="button" data-io aria-label="Perbesar foto: Laras dan Bima tertawa bersama"><img class="focus" src="../foto/galeri-2.jpg" alt="" style="object-position:50% 40%" loading="lazy" decoding="async"><span class="cap" aria-hidden="true">Tawa kita</span></button>
-        <button class="gi" style="grid-area:c" type="button" data-io aria-label="Perbesar foto: Laras dan Bima piknik di padang rumput"><img class="focus" src="../foto/galeri-3.jpg" alt="" style="object-position:50% 65%" loading="lazy" decoding="async"><span class="cap" aria-hidden="true">Piknik sore</span></button>
-        <button class="gi" style="grid-area:e" type="button" data-io aria-label="Perbesar foto: Laras dan Bima berjalan di sawah terasering saat senja"><img class="focus" src="../foto/galeri-6.jpg" alt="" style="object-position:50% 62%" loading="lazy" decoding="async"><span class="cap" aria-hidden="true">Pulang bersama</span></button>
-        <button class="gi" style="grid-area:d" type="button" data-io aria-label="Perbesar foto: Tangan mempelai dengan cincin pernikahan"><img class="focus" src="../foto/galeri-4.jpg" alt="" style="object-position:50% 45%" loading="lazy" decoding="async"><span class="cap" aria-hidden="true">Cincin</span></button>
-        <button class="gi" style="grid-area:f" type="button" data-io aria-label="Perbesar foto: Laras dan Bima di pelaminan"><img class="focus" src="../foto/galeri-5.jpg" alt="" style="object-position:50% 50%" loading="lazy" decoding="async"><span class="cap" aria-hidden="true">Hari bahagia</span></button>
+        <button class="gi" style="grid-area:a" type="button" data-io data-isi-tampil="gallery.0" data-isi-attr='{"aria-label": "Perbesar foto: {gallery.0.alt}"}' aria-label="Perbesar foto: Laras dan Bima di jalan setapak berpohon kelapa"><img class="focus" data-isi-foto="gallery.0" src="../foto/galeri-1.jpg" alt="" style="object-position:50% 70%" loading="lazy" decoding="async"><span class="cap" aria-hidden="true" data-isi-tampil="gallery.0.caption" data-isi="gallery.0.caption">Awal cerita</span></button>
+        <button class="gi" style="grid-area:b" type="button" data-io data-isi-tampil="gallery.1" data-isi-attr='{"aria-label": "Perbesar foto: {gallery.1.alt}"}' aria-label="Perbesar foto: Laras dan Bima tertawa bersama"><img class="focus" data-isi-foto="gallery.1" src="../foto/galeri-2.jpg" alt="" style="object-position:50% 40%" loading="lazy" decoding="async"><span class="cap" aria-hidden="true" data-isi-tampil="gallery.1.caption" data-isi="gallery.1.caption">Tawa kita</span></button>
+        <button class="gi" style="grid-area:c" type="button" data-io data-isi-tampil="gallery.2" data-isi-attr='{"aria-label": "Perbesar foto: {gallery.2.alt}"}' aria-label="Perbesar foto: Laras dan Bima piknik di padang rumput"><img class="focus" data-isi-foto="gallery.2" src="../foto/galeri-3.jpg" alt="" style="object-position:50% 65%" loading="lazy" decoding="async"><span class="cap" aria-hidden="true" data-isi-tampil="gallery.2.caption" data-isi="gallery.2.caption">Piknik sore</span></button>
+        <button class="gi" style="grid-area:e" type="button" data-io data-isi-tampil="gallery.5" data-isi-attr='{"aria-label": "Perbesar foto: {gallery.5.alt}"}' aria-label="Perbesar foto: Laras dan Bima berjalan di sawah terasering saat senja"><img class="focus" data-isi-foto="gallery.5" src="../foto/galeri-6.jpg" alt="" style="object-position:50% 62%" loading="lazy" decoding="async"><span class="cap" aria-hidden="true" data-isi-tampil="gallery.5.caption" data-isi="gallery.5.caption">Pulang bersama</span></button>
+        <button class="gi" style="grid-area:d" type="button" data-io data-isi-tampil="gallery.3" data-isi-attr='{"aria-label": "Perbesar foto: {gallery.3.alt}"}' aria-label="Perbesar foto: Tangan mempelai dengan cincin pernikahan"><img class="focus" data-isi-foto="gallery.3" src="../foto/galeri-4.jpg" alt="" style="object-position:50% 45%" loading="lazy" decoding="async"><span class="cap" aria-hidden="true" data-isi-tampil="gallery.3.caption" data-isi="gallery.3.caption">Cincin</span></button>
+        <button class="gi" style="grid-area:f" type="button" data-io data-isi-tampil="gallery.4" data-isi-attr='{"aria-label": "Perbesar foto: {gallery.4.alt}"}' aria-label="Perbesar foto: Laras dan Bima di pelaminan"><img class="focus" data-isi-foto="gallery.4" src="../foto/galeri-5.jpg" alt="" style="object-position:50% 50%" loading="lazy" decoding="async"><span class="cap" aria-hidden="true" data-isi-tampil="gallery.4.caption" data-isi="gallery.4.caption">Hari bahagia</span></button>
       </div>
       <p class="txt gal-note rv">Ketuk atau klik foto untuk memperbesar.</p>
     </div>
@@ -608,12 +608,12 @@ html.lb-open{overflow:hidden}
 
   <!-- Konfirmasi kehadiran -->
   <section class="chapter rsvp-ch" id="rsvp" aria-labelledby="h-rsvp">
-    <div class="bgp" data-io aria-hidden="true"><img class="emerge" src="../foto/hd/galeri-3.jpg" alt="" style="object-position:50% 62%" loading="lazy" decoding="async"></div>
+    <div class="bgp" data-io aria-hidden="true"><img class="emerge" data-isi-foto="gallery.2" src="../foto/hd/galeri-3.jpg" alt="" style="object-position:50% 62%" loading="lazy" decoding="async"></div>
     <div class="glass panel rv">
       <span class="sprig" data-sprig="small" aria-hidden="true"></span>
       <p class="kick">Konfirmasi Kehadiran</p>
       <h2 class="h2" id="h-rsvp">Akankah Anda Hadir?</h2>
-      <p class="txt">Mohon kabari kami paling lambat <b>5 Desember 2026</b>.</p>
+      <p class="txt">Mohon kabari kami paling lambat <b data-isi="rsvpDeadlineLong">5 Desember 2026</b>.</p>
       <form class="form" id="rsvpForm" novalidate>
         <div class="f"><label for="rName">Nama</label><input id="rName" name="name" maxlength="80" autocomplete="name" placeholder="Nama Anda" required></div>
         <fieldset class="f"><legend>Kehadiran</legend>
@@ -667,7 +667,7 @@ html.lb-open{overflow:hidden}
   <div class="seam" aria-hidden="true"><div class="drift"><i class="fog"></i></div></div>
 
   <!-- Tanda kasih -->
-  <section class="sec kasih" aria-labelledby="h-kasih">
+  <section class="sec kasih" aria-labelledby="h-kasih" data-isi-tampil="sections.gifts">
     <div class="wrap">
       <header class="head">
         <span class="sprig" data-sprig="divider" data-io aria-hidden="true"></span>
@@ -676,29 +676,29 @@ html.lb-open{overflow:hidden}
       </header>
       <p class="lead narrow rv">Doa restu Anda adalah hadiah terbaik bagi kami. Bila ingin memberikan tanda kasih, Anda dapat mengirimkannya melalui:</p>
       <ul class="gifts">
-        <li class="soft gift rv"><p class="kick">Bank Contoh</p><p class="val">1234 5678 90</p><p class="nm">a.n. Larasati Pramesti</p><button class="btn btn-line sm" type="button" data-copy="1234567890" data-what="Nomor rekening">Salin Nomor</button></li>
-        <li class="soft gift rv" style="--d:.12"><p class="kick">Dompet Digital</p><p class="val">0812 3456 7890</p><p class="nm">a.n. Bima Arya Nugraha</p><button class="btn btn-line sm" type="button" data-copy="081234567890" data-what="Nomor dompet digital">Salin Nomor</button></li>
-        <li class="soft gift rv" style="--d:.24"><p class="kick">Kirim Hadiah</p><p class="val addr">Jl. Contoh Raya&nbsp;No.&nbsp;1, Denpasar, Bali</p><p class="nm">a.n. Larasati Pramesti</p><button class="btn btn-line sm" type="button" data-copy="Larasati Pramesti, Jl. Contoh Raya No. 1, Denpasar, Bali" data-what="Alamat">Salin Alamat</button></li>
+        <li class="soft gift rv" data-isi-tampil="gifts.accounts.0"><p class="kick" data-isi="gifts.accounts.0.bank">Bank Contoh</p><p class="val" data-isi="gifts.accounts.0.numberDisplay">1234 5678 90</p><p class="nm" data-isi="a.n. {gifts.accounts.0.holder}">a.n. Larasati Pramesti</p><button class="btn btn-line sm" type="button" data-isi-attr='{"data-copy": "{gifts.accounts.0.number}", "data-what": "{gifts.accounts.0.copyWhat}"}' data-copy="1234567890" data-what="Nomor rekening">Salin Nomor</button></li>
+        <li class="soft gift rv" style="--d:.12" data-isi-tampil="gifts.accounts.1"><p class="kick" data-isi="gifts.accounts.1.bank">Dompet Digital</p><p class="val" data-isi="gifts.accounts.1.numberDisplay">0812 3456 7890</p><p class="nm" data-isi="a.n. {gifts.accounts.1.holder}">a.n. Bima Arya Nugraha</p><button class="btn btn-line sm" type="button" data-isi-attr='{"data-copy": "{gifts.accounts.1.number}", "data-what": "{gifts.accounts.1.copyWhat}"}' data-copy="081234567890" data-what="Nomor dompet digital">Salin Nomor</button></li>
+        <li class="soft gift rv" style="--d:.24" data-isi-tampil="gifts.address"><p class="kick">Kirim Hadiah</p><p class="val addr" data-isi="gifts.address.text">Jl. Contoh Raya&nbsp;No.&nbsp;1, Denpasar, Bali</p><p class="nm" data-isi="a.n. {gifts.address.holder}">a.n. Larasati Pramesti</p><button class="btn btn-line sm" type="button" data-isi-attr='{"data-copy": "{gifts.address.copy}"}' data-copy="Larasati Pramesti, Jl. Contoh Raya No. 1, Denpasar, Bali" data-what="Alamat">Salin Alamat</button></li>
       </ul>
     </div>
   </section>
 
   <!-- Penutup -->
   <section class="sec closing" aria-labelledby="h-close">
-    <div class="close-ph" data-io aria-hidden="true"><img class="emerge" src="../foto/hd/galeri-5.jpg" alt="" loading="lazy" decoding="async"></div>
+    <div class="close-ph" data-io aria-hidden="true"><img class="emerge" data-isi-foto="gallery.4" src="../foto/hd/galeri-5.jpg" alt="" loading="lazy" decoding="async"></div>
     <div class="wrap close-in">
       <span class="sprig" data-sprig="divider" data-io aria-hidden="true"></span>
       <p class="lead rv">Merupakan suatu kebahagiaan dan kehormatan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu.</p>
       <p class="kick rv">Terima Kasih</p>
-      <h2 class="close-names rv" id="h-close" aria-label="Laras dan Bima"><span>Laras</span><span class="amp">&amp;</span><span>Bima</span></h2>
-      <p class="txt rv">Wassalamu’alaikum Warahmatullahi Wabarakatuh.</p>
-      <p class="fam rv">Kami yang berbahagia,<span>Keluarga <span class="nw">Bapak Wiryo Hadi</span> &amp; <span class="nw">Ibu Sekar Arum</span></span><span>Keluarga <span class="nw">Bapak Arif Hidayat</span> &amp; <span class="nw">Ibu Siti Aminah</span></span></p>
+      <h2 class="close-names rv" id="h-close" aria-label="Laras dan Bima" data-isi-attr='{"aria-label": "{coupleAnd}"}'><span data-isi="bride.name">Laras</span><span class="amp">&amp;</span><span data-isi="groom.name">Bima</span></h2>
+      <p class="txt rv" data-isi-salam="penutup">Wassalamu’alaikum Warahmatullahi Wabarakatuh.</p>
+      <p class="fam rv">Kami yang berbahagia,<span>Keluarga <span class="nw" data-isi="bride.father">Bapak Wiryo Hadi</span> &amp; <span class="nw" data-isi="bride.mother">Ibu Sekar Arum</span></span><span>Keluarga <span class="nw" data-isi="groom.father">Bapak Arif Hidayat</span> &amp; <span class="nw" data-isi="groom.mother">Ibu Siti Aminah</span></span></p>
     </div>
   </section>
 </main>
 
 <footer class="foot">
-  <p>Tema <b>Biru Kabut</b> · pagi berkabut biru pastel, panel kaca buram, dan ilustrasi hydrangea. Nama, tanggal, alamat, dan rekening adalah data contoh; foto contoh dibuat dengan AI.</p>
+  <p>Tema <b>Biru Kabut</b> · pagi berkabut biru pastel, panel kaca buram, dan ilustrasi hydrangea.<span data-isi-tampil="demo"> Nama, tanggal, alamat, dan rekening adalah data contoh; foto contoh dibuat dengan AI.</span></p>
   <p>Font Gilda Display, Corinthia &amp; Figtree, SIL Open Font License 1.1.</p>
 </footer>
 
@@ -712,8 +712,10 @@ html.lb-open{overflow:hidden}
 </dialog>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+<!-- Data undangan. Portal admin mengganti isi blok ini (dan teks bertanda data-isi) dengan data klien; lihat docs/FORMAT-DATA.md. -->
+<script type="application/json" id="data-undangan">{"version":1,"demo":true,"eventType":"wedding","greeting":"islami","city":"Denpasar, Bali","rsvpDeadline":"2026-12-05","photoBase":"../foto/","bride":{"name":"Laras","fullName":"Larasati Pramesti","child":"Putri","father":"Bapak Wiryo Hadi","mother":"Ibu Sekar Arum","instagram":"laras.contoh","photo":{"file":"mempelai-wanita","alt":"Larasati Pramesti memegang buket bunga putih"},"parents":"Putri dari Bapak Wiryo Hadi & Ibu Sekar Arum","childOfFather":"Putri dari Bapak Wiryo Hadi","family":"Keluarga Bapak Wiryo Hadi & Ibu Sekar Arum","instagramHandle":"@laras.contoh","instagramUrl":"https://instagram.com/laras.contoh"},"groom":{"name":"Bima","fullName":"Bima Arya Nugraha","child":"Putra","father":"Bapak Arif Hidayat","mother":"Ibu Siti Aminah","instagram":"bima.contoh","photo":{"file":"mempelai-pria","alt":"Bima Arya Nugraha berdiri di jalan setapak berpohon"},"parents":"Putra dari Bapak Arif Hidayat & Ibu Siti Aminah","childOfFather":"Putra dari Bapak Arif Hidayat","family":"Keluarga Bapak Arif Hidayat & Ibu Siti Aminah","instagramHandle":"@bima.contoh","instagramUrl":"https://instagram.com/bima.contoh"},"events":{"akad":{"label":"Akad Nikah","startsAt":"2026-12-12T09:00:00+08:00","endsAt":"2026-12-12T10:30:00+08:00","timezone":"Asia/Makassar","venue":"Rumah Keluarga Mempelai Wanita","address":"Jl. Contoh Raya No. 1, Denpasar, Bali","lat":-8.65,"lng":115.2167,"dateLong":"Sabtu, 12 Desember 2026","zone":"WITA","timeStart":"09.00","timeRange":"09.00 – 10.30","timeRangeZone":"09.00 – 10.30 WITA","mapsUrl":"https://www.google.com/maps/search/?api=1&query=-8.65,115.2167"},"resepsi":{"label":"Resepsi","startsAt":"2026-12-12T19:00:00+08:00","endsAt":"2026-12-12T21:30:00+08:00","timezone":"Asia/Makassar","venue":"Gedung Serbaguna Contoh","address":"Jl. Contoh Kedua No. 2, Denpasar, Bali","lat":-8.66,"lng":115.21,"dateLong":"Sabtu, 12 Desember 2026","zone":"WITA","timeStart":"19.00","timeRange":"19.00 – 21.30","timeRangeZone":"19.00 – 21.30 WITA","mapsUrl":"https://www.google.com/maps/search/?api=1&query=-8.66,115.21"}},"cover":{"file":"cover","alt":"Laras dan Bima berjalan bergandengan tangan di jalan setapak"},"story":[{"year":"2019","title":"Bertemu","text":"Sebuah acara kampus mempertemukan dua orang yang sama-sama datang terlambat.","photo":{"file":"galeri-1","alt":"Laras dan Bima di jalan setapak berpohon kelapa"}},{"year":"2023","title":"Bersama","text":"Dari obrolan singkat menjadi kebiasaan; dari kebiasaan menjadi rumah.","photo":{"file":"galeri-3","alt":"Laras dan Bima piknik di padang rumput"}},{"year":"2026","title":"Selamanya","text":"Lamaran sederhana di hadapan keluarga, lalu kami memilih satu tanggal.","photo":{"file":"galeri-4","alt":"Tangan mempelai dengan cincin pernikahan"}}],"gallery":[{"file":"galeri-1","alt":"Laras dan Bima di jalan setapak berpohon kelapa","caption":"Awal cerita"},{"file":"galeri-2","alt":"Laras dan Bima tertawa bersama","caption":"Tawa kita"},{"file":"galeri-3","alt":"Laras dan Bima piknik di padang rumput","caption":"Piknik sore"},{"file":"galeri-4","alt":"Tangan mempelai dengan cincin pernikahan","caption":"Cincin"},{"file":"galeri-5","alt":"Laras dan Bima di pelaminan","caption":"Hari bahagia"},{"file":"galeri-6","alt":"Laras dan Bima berjalan di sawah terasering saat senja","caption":"Pulang bersama"}],"gifts":{"accounts":[{"bank":"Bank Contoh","number":"1234567890","numberDisplay":"1234 5678 90","holder":"Larasati Pramesti","copyWhat":"Nomor rekening"},{"bank":"Dompet Digital","number":"081234567890","numberDisplay":"0812 3456 7890","holder":"Bima Arya Nugraha","copyWhat":"Nomor dompet digital"}],"address":{"text":"Jl. Contoh Raya No. 1, Denpasar, Bali","holder":"Larasati Pramesti","copy":"Larasati Pramesti, Jl. Contoh Raya No. 1, Denpasar, Bali"}},"music":null,"sections":{"story":true,"gifts":true,"countdown":true,"wishes":true},"couple":"Laras & Bima","coupleAnd":"Laras dan Bima","date":{"iso":"2026-12-12","long":"Sabtu, 12 Desember 2026","short":"12 Desember 2026","dayName":"Sabtu","day":"12","month":"Desember","year":"2026","monthYear":"Desember 2026","dots":"12.12.2026","dotsSpaced":"12 · 12 · 2026"},"zone":{"short":"WITA","long":"Waktu Indonesia Tengah","iana":"Asia/Makassar"},"rsvpDeadlineLong":"5 Desember 2026"}</script>
 <script>
-const EVENT = {"eventType":"wedding","bride":{"name":"Laras","fullName":"Larasati Pramesti","parents":"Putri dari Bapak Wiryo Hadi & Ibu Sekar Arum","instagram":"laras.contoh"},"groom":{"name":"Bima","fullName":"Bima Arya Nugraha","parents":"Putra dari Bapak Arif Hidayat & Ibu Siti Aminah","instagram":"bima.contoh"},"events":{"akad":{"startsAt":"2026-12-12T09:00:00+08:00","endsAt":"2026-12-12T10:30:00+08:00","timezone":"Asia/Makassar","venue":"Rumah Keluarga Mempelai Wanita","address":"Jl. Contoh Raya No. 1, Denpasar, Bali","lat":-8.65,"lng":115.2167},"resepsi":{"startsAt":"2026-12-12T19:00:00+08:00","timezone":"Asia/Makassar","endsAt":"2026-12-12T21:30:00+08:00","venue":"Gedung Serbaguna Contoh","address":"Jl. Contoh Kedua No. 2, Denpasar, Bali","lat":-8.66,"lng":115.21}}};
+const EVENT = JSON.parse(document.getElementById("data-undangan").textContent);
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const html = document.documentElement;
@@ -926,7 +928,8 @@ if (!SOFT && !SDA) {
 /* ---------- Hitung mundur: angka berganti dengan cross-fade lembut ---------- */
 const evs = Object.values(EVENT.events).sort((a, b) => a.startsAt.localeCompare(b.startsAt));
 const start = new Date(evs[0].startsAt).getTime(), end = new Date(evs[evs.length - 1].endsAt).getTime();
-const count = $("#count"), cells = Object.fromEntries($$("[data-u]", count).map((b) => [b.dataset.u, b]));
+// Hitung mundur bisa dimatikan dari portal (sections.countdown); elemennya lalu tidak ada di halaman.
+const count = $("#count"), cells = count ? Object.fromEntries($$("[data-u]", count).map((b) => [b.dataset.u, b])) : {};
 function swap(el, text) {
   const old = el.lastElementChild;
   if (old && old.textContent === text) return;
@@ -940,6 +943,7 @@ function swap(el, text) {
 let tickT;
 function tick() {
   clearTimeout(tickT);
+  if (!count) return;
   const now = Date.now(), left = start - now;
   if (left <= 0) {
     count.hidden = true;
@@ -957,13 +961,13 @@ function tick() {
 // Google Calendar: dari mulai akad sampai selesai resepsi.
 (() => {
   const z = (iso) => new Date(iso).toISOString().replace(/[-:]|\.\d{3}/g, "");
-  const fmt = (iso) => new Intl.DateTimeFormat("id-ID", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Makassar" }).format(new Date(iso)).replace(":", ".");
+  const fmt = (ev) => new Intl.DateTimeFormat("id-ID", { hour: "2-digit", minute: "2-digit", timeZone: ev.timezone }).format(new Date(ev.startsAt)).replace(":", ".");
   const q = new URLSearchParams({
     action: "TEMPLATE",
     text: `Pernikahan ${EVENT.bride.name} & ${EVENT.groom.name}`,
     dates: `${z(evs[0].startsAt)}/${z(evs[evs.length - 1].endsAt)}`,
-    details: `Akad ${fmt(EVENT.events.akad.startsAt)} WITA di ${EVENT.events.akad.venue}. Resepsi ${fmt(EVENT.events.resepsi.startsAt)} WITA di ${EVENT.events.resepsi.venue}. ${location.href.split("?")[0]}`,
-    // Lokasi = tempat acara pertama (akad), karena entri kalender dimulai dari sana.
+    details: `${evs.map((ev) => `${ev.label} ${fmt(ev)} ${ev.zone} di ${ev.venue}.`).join(" ")} ${location.href.split("?")[0]}`,
+    // Lokasi = tempat acara pertama, karena entri kalender dimulai dari sana.
     location: `${evs[0].venue}, ${evs[0].address}`,
   });
   $("#calBtn").href = `https://calendar.google.com/calendar/render?${q}`;
@@ -974,7 +978,7 @@ const lb = $("#lb"), lbImg = $("#lbImg"), items = $$(".gi");
 let cur = 0, opener = 0;
 function show(i, dir = 0) {
   cur = (i + items.length) % items.length;
-  const sd = items[cur].querySelector("img").getAttribute("src"), hd = sd.replace("../foto/", "../foto/hd/");
+  const sd = items[cur].querySelector("img").getAttribute("src"), hd = sd.replace(/\/([^/]+)$/, "/hd/$1");
   lbImg.src = sd;
   lbImg.alt = items[cur].getAttribute("aria-label").replace(/^Perbesar foto: /, "");
   const pre = new Image();
@@ -1042,7 +1046,7 @@ const syncCount = () => {
 rsvpForm.addEventListener("change", syncCount);
 function showDone(r, focus) {
   $("#rsvpMsg").textContent = r.att === "Hadir"
-    ? `${r.name}, kehadiran Anda tercatat untuk ${r.count} orang. Sampai jumpa pada 12 Desember 2026.`
+    ? `${r.name}, kehadiran Anda tercatat untuk ${r.count} orang. Sampai jumpa pada ${EVENT.date.short}.`
     : `${r.name}, terima kasih telah mengabari kami. Doa dan restu Anda sangat berarti.`;
   rsvpForm.hidden = true;
   rsvpDone.hidden = false;
