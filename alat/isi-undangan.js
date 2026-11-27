@@ -280,7 +280,8 @@
         el.setAttribute(a, baru);
       }
       if (el.tagName === "IMG" && el.getAttribute("alt")) el.setAttribute("alt", f.alt);
-      if (f.focus) {
+      // object-position hanya berlaku untuk <img>; <meta property="og:image"> dan sejenisnya tidak diberi style.
+      if (f.focus && el.tagName === "IMG") {
         const gaya = (el.getAttribute("style") || "").replace(/object-position\s*:[^;]*;?/g, "").trim();
         el.setAttribute("style", `${gaya}${gaya && !gaya.endsWith(";") ? ";" : ""}object-position:${f.focus}`);
       }
@@ -340,8 +341,12 @@
     const u = new URL(url, "https://x" + folder);
     return u.pathname + u.search + u.hash;
   }
+  // Alamat berkutip dibaca utuh sampai kutip penutupnya. Data URI SVG berisi kutip lain dan url(%23f) (rujukan ke filter
+  // atau mask di dalam SVG itu sendiri); bila tidak dibaca utuh, url(%23f) di dalamnya ikut dijadikan /tema/%23f dan
+  // filternya rusak (kabut Biru Kabut tergambar hitam).
   function rebaseCss(css, folder) {
-    return css.replace(/url\(\s*(['"]?)([^'")]+)\1\s*\)/g, (s, q, u) => `url(${q}${rebase(u, folder)}${q})`);
+    return css.replace(/url\(\s*(?:"([^"]*)"|'([^']*)'|([^'"()\s]+))\s*\)/g, (s, dq, sq, polos) =>
+      dq != null ? `url("${rebase(dq, folder)}")` : sq != null ? `url('${rebase(sq, folder)}')` : `url(${rebase(polos, folder)})`);
   }
   function rebaseDokumen(doc, folder) {
     for (const a of ["src", "href", "poster"]) {

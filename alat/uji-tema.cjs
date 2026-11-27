@@ -34,7 +34,8 @@ const HARUS_TAMPIL = ["Nadia", "Raka", "Minggu, 14 Februari 2027", "Pemberkatan"
 const args = process.argv.slice(2);
 const iFoto = args.indexOf("--foto");
 const FOLDER_FOTO = iFoto >= 0 ? path.resolve(args[iFoto + 1]) : null;
-const TEMA = args.filter((a, i) => !a.startsWith("--") && i !== iFoto + 1);
+// Tanpa --foto, iFoto = -1; jangan sampai argumen pertama (indeks 0) ikut dibuang sebagai folder foto.
+const TEMA = args.filter((a, i) => !a.startsWith("--") && (iFoto < 0 || i !== iFoto + 1));
 if (!TEMA.length) {
   console.error("Pakai: node alat/uji-tema.cjs <folder-tema> [...] [--foto <folder>]");
   process.exit(2);
@@ -146,6 +147,11 @@ async function ujiTema(browser, base, tema) {
       fs.writeFileSync(path.join(REPO, "uji-keluaran", folder, "index.html"), html);
     }
     if (!klien.includes('<meta name="acara" content="uji-coba">')) gagal.push("bersih: tag acara tidak terpasang");
+    // Data URI di CSS (kabut, butiran, dsb.) tidak boleh ikut berubah saat alamat relatif dijadikan absolut: url(%23f) di
+    // dalam SVG adalah rujukan ke filter atau mask di SVG itu sendiri, bukan alamat berkas.
+    for (const m of asli.matchAll(/url\(\s*(["'])(data:[\s\S]*?)\1\s*\)/g)) {
+      if (!klien.includes(m[2])) gagal.push(`bersih: data URI berubah (${m[2].slice(0, 48)}…)`);
+    }
     gagal.push(...cariLarangan(buangSkrip(klien)).map((x) => `bersih: ${x}`));
     const skrip = (klien.match(/<script(?![^>]*id="data-undangan")[^>]*>[\s\S]*?<\/script>/g) || []).join("\n");
     catatan.push(...cariLarangan(skrip).map((x) => `di skrip (periksa manual): ${x}`));
