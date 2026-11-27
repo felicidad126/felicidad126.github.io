@@ -66,7 +66,7 @@ katalog/            gambar sampul tiap tema, og.jpg, dan sampul Kelopak Mimpi ta
 helonoia/           logo dan maskot Helonoia beserta generatornya, dan noi.webp (Noi untuk halaman 404)
 licenses/           lisensi font yang disimpan di repo
 docs/               catatan desain dan review (tidak dipakai situs)
-alat/               pengisi data undangan untuk portal admin, contoh data, dan uji tema (lihat docs/FORMAT-DATA.md)
+alat/               pengisi data undangan untuk portal admin, contoh data, uji tema (lihat docs/FORMAT-DATA.md), dan ukur kelancaran (ukur-performa.cjs)
 _headers            aturan cache Cloudflare Pages (cadangan); di VM aturan yang sama dipasang di nginx
 favicon.ico         ikon bawaan untuk halaman tanpa ikon sendiri
 ```
@@ -174,6 +174,7 @@ Portal admin membuat undangan klien dengan mengisi tema memakai data klien. Supa
 |---|---|
 | [`docs/TEMA.md`](docs/TEMA.md) | Penjelasan lengkap kesepuluh tema |
 | [`docs/REFERENSI-DESAIN.md`](docs/REFERENSI-DESAIN.md) | Riset tren dan referensi yang menjadi dasar tema 4 sampai 10 |
+| [`docs/REFERENSI-PESAING.md`](docs/REFERENSI-PESAING.md) | Bedah undangan pesaing (November 2026): kenapa terasa mulus, hasil ukur dibanding 10 tema, resep video latar dan musik, anggaran gerak, pola UI/UX. Ukur ulang dengan `node alat/ukur-performa.cjs <tema>` |
 | [`docs/REVIEW-KONSISTENSI-TEMA.md`](docs/REVIEW-KONSISTENSI-TEMA.md) | Review konsistensi 10 tema (November 2026), standar antartema, dan catatan terbuka |
 | [`docs/REVISI-AMPLOP-LINEN.md`](docs/REVISI-AMPLOP-LINEN.md) | Arsip review Amplop Linen (Oktober 2026); semua poin sudah diterapkan |
 | [`docs/FORMAT-DATA.md`](docs/FORMAT-DATA.md) | Format data undangan untuk portal admin: blok data, atribut pengikat, uji tema, status per tema |
