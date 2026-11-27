@@ -169,3 +169,4 @@ Demo tema di katalog menyimpan RSVP dan ucapan di HP tamu saja (keterangan "Prev
 | [`docs/REFERENSI-DESAIN.md`](docs/REFERENSI-DESAIN.md) | Riset tren dan referensi yang menjadi dasar tema 4 sampai 10 |
 | [`docs/REVIEW-KONSISTENSI-TEMA.md`](docs/REVIEW-KONSISTENSI-TEMA.md) | Review konsistensi 10 tema (November 2026), standar antartema, dan catatan terbuka |
 | [`docs/REVISI-AMPLOP-LINEN.md`](docs/REVISI-AMPLOP-LINEN.md) | Arsip review Amplop Linen (Oktober 2026); semua poin sudah diterapkan |
+| [`docs/RENCANA-MENGUNDANG.md`](docs/RENCANA-MENGUNDANG.md) | Arsip rencana usaha Mengundang by Helonoia (12 November 2026): nama, harga, paket, portal, server, dan pertanyaan yang masih terbuka |
