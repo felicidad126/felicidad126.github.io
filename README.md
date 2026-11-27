@@ -66,6 +66,7 @@ katalog/            gambar sampul tiap tema, og.jpg, dan sampul Kelopak Mimpi ta
 helonoia/           logo dan maskot Helonoia beserta generatornya, dan noi.webp (Noi untuk halaman 404)
 licenses/           lisensi font yang disimpan di repo
 docs/               catatan desain dan review (tidak dipakai situs)
+alat/               pengisi data undangan untuk portal admin, contoh data, dan uji tema (lihat docs/FORMAT-DATA.md)
 _headers            aturan cache Cloudflare Pages (cadangan); di VM aturan yang sama dipasang di nginx
 favicon.ico         ikon bawaan untuk halaman tanpa ikon sendiri
 ```
@@ -105,6 +106,12 @@ Demo tema di katalog menyimpan RSVP dan ucapan di HP tamu saja (keterangan "Prev
 - RSVP (termasuk nomor WhatsApp) hanya dibaca mempelai dan admin. Ucapan tampil untuk semua tamu undangan itu. Di Garis Editorial, doa di kartu balasan juga dikirim sebagai ucapan karena tema ini menampilkannya di bagian "Doa & ucapan".
 - Server menghapus RSVP dan ucapan 90 hari setelah tanggal acara.
 - Mengubah alur RSVP atau ucapan di sebuah tema: pertahankan kedua jalur (dengan dan tanpa `ACARA.aktif`), dan uji keduanya.
+
+### Format data untuk portal admin
+Portal admin membuat undangan klien dengan mengisi tema memakai data klien. Supaya bisa, tema membaca datanya dari blok `<script type="application/json" id="data-undangan">` dan menandai setiap teks data dengan atribut `data-isi…`. Format, aturan menandai tema, dan cara mengujinya ada di [`docs/FORMAT-DATA.md`](docs/FORMAT-DATA.md).
+
+- Sejauh ini baru Biru Kabut yang sudah ditandai. Tema lain masih menulis data contoh langsung di HTML.
+- Mengubah teks data contoh di tema yang sudah ditandai: ubah juga [`alat/contoh-data.json`](alat/contoh-data.json) dan blok `data-undangan`-nya, lalu jalankan `node alat/uji-tema.cjs <tema>`.
 
 ### Hosting
 - Situs dilayani nginx di VM Helonoia (aaPanel, situs `invitation.helonoia.com`, folder `/www/wwwroot/invitation.helonoia.com`). Tugas Cron aaPanel "Deploy invitation.helonoia.com dari GitHub" menjalankan `/www/deploy/deploy-invitation.sh` setiap 5 menit: menarik `main` ke `/www/deploy/invitation-src` (di luar folder situs, jadi `.git` tidak pernah terbuka ke publik) lalu menyalinnya dengan rsync.
@@ -169,4 +176,5 @@ Demo tema di katalog menyimpan RSVP dan ucapan di HP tamu saja (keterangan "Prev
 | [`docs/REFERENSI-DESAIN.md`](docs/REFERENSI-DESAIN.md) | Riset tren dan referensi yang menjadi dasar tema 4 sampai 10 |
 | [`docs/REVIEW-KONSISTENSI-TEMA.md`](docs/REVIEW-KONSISTENSI-TEMA.md) | Review konsistensi 10 tema (November 2026), standar antartema, dan catatan terbuka |
 | [`docs/REVISI-AMPLOP-LINEN.md`](docs/REVISI-AMPLOP-LINEN.md) | Arsip review Amplop Linen (Oktober 2026); semua poin sudah diterapkan |
+| [`docs/FORMAT-DATA.md`](docs/FORMAT-DATA.md) | Format data undangan untuk portal admin: blok data, atribut pengikat, uji tema, status per tema |
 | [`docs/RENCANA-MENGUNDANG.md`](docs/RENCANA-MENGUNDANG.md) | Arsip rencana usaha Mengundang by Helonoia (12 November 2026): nama, harga, paket, portal, server, dan pertanyaan yang masih terbuka |
